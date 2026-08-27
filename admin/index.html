@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم - أرشيف العائلة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6F0; --card:#FFFFFF; --ink:#332C24; 
+    --sand-deep:#8A6741; --mist:#8C8175; --line:#E7DDCE;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    padding:40px 20px;
+  }
+  .wrap{max-width:600px; margin:0 auto;}
+  .card{
+    background:var(--card); border:1px solid var(--line);
+    border-radius:12px; padding:32px; box-shadow:0 4px 20px rgba(138,103,65,0.05);
+  }
+  h1{font-size:1.6rem; color:var(--sand-deep); margin-bottom:8px; text-align:center;}
+  p{color:var(--mist); font-size:0.9rem; margin-bottom:24px; text-align:center;}
+  .form-group{margin-bottom:16px;}
+  label{display:block; margin-bottom:6px; font-weight:500; font-size:0.9rem;}
+  input, textarea{
+    width:100%; padding:12px; border:1px solid var(--line);
+    border-radius:8px; background:var(--bg); font-family:inherit; font-size:0.95rem;
+  }
+  input:focus, textarea:focus{outline:none; border-color:var(--sand-deep);}
+  .btn{
+    width:100%; background:var(--sand-deep); color:#fff; border:none;
+    padding:14px; border-radius:8px; font-size:1rem; font-weight:500; cursor:pointer;
+    transition: background 0.2s;
+  }
+  .btn:hover{background:var(--ink);}
+  #status{margin-top:15px; text-align:center; font-weight:500;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <h1>لوحة التحكم بالأرشيف</h1>
+    <p>أضف منشوراً جديداً وسيتحدث السيرفر فوراً</p>
+
+    <form id="admin-form">
+      <div class="form-group">
+        <label>السنة / المرحلة</label>
+        <input type="text" id="item-year" placeholder="مثال: 1995" required>
+      </div>
+      <div class="form-group">
+        <label>مسار أو رابط الصورة</label>
+        <input type="text" id="item-image" placeholder="مثال: ../assets/img/mohammed/photo2.jpg" required>
+      </div>
+      <div class="form-group">
+        <label>عنوان المنشور</label>
+        <input type="text" id="item-title" placeholder="مثال: مرحلة الشباب" required>
+      </div>
+      <div class="form-group">
+        <label>الوصف</label>
+        <textarea id="item-desc" rows="3" placeholder="تفاصيل الصورة أو الذكريات..." required></textarea>
+      </div>
+      <button type="submit" class="btn" id="submit-btn">حفظ ونشر المنشور</button>
+    </form>
+    <p id="status"></p>
+  </div>
+</div>
+
+<script>
+  // ضع هنا رابط الـ Bin الخاص بك ورقم الـ Master Key الخاص بـ JSONBin للتعديل (PUT)
+  const BIN_ID = "6a907d2ef5f4af5e294ab941";
+  const MASTER_KEY = "ضع_مفتاح_المستر_كي_هنا"; // تجده في إعدادات حسابك بـ JSONBin
+
+  const form = document.getElementById("admin-form");
+  const status = document.getElementById("status");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("submit-btn");
+    btn.innerText = "جاري الحفظ والسحب...";
+
+    const newItem = {
+      year: document.getElementById("item-year").value,
+      image: document.getElementById("item-image").value,
+      title: document.getElementById("item-title").value,
+      desc: document.getElementById("item-desc").value
+    };
+
+    try {
+      // 1. جلب البيانات الحالية أولاً
+      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+        headers: { 'X-Master-Key': MASTER_KEY }
+      });
+      const getData = await getRes.json();
+      const currentGallery = getData.record.gallery || [];
+
+      // 2. إضافة المنشور الجديد للقائمة
+      currentGallery.push(newItem);
+
+      // 3. إرسال القائمة المحدثة للسحابة (PUT Request)
+      const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': MASTER_KEY
+        },
+        body: JSON.stringify({ gallery: currentGallery })
+      });
+
+      if (updateRes.ok) {
+        status.innerHTML = "تم نشر المنشور بنجاح! اذهب لمشاهدته بالموقع.";
+        status.style.color = "var(--sand-deep)";
+        form.reset();
+      } else {
+        status.innerHTML = "حدث خطأ أثناء الحفظ، تأكد من مفتاح الـ Master Key.";
+        status.style.color = "red";
+      }
+    } catch (err) {
+      status.innerHTML = "خطأ في الاتصال بالشبكة.";
+      status.style.color = "red";
+    }
+    btn.innerText = "حفظ ونشر المنشور";
+  });
+</script>
+
+</body>
+</html>
