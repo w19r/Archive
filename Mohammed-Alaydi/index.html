@@ -1,78 +1,108 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قيد التطوير | أرشيف</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أرشيف محمد - عائلة العايدي</title>
+<meta name="description" content="أرشيف صور الشهيد محمد عبر السنين.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6F0; --card:#FFFFFF; --ink:#332C24; 
+    --sand:#A9825F; --sand-deep:#8A6741; --mist:#8C8175; --line:#E7DDCE;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    line-height:1.8; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 28px;}
+  
+  /* ---------- Header ---------- */
+  header{
+    padding:40px 0; text-align:center; border-bottom:1px solid var(--line);
+    position: relative;
+  }
+  .back-btn{
+    position: absolute; right: 28px; top: 40px;
+    color: var(--sand-deep); font-weight: 500; font-size: 0.9rem;
+    border: 1px solid var(--line); padding: 6px 14px; border-radius: 6px;
+    transition: 0.2s;
+  }
+  .back-btn:hover{background: var(--sand-deep); color: var(--card);}
+  header h1{
+    font-family:'Aref Ruqaa', serif; font-size:clamp(2rem, 4vw, 2.5rem);
+    color:var(--ink); margin-bottom:10px;
+  }
+  header p{color:var(--mist); font-size:1rem;}
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #2c3e50;
-        }
-
-
-        .container {
-            background: #ffffff;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            max-width: 500px;
-            width: 85%;
-        }
-
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            color: #1a252f;
-        }
-
-        p {
-            font-size: 1.1rem;
-            color: #555555;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+  /* ---------- Gallery Grid ---------- */
+  main{padding:60px 0 88px;}
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:32px;
+  }
+  .photo-card{
+    background:var(--card); border:1px solid var(--line);
+    border-radius:10px; overflow:hidden;
+    transition:box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .photo-card:hover{
+    box-shadow:0 12px 28px rgba(138,103,65,0.12); transform:translateY(-3px);
+  }
+  .photo-frame{
+    position: relative; aspect-ratio:1/1; 
+    background:var(--line); overflow:hidden;
+  }
+  .photo-frame img{
+    width:100%; height:100%; object-fit:cover;
+    transition: transform 0.4s ease;
+  }
+  .photo-card:hover .photo-frame img{transform: scale(1.03);}
+  .year-badge{
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255, 255, 255, 0.9); color: var(--sand-deep);
+    font-family:'Aref Ruqaa', serif; font-size: 1.2rem;
+    padding: 2px 12px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 2;
+  }
+  .photo-info{padding:20px;}
+  .photo-title{
+    font-family:'Aref Ruqaa', serif; font-size:1.4rem;
+    color:var(--ink); margin-bottom:8px;
+  }
+  .photo-desc{color:var(--mist); font-size:0.9rem; line-height:1.6;}
+  
+  @media (max-width:600px){
+    .back-btn {position: static; display: inline-block; margin-bottom: 20px;}
+  }
+</style>
 </head>
 <body>
 
-    <div class="container">
+<header>
+  <div class="wrap">
+    <a href="/" class="back-btn">← العودة للأرشيف</a>
+    <h1>أرشيف الشهيد محمد</h1>
+    <p>توثيق للصور والذكريات مرتبة زمنياً.</p>
+  </div>
+</header>
 
-        <div class="loader"></div>
-        
-        <!-- النصوص -->
-        <h1>الموقع قيد التطوير</h1>
-        <p>مرحباً بك في أرشيف <strong>عبد الله العايدي</strong>.</p>
-        <p>أنا أعمل حالياً على تجهيز هذه الصفحة لتكون جاهزة قريباً. شكراً !</p>
-    </div>
+<main>
+  <div class="wrap">
+    <!--  الجافاسكربت يضع الصور تلقائياً -->
+    <div id="gallery-container" class="gallery"></div>
+  </div>
+</main>
+
+<!-- استدعاء ملف البيانات أولاً، ثم ملف التشغيل -->
+<script src="data.js"></script>
+<script src="../assets/js/gallery.js"></script>
 
 </body>
 </html>
