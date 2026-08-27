@@ -34,7 +34,6 @@
   .post-info { display: flex; flex-direction: column; gap: 6px; }
   .post-title { font-weight: 600; color: var(--ink); }
   
-  /* تنسيقات الأشرطة (الباجات) الجديدة */
   .post-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .post-year { font-size: 0.85rem; color: var(--mist); }
   .post-badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
@@ -62,9 +61,13 @@
         </select>
       </div>
 
+      <!-- اختيار السنة -->
       <div class="form-group">
         <label>السنة / المرحلة</label>
-        <input type="text" id="item-year" placeholder="مثال: 2022" required>
+        <select id="year-select" onchange="toggleCustomInput('year-select', 'custom-year')">
+          <!-- سيتم توليد السنوات هنا بواسطة الجافاسكربت -->
+        </select>
+        <input type="text" id="custom-year" class="custom-input" placeholder="اكتب السنة أو المرحلة هنا...">
       </div>
       
       <div class="form-group">
@@ -116,6 +119,16 @@
 </div>
 
 <script>
+  // توليد السنوات من 2025 إلى 1960
+  const yearSelect = document.getElementById("year-select");
+  let yearsHTML = "";
+  for (let y = 2025; y >= 1960; y--) {
+    yearsHTML += `<option value="${y}">${y}</option>`;
+  }
+  yearsHTML += `<option value="custom">كتابة سنة/مرحلة مخصصة...</option>`;
+  yearSelect.innerHTML = yearsHTML;
+
+  // إظهار/إخفاء حقل الكتابة المخصصة
   function toggleCustomInput(selectId, inputId) {
     const select = document.getElementById(selectId);
     const input = document.getElementById(inputId);
@@ -151,6 +164,10 @@
     const masterKey = masterKeyInput.value;
     localStorage.setItem("my_secret_key", masterKey);
 
+    // التحقق من القيم المخصصة
+    let finalYear = document.getElementById("year-select").value;
+    if (finalYear === 'custom') finalYear = document.getElementById("custom-year").value;
+
     let finalTitle = document.getElementById("title-select").value;
     if (finalTitle === 'custom') finalTitle = document.getElementById("custom-title").value;
 
@@ -159,7 +176,7 @@
 
     const newItem = {
       id: Date.now().toString(),
-      year: document.getElementById("item-year").value,
+      year: finalYear,
       image: `../assets/img/${selectedArchive}/${document.getElementById("item-image").value}`,
       title: finalTitle,
       desc: finalDesc
@@ -184,8 +201,9 @@
         status.innerHTML = "تم نشر المنشور بنجاح! 🎉";
         status.style.color = "var(--sand-deep)";
         
-        document.getElementById("item-year").value = "";
+        // تفريغ الحقول وإعادتها لوضعها الافتراضي
         document.getElementById("item-image").value = "";
+        document.getElementById("custom-year").value = "";
         document.getElementById("custom-title").value = "";
         document.getElementById("custom-desc").value = "";
       }
@@ -231,7 +249,6 @@
         div.className = "post-item";
         
         const displayId = item.id ? item.id : 'بدون ID';
-        // استخراج اسم الصورة من المسار الطويل (مثل: photo1.jpeg)
         const imageName = item.image ? item.image.split('/').pop() : 'بدون صورة';
         
         div.innerHTML = `
