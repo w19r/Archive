@@ -10,5 +10,5 @@ const galleryData = [
     image: "../assets/img/mohammed/IMG_7032_Original.jpeg",
     title: "أيام الشباب",
     desc: "صورة مع الأصدقاء خلال المرحلة الدراسية."
-  
+  } // <--- تم إضافة هذا القوس هنا لإغلاق العنصر الثاني
 ];
