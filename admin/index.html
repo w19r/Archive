@@ -20,7 +20,6 @@
   input, select, textarea{ width:100%; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--bg); font-family:inherit; font-size:0.95rem; }
   input:focus, select:focus, textarea:focus{outline:none; border-color:var(--sand-deep);}
   
-  /* إخفاء حقول الكتابة المخصصة افتراضياً */
   .custom-input { display: none; margin-top: 10px; }
   
   .btn{ width:100%; background:var(--sand-deep); color:#fff; border:none; padding:14px; border-radius:8px; font-size:1rem; font-weight:500; cursor:pointer; transition: background 0.2s; margin-top: 10px;}
@@ -32,11 +31,15 @@
   
   .post-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--line); }
   .post-item:last-child { border-bottom: none; }
-  .post-info { display: flex; flex-direction: column; gap: 4px; }
+  .post-info { display: flex; flex-direction: column; gap: 6px; }
   .post-title { font-weight: 600; color: var(--ink); }
-  .post-meta { display: flex; align-items: center; gap: 10px; }
+  
+  /* تنسيقات الأشرطة (الباجات) الجديدة */
+  .post-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .post-year { font-size: 0.85rem; color: var(--mist); }
-  .post-id { font-size: 0.75rem; color: #777; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+  .post-badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+  .badge-gray { background: #f0f0f0; color: #777; }
+  .badge-blue { background: #e8f4f8; color: #0275d8; }
   
   .btn-delete { background: #d9534f; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.85rem;}
   .btn-delete:hover { background: #c9302c; }
@@ -113,7 +116,6 @@
 </div>
 
 <script>
-  // إظهار/إخفاء حقل الكتابة المخصصة
   function toggleCustomInput(selectId, inputId) {
     const select = document.getElementById(selectId);
     const input = document.getElementById(inputId);
@@ -126,7 +128,6 @@
     }
   }
 
-  // أرقام الـ Bin الخاصة بك
   const BINS = {
     "mohammed": "6a90878ef5f4af5e294ae1b6",
     "abdulmajeed": "6a908f46da38895dfe196b09"
@@ -137,7 +138,7 @@
     masterKeyInput.value = localStorage.getItem("my_secret_key");
   }
 
-  // 1. كود إضافة منشور جديد مع توليد ID
+  // 1. إضافة منشور جديد
   document.getElementById("admin-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = document.getElementById("submit-btn");
@@ -195,7 +196,7 @@
     btn.innerText = "حفظ ونشر المنشور";
   });
 
-  // 2. كود جلب المنشورات للحذف
+  // 2. جلب المنشورات للحذف
   document.getElementById("load-posts-btn").addEventListener("click", async () => {
     const listDiv = document.getElementById("posts-list");
     const delStatus = document.getElementById("delete-status");
@@ -229,15 +230,17 @@
         const div = document.createElement("div");
         div.className = "post-item";
         
-        // التعديل هنا: إظهار الـ ID والسنة بتنسيق جميل
-        const displayId = item.id ? item.id : 'بدون ID (منشور قديم)';
+        const displayId = item.id ? item.id : 'بدون ID';
+        // استخراج اسم الصورة من المسار الطويل (مثل: photo1.jpeg)
+        const imageName = item.image ? item.image.split('/').pop() : 'بدون صورة';
         
         div.innerHTML = `
           <div class="post-info">
             <span class="post-title">${item.title || 'بدون عنوان'}</span>
             <div class="post-meta">
               <span class="post-year">السنة: ${item.year}</span>
-              <span class="post-id">ID: ${displayId}</span>
+              <span class="post-badge badge-gray">ID: ${displayId}</span>
+              <span class="post-badge badge-blue">ملف: ${imageName}</span>
             </div>
           </div>
           <button class="btn-delete" onclick="deletePost('${item.id || ''}', '${item.title}')">حذف</button>
@@ -272,7 +275,6 @@
       const getData = await getRes.json();
       let currentGallery = getData.record.gallery || [];
 
-      // إزالة المنشور
       currentGallery = currentGallery.filter(item => item.id !== id);
 
       const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
@@ -284,7 +286,7 @@
       if (updateRes.ok) {
         delStatus.innerHTML = "تم الحذف بنجاح!";
         delStatus.style.color = "green";
-        document.getElementById("load-posts-btn").click(); // إعادة تحميل القائمة
+        document.getElementById("load-posts-btn").click();
       }
     } catch (err) {
       delStatus.innerHTML = "حدث خطأ أثناء الحذف.";
