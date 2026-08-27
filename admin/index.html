@@ -79,7 +79,6 @@
         <label>عنوان المنشور</label>
         <select id="title-select" onchange="toggleCustomInput('title-select', 'custom-title')">
           <option value="لحظات عفوية">لحظات عفوية</option>
-          <option value="مرحلة الطفولة">مرحلة الطفولة</option>
           <option value="مرحلة الشباب">مرحلة الشباب</option>
           <option value="ذكريات العائلة">ذكريات العائلة</option>
           <option value="custom">كتابة عنوان مخصص...</option>
@@ -93,7 +92,6 @@
         <select id="desc-select" onchange="toggleCustomInput('desc-select', 'custom-desc')">
           <option value="صورة تذكارية">صورة تذكارية.</option>
           <option value="صورة تذكارية للذكرى.">صورة تذكارية للذكرى.</option>
-          <option value="لقطة عفوية تفيض بالحب، توثق لحظات لا تُنسى.">لقطة عفوية تفيض بالحب، توثق لحظات لا تُنسى.</option>
           <option value="custom">كتابة وصف مخصص...</option>
         </select>
         <textarea id="custom-desc" class="custom-input" rows="2" placeholder="اكتب الوصف هنا..."></textarea>
@@ -124,7 +122,7 @@
   // توليد السنوات من 2025 إلى 1960
   const yearSelect = document.getElementById("year-select");
   let yearsHTML = "";
-  for (let y = 2025; y >= 1960; y--) {
+  for (let y = 2026; y >= 1970; y--) {
     yearsHTML += `<option value="${y}">${y}</option>`;
   }
   yearsHTML += `<option value="custom">كتابة سنة/مرحلة مخصصة...</option>`;
