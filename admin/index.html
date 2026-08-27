@@ -47,10 +47,10 @@
 <body>
 
 <div class="wrap">
-  <!-- المربع الأول: قسم إضافة المنشور ورفع الصورة -->
+  <!-- المربع الأول: قسم إضافة المنشور -->
   <div class="card">
-    <h1>لوحة التحكم الذكية</h1>
-    <p>رفع الصور التلقائي إلى GitHub و JSONBin</p>
+    <h1>لوحة التحكم الآمنة</h1>
+    <p>أضف منشوراً جديداً بكل سهولة وأمان</p>
 
     <form id="admin-form">
       <div class="form-group">
@@ -68,12 +68,13 @@
         <input type="text" id="custom-year" class="custom-input" placeholder="اكتب السنة أو المرحلة هنا...">
       </div>
       
-      <!-- اختيار الصورة من الجهاز مباشرة -->
+      <!-- اسم الصورة اليدوي -->
       <div class="form-group">
-        <label>اختر الصورة من جهازك</label>
-        <input type="file" id="image-file" accept="image/*" required style="padding: 9px;">
+        <label>اسم الصورة (مع الامتداد)</label>
+        <input type="text" id="item-image" placeholder="مثال: photo2.jpg" required>
       </div>
 
+      <!-- العنوان -->
       <div class="form-group">
         <label>عنوان المنشور</label>
         <select id="title-select" onchange="toggleCustomInput('title-select', 'custom-title')">
@@ -86,6 +87,7 @@
         <input type="text" id="custom-title" class="custom-input" placeholder="اكتب العنوان هنا...">
       </div>
 
+      <!-- الوصف -->
       <div class="form-group">
         <label>الوصف</label>
         <select id="desc-select" onchange="toggleCustomInput('desc-select', 'custom-desc')">
@@ -97,20 +99,13 @@
         <textarea id="custom-desc" class="custom-input" rows="2" placeholder="اكتب الوصف هنا..."></textarea>
       </div>
 
-      <!-- إعدادات الأمان -->
+      <!-- مفتاح الأمان (Master Key) -->
       <div class="form-group" style="border-top: 1px solid var(--line); padding-top: 15px; margin-top: 15px;">
-        <label style="color: var(--sand-deep);">مفاتيح الأمان (تُحفظ في متصفحك تلقائياً)</label>
-      </div>
-      <div class="form-group">
-        <label>مفتاح JSONBin Master Key</label>
-        <input type="password" id="master-key" placeholder="أدخل مفتاح JSONBin" required>
-      </div>
-      <div class="form-group">
-        <label>مفتاح GitHub Personal Access Token</label>
-        <input type="password" id="github-token" placeholder="أدخل مفتاح GitHub Token الخاص بك" required>
+        <label style="color: #d9534f;">مفتاح الأمان (Master Key)</label>
+        <input type="password" id="master-key" placeholder="أدخل المفتاح السري الخاص بـ JSONBin" required>
       </div>
 
-      <button type="submit" class="btn" id="submit-btn">رفع الصورة ونشر المنشور</button>
+      <button type="submit" class="btn" id="submit-btn">حفظ ونشر المنشور</button>
     </form>
     <p id="status"></p>
   </div>
@@ -118,7 +113,7 @@
   <!-- المربع الثاني: قسم إدارة وحذف المنشورات -->
   <div class="card">
     <h2 style="font-size: 1.3rem; color: var(--sand-deep); margin-bottom: 15px; text-align: center;">إدارة المنشورات الحالية</h2>
-    <p style="margin-bottom: 15px; font-size: 0.85rem;">اختر الأرشيف وضع المفاتيح في الأعلى، ثم اضغط هنا:</p>
+    <p style="margin-bottom: 15px; font-size: 0.85rem;">اختر الأرشيف من الأعلى وضع مفتاح الأمان، ثم اضغط هنا:</p>
     <button type="button" class="btn btn-outline" id="load-posts-btn">عرض المنشورات للتعديل/الحذف</button>
     <p id="delete-status"></p>
     <div id="posts-list" style="margin-top: 15px;"></div>
@@ -126,9 +121,6 @@
 </div>
 
 <script>
-  const GITHUB_REPO_OWNER = "w19r";
-  const GITHUB_REPO_NAME = "archive";
-
   // توليد السنوات من 2025 إلى 1960
   const yearSelect = document.getElementById("year-select");
   let yearsHTML = "";
@@ -156,91 +148,49 @@
   };
 
   const masterKeyInput = document.getElementById("master-key");
-  const githubTokenInput = document.getElementById("github-token");
-
-  if(localStorage.getItem("my_secret_key")) masterKeyInput.value = localStorage.getItem("my_secret_key");
-  if(localStorage.getItem("github_token")) githubTokenInput.value = localStorage.getItem("github_token");
-
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = error => reject(error);
-    });
+  if(localStorage.getItem("my_secret_key")) {
+    masterKeyInput.value = localStorage.getItem("my_secret_key");
   }
 
-  // 1. إضافة منشور ورفع الصورة لـ GitHub تلقائياً
+  // 1. إضافة منشور جديد
   document.getElementById("admin-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = document.getElementById("submit-btn");
     const status = document.getElementById("status");
-    btn.innerText = "جاري رفع الصورة إلى GitHub...";
+    btn.innerText = "جاري الحفظ والسحب...";
     status.innerHTML = "";
 
     const selectedArchive = document.getElementById("target-archive").value;
     const binId = BINS[selectedArchive];
     const masterKey = masterKeyInput.value;
-    const githubToken = githubTokenInput.value;
-
     localStorage.setItem("my_secret_key", masterKey);
-    localStorage.setItem("github_token", githubToken);
 
-    const fileInput = document.getElementById("image-file");
-    const file = fileInput.files[0];
-    if (!file) {
-      status.innerHTML = "الرجاء اختيار صورة.";
-      status.style.color = "red";
-      btn.innerText = "رفع الصورة ونشر المنشور";
-      return;
-    }
+    const imageName = document.getElementById("item-image").value;
+
+    let finalYear = document.getElementById("year-select").value;
+    if (finalYear === 'custom') finalYear = document.getElementById("custom-year").value;
+
+    let finalTitle = document.getElementById("title-select").value;
+    if (finalTitle === 'custom') finalTitle = document.getElementById("custom-title").value;
+
+    let finalDesc = document.getElementById("desc-select").value;
+    if (finalDesc === 'custom') finalDesc = document.getElementById("custom-desc").value;
+
+    const newItem = {
+      id: Date.now().toString(),
+      year: finalYear,
+      image: `../assets/img/${selectedArchive}/${imageName}`,
+      title: finalTitle,
+      desc: finalDesc
+    };
 
     try {
-      const base64Content = await fileToBase64(file);
-      const fileName = Date.now() + "_" + file.name.replace(/\s+/g, '_');
-      const filePath = `assets/img/${selectedArchive}/${fileName}`;
-
-      const githubRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${filePath}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${githubToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: `Upload new archive image: ${fileName}`,
-          content: base64Content
-        })
-      });
-
-      if (!githubRes.ok) {
-        const errData = await githubRes.json();
-        throw new Error("فشل رفع الصورة لـ GitHub: " + (errData.message || "تأكد من صلاحيات Token"));
-      }
-
-      btn.innerText = "جاري تحديث السحابة...";
-
-      let finalYear = document.getElementById("year-select").value;
-      if (finalYear === 'custom') finalYear = document.getElementById("custom-year").value;
-
-      let finalTitle = document.getElementById("title-select").value;
-      if (finalTitle === 'custom') finalTitle = document.getElementById("custom-title").value;
-
-      let finalDesc = document.getElementById("desc-select").value;
-      if (finalDesc === 'custom') finalDesc = document.getElementById("custom-desc").value;
-
-      const newItem = {
-        id: Date.now().toString(),
-        year: finalYear,
-        image: `../assets/img/${selectedArchive}/${fileName}`,
-        title: finalTitle,
-        desc: finalDesc
-      };
-
       const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
-      if (!getRes.ok) throw new Error("مفتاح JSONBin غير صحيح!");
+      if (!getRes.ok) throw new Error("المفتاح السري غير صحيح!");
       
       const getData = await getRes.json();
       const currentGallery = getData.record.gallery || [];
+      
       currentGallery.push(newItem);
 
       const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
@@ -250,19 +200,18 @@
       });
 
       if (updateRes.ok) {
-        status.innerHTML = "تم رفع الصورة ونشر المنشور بنجاح! 🎉";
+        status.innerHTML = "تم نشر المنشور بنجاح! 🎉";
         status.style.color = "var(--sand-deep)";
-        
-        document.getElementById("image-file").value = "";
+        document.getElementById("item-image").value = "";
         document.getElementById("custom-year").value = "";
         document.getElementById("custom-title").value = "";
         document.getElementById("custom-desc").value = "";
       }
     } catch (err) {
-      status.innerHTML = err.message;
+      status.innerHTML = err.message || "حدث خطأ في الاتصال.";
       status.style.color = "red";
     }
-    btn.innerText = "رفع الصورة ونشر المنشور";
+    btn.innerText = "حفظ ونشر المنشور";
   });
 
   // 2. جلب المنشورات للحذف
@@ -274,7 +223,7 @@
     const masterKey = masterKeyInput.value;
     
     if(!masterKey) {
-      delStatus.innerHTML = "الرجاء إدخال مفتاح JSONBin أولاً.";
+      delStatus.innerHTML = "الرجاء إدخال مفتاح الأمان أولاً في الأعلى.";
       delStatus.style.color = "red";
       return;
     }
@@ -284,7 +233,7 @@
 
     try {
       const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
-      if (!getRes.ok) throw new Error("فشل الجلب، تأكد من مفتاح JSONBin.");
+      if (!getRes.ok) throw new Error("فشل الجلب، تأكد من مفتاح الأمان.");
       
       const getData = await getRes.json();
       const gallery = getData.record.gallery || [];
@@ -325,7 +274,7 @@
   // 3. الحذف
   window.deletePost = async (id, title) => {
     if(!id) {
-      alert("عذراً، هذا المنشور القديم لا يمتلك ID.");
+      alert("عذراً، هذا المنشور القديم لا يمتلك ID. يجب حذفه يدوياً من موقع JSONBin.");
       return;
     }
     if(!confirm(`هل أنت متأكد أنك تريد حذف منشور "${title}"؟`)) return;
