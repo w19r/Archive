@@ -9,25 +9,42 @@
   :root{ --bg:#FAF6F0; --card:#FFFFFF; --ink:#332C24; --sand-deep:#8A6741; --mist:#8C8175; --line:#E7DDCE; }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{ background:var(--bg); color:var(--ink); font-family:'IBM Plex Sans Arabic', sans-serif; padding:40px 20px; }
-  .wrap{max-width:600px; margin:0 auto;}
-  .card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:32px; box-shadow:0 4px 20px rgba(138,103,65,0.05); }
+  .wrap{max-width:700px; margin:0 auto;}
+  
+  /* تعديلات الكروت */
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:32px; box-shadow:0 4px 20px rgba(138,103,65,0.05); margin-bottom: 24px;}
   h1{font-size:1.6rem; color:var(--sand-deep); margin-bottom:8px; text-align:center;}
   p{color:var(--mist); font-size:0.9rem; margin-bottom:24px; text-align:center;}
+  
   .form-group{margin-bottom:16px;}
   label{display:block; margin-bottom:6px; font-weight:500; font-size:0.9rem;}
   input, select, textarea{ width:100%; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--bg); font-family:inherit; font-size:0.95rem; }
   input:focus, select:focus, textarea:focus{outline:none; border-color:var(--sand-deep);}
+  
   .btn{ width:100%; background:var(--sand-deep); color:#fff; border:none; padding:14px; border-radius:8px; font-size:1rem; font-weight:500; cursor:pointer; transition: background 0.2s; margin-top: 10px;}
   .btn:hover{background:var(--ink);}
-  #status{margin-top:15px; text-align:center; font-weight:500;}
+  
+  /* أزرار الحذف والقائمة */
+  .btn-outline{background: transparent; color: var(--sand-deep); border: 2px solid var(--sand-deep);}
+  .btn-outline:hover{background: var(--sand-deep); color: white;}
+  #status, #delete-status{margin-top:15px; text-align:center; font-weight:500;}
+  
+  .post-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--line); }
+  .post-item:last-child { border-bottom: none; }
+  .post-info { display: flex; flex-direction: column; }
+  .post-title { font-weight: 600; color: var(--ink); }
+  .post-year { font-size: 0.8rem; color: var(--mist); }
+  .btn-delete { background: #d9534f; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.85rem;}
+  .btn-delete:hover { background: #c9302c; }
 </style>
 </head>
 <body>
 
 <div class="wrap">
+  <!-- المربع الأول: قسم إضافة المنشور -->
   <div class="card">
     <h1>لوحة التحكم الآمنة</h1>
-    <p>أضف منشوراً جديداً بكل سهولة وأمان</p>
+    <p>أضف منشوراً جديداً</p>
 
     <form id="admin-form">
       <div class="form-group">
@@ -42,23 +59,18 @@
         <label>السنة / المرحلة</label>
         <input type="text" id="item-year" placeholder="مثال: 1995" required>
       </div>
-
       <div class="form-group">
         <label>اسم الصورة (مع الامتداد)</label>
         <input type="text" id="item-image" placeholder="مثال: photo2.jpg" required>
       </div>
-
       <div class="form-group">
         <label>عنوان المنشور</label>
         <input type="text" id="item-title" placeholder="مثال: مرحلة الشباب" required>
       </div>
-
       <div class="form-group">
         <label>الوصف</label>
         <textarea id="item-desc" rows="3" placeholder="تفاصيل الصورة أو الذكريات..." required></textarea>
       </div>
-
-      <!-- خانة كلمة المرور (لن تحفظ في الكود) -->
       <div class="form-group" style="border-top: 1px solid var(--line); padding-top: 15px; margin-top: 15px;">
         <label style="color: #d9534f;">مفتاح الأمان (Master Key)</label>
         <input type="password" id="master-key" placeholder="أدخل المفتاح السري الخاص بـ JSONBin" required>
@@ -68,65 +80,62 @@
     </form>
     <p id="status"></p>
   </div>
+
+  <!-- المربع الثاني: قسم إدارة وحذف المنشورات (هذا هو الجديد!) -->
+  <div class="card">
+    <h2 style="font-size: 1.3rem; color: var(--sand-deep); margin-bottom: 15px; text-align: center;">إدارة المنشورات الحالية</h2>
+    <p style="margin-bottom: 15px; font-size: 0.85rem;">اختر الأرشيف من الأعلى وضع مفتاح الأمان، ثم اضغط هنا:</p>
+    <button type="button" class="btn btn-outline" id="load-posts-btn">عرض المنشورات للتعديل/الحذف</button>
+    <p id="delete-status"></p>
+    <div id="posts-list" style="margin-top: 15px;"></div>
+  </div>
 </div>
 
 <script>
-  // ضع هنا أرقام الـ Bin ID فقط (وهي ليست سرية، السر في الـ Master Key)
+  // أرقام الـ Bin الخاصة بك
   const BINS = {
     "mohammed": "6a90878ef5f4af5e294ae1b6",
-    "abdulmajeed": "6a908f46da38895dfe196b09" // هذا الذي أنشأته أنت
+    "abdulmajeed": "6a908f46da38895dfe196b09"
   };
 
-  const form = document.getElementById("admin-form");
-  const status = document.getElementById("status");
   const masterKeyInput = document.getElementById("master-key");
-
-  // لجعل حياتك أسهل: المتصفح سيتذكر المفتاح في جهازك فقط ولن يطلبه كل مرة
   if(localStorage.getItem("my_secret_key")) {
     masterKeyInput.value = localStorage.getItem("my_secret_key");
   }
 
-  form.addEventListener("submit", async (e) => {
+  // 1. كود إضافة منشور جديد مع توليد ID
+  document.getElementById("admin-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = document.getElementById("submit-btn");
-    btn.innerText = "جاري الحفظ والسحب...";
+    const status = document.getElementById("status");
+    btn.innerText = "جاري الحفظ...";
     status.innerHTML = "";
 
     const selectedArchive = document.getElementById("target-archive").value;
     const binId = BINS[selectedArchive];
     const masterKey = masterKeyInput.value;
-    const imageName = document.getElementById("item-image").value;
-
-    // حفظ المفتاح في متصفحك محلياً لعدم كتابته مرة أخرى
     localStorage.setItem("my_secret_key", masterKey);
 
     const newItem = {
+      id: Date.now().toString(), // يولد رقم تعريفي فريد للمنشور
       year: document.getElementById("item-year").value,
-      image: `../assets/img/${selectedArchive}/${imageName}`, // دمج المسار تلقائياً
+      image: `../assets/img/${selectedArchive}/${document.getElementById("item-image").value}`,
       title: document.getElementById("item-title").value,
       desc: document.getElementById("item-desc").value
     };
 
     try {
-      // 1. جلب البيانات
-      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-        headers: { 'X-Master-Key': masterKey }
-      });
-      
+      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
       if (!getRes.ok) throw new Error("المفتاح السري غير صحيح!");
       
       const getData = await getRes.json();
       const currentGallery = getData.record.gallery || [];
-
-      // 2. إضافة وتحديث
+      
       currentGallery.push(newItem);
 
       const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': masterKey
-        },
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': masterKey },
         body: JSON.stringify({ gallery: currentGallery })
       });
 
@@ -139,11 +148,101 @@
         document.getElementById("item-desc").value = "";
       }
     } catch (err) {
-      status.innerHTML = err.message || "حدث خطأ في الاتصال.";
+      status.innerHTML = err.message;
       status.style.color = "red";
     }
     btn.innerText = "حفظ ونشر المنشور";
   });
+
+  // 2. كود جلب المنشورات للحذف
+  document.getElementById("load-posts-btn").addEventListener("click", async () => {
+    const listDiv = document.getElementById("posts-list");
+    const delStatus = document.getElementById("delete-status");
+    const selectedArchive = document.getElementById("target-archive").value;
+    const binId = BINS[selectedArchive];
+    const masterKey = masterKeyInput.value;
+    
+    if(!masterKey) {
+      delStatus.innerHTML = "الرجاء إدخال مفتاح الأمان أولاً في الأعلى.";
+      delStatus.style.color = "red";
+      return;
+    }
+
+    listDiv.innerHTML = "<p style='text-align:center;'>جاري التحميل...</p>";
+    delStatus.innerHTML = "";
+
+    try {
+      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
+      if (!getRes.ok) throw new Error("فشل الجلب، تأكد من مفتاح الأمان.");
+      
+      const getData = await getRes.json();
+      const gallery = getData.record.gallery || [];
+      
+      if(gallery.length === 0){
+        listDiv.innerHTML = "<p style='text-align:center;'>لا توجد منشورات حالياً.</p>";
+        return;
+      }
+
+      listDiv.innerHTML = "";
+      gallery.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "post-item";
+        div.innerHTML = `
+          <div class="post-info">
+            <span class="post-title">${item.title || 'بدون عنوان'}</span>
+            <span class="post-year">${item.year}</span>
+          </div>
+          <button class="btn-delete" onclick="deletePost('${item.id || ''}', '${item.title}')">حذف</button>
+        `;
+        listDiv.appendChild(div);
+      });
+    } catch (err) {
+      listDiv.innerHTML = "";
+      delStatus.innerHTML = err.message;
+      delStatus.style.color = "red";
+    }
+  });
+
+  // 3. كود عملية الحذف الفعلي
+  window.deletePost = async (id, title) => {
+    if(!id) {
+      alert("عذراً، هذا المنشور القديم لا يمتلك ID. يجب حذفه يدوياً من موقع JSONBin.");
+      return;
+    }
+    if(!confirm(`هل أنت متأكد أنك تريد حذف منشور "${title}"؟`)) return;
+
+    const delStatus = document.getElementById("delete-status");
+    const selectedArchive = document.getElementById("target-archive").value;
+    const binId = BINS[selectedArchive];
+    const masterKey = masterKeyInput.value;
+
+    delStatus.innerHTML = "جاري الحذف...";
+    delStatus.style.color = "var(--ink)";
+
+    try {
+      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
+      const getData = await getRes.json();
+      let currentGallery = getData.record.gallery || [];
+
+      // إزالة المنشور
+      currentGallery = currentGallery.filter(item => item.id !== id);
+
+      const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': masterKey },
+        body: JSON.stringify({ gallery: currentGallery })
+      });
+
+      if (updateRes.ok) {
+        delStatus.innerHTML = "تم الحذف بنجاح!";
+        delStatus.style.color = "green";
+        document.getElementById("load-posts-btn").click(); // إعادة تحميل القائمة
+      }
+    } catch (err) {
+      delStatus.innerHTML = "حدث خطأ أثناء الحذف.";
+      delStatus.style.color = "red";
+    }
+  };
 </script>
 
 </body>
