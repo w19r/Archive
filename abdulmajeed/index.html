@@ -74,36 +74,25 @@
   
   .photo-info{padding:20px;}
   
-  /* ========================================= */
-  /* التنسيقات الخاصة بزر التنزيل              */
-  /* ========================================= */
+  /* زر التنزيل */
   .info-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 12px;
   }
   .photo-title {
     font-family: 'Aref Ruqaa', serif; font-size: 1.4rem;
     color: var(--ink); margin-bottom: 0;
   }
   .download-btn {
-    color: var(--mist);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border-radius: 8px;
-    background: var(--bg);
-    transition: all 0.2s ease;
+    color: var(--mist); display: flex; align-items: center;
+    justify-content: center; padding: 8px;
+    border-radius: 8px; background: var(--bg); transition: all 0.2s ease;
   }
   .download-btn:hover {
-    color: var(--sand-deep);
-    background: var(--line);
-    transform: translateY(-2px);
+    color: var(--sand-deep); background: var(--line); transform: translateY(-2px);
   }
   .photo-desc {color: var(--mist); font-size: 0.9rem; line-height: 1.6;}
-
+  
   @media (max-width:600px){
     .back-btn {position: static; display: inline-block; margin-bottom: 20px;}
   }
@@ -121,14 +110,64 @@
 
 <main>
   <div class="wrap">
-    <!--  الجافاسكربت يضع الصور تلقائياً -->
+    <!-- الحاوية التي ستمتلئ بالصور من السحابة تلقائياً -->
     <div id="gallery-container" class="gallery"></div>
   </div>
 </main>
 
-<!-- استدعاء ملف البيانات أولاً، ثم ملف التشغيل -->
-<script src="data.js"></script>
-<script src="../assets/js/gallery.js"></script>
+<!-- كود جلب البيانات من JSONBin مباشرة -->
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const container = document.getElementById("gallery-container");
+    if (!container) return;
+
+    // تم وضع الـ Bin ID الخاص بعبد المجيد هنا
+    const BIN_ID = "6a908f46da38895dfe196b09"; 
+    
+    try {
+      const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
+      
+      if (!response.ok) throw new Error("تعذر جلب البيانات. تأكد أن الـ Bin مضبوط على Public.");
+      
+      const result = await response.json();
+      const galleryData = result.record.gallery || [];
+
+      // الترتيب من الأحدث للأقدم
+      galleryData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+
+      container.innerHTML = ""; 
+
+      galleryData.forEach(item => {
+        const card = document.createElement("article");
+        card.className = "photo-card";
+        card.innerHTML = `
+          <div class="photo-frame">
+              <span class="year-badge">${item.year}</span>
+              <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async">
+          </div>
+          <div class="photo-info">
+              <div class="info-header">
+                  <h2 class="photo-title">${item.title}</h2>
+                  <a href="${item.image}" download class="download-btn" title="تنزيل الصورة">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7 10 12 15 17 10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                  </a>
+              </div>
+              <p class="photo-desc">${item.desc}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error(error);
+      container.innerHTML = "<p style='text-align:center; color:var(--mist);'>عذراً، تعذر تحميل أرشيف عبد المجيد حالياً.</p>";
+    }
+  });
+</script>
 
 </body>
 </html>
