@@ -1,18 +1,13 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     
-
     const container = document.getElementById("gallery-container");
     
-
     if (!container || typeof galleryData === 'undefined') {
         console.error("البيانات أو الحاوية مفقودة.");
         return;
     }
 
-
     galleryData.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-
 
     galleryData.forEach(item => {
         // إنشاء عنصر البطاقة
