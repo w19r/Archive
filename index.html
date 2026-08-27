@@ -1,78 +1,200 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قيد التطوير | أرشيف</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أرشيف عائلة عبد الله العايدي</title>
+<meta name="description" content="أرشيف صور عائلة عبد الله العايدي، محفوظة ومرتبة عبر السنين.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6F0;
+    --card:#FFFFFF;
+    --ink:#332C24;
+    --sand:#A9825F;
+    --sand-deep:#8A6741;
+    --mist:#8C8175;
+    --line:#E7DDCE;
+  }
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* إعدادات عامة للصفحة */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #2c3e50;
-        }
+  *{box-sizing:border-box; margin:0; padding:0;}
 
-        /* صندوق المحتوى */
-        .container {
-            background: #ffffff;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            max-width: 500px;
-            width: 85%;
-        }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    font-weight:400;
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+  }
 
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            color: #1a252f;
-        }
+  a{color:inherit; text-decoration:none;}
 
-        p {
-            font-size: 1.1rem;
-            color: #555555;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
+  .display{font-family:'Aref Ruqaa', serif;}
 
+  :focus-visible{
+    outline:2px solid var(--sand-deep);
+    outline-offset:3px;
+    border-radius:2px;
+  }
 
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-        }
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:0 28px;
+  }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+  @media (max-width:600px){
+    .wrap{padding:0 20px;}
+  }
+
+  /* ---------- header ---------- */
+
+  header{
+    padding:64px 0 40px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+
+  header h1{
+    font-family:'Aref Ruqaa', serif;
+    font-weight:700;
+    font-size:clamp(2rem, 5vw, 2.8rem);
+    color:var(--sand-deep);
+    margin-bottom:14px;
+  }
+
+  header p{
+    color:var(--mist);
+    font-size:1.02rem;
+    max-width:38ch;
+    margin:0 auto;
+  }
+
+  /* ---------- archive grid ---------- */
+
+  main{padding:64px 0 88px;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:28px;
+  }
+
+  .entry{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    transition:box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .entry:hover{
+    box-shadow:0 10px 26px rgba(138,103,65,0.14);
+    transform:translateY(-2px);
+  }
+
+  .entry-frame{
+    aspect-ratio:4/5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(155deg, #F1E6D6, #E7D7BE);
+    overflow:hidden;
+  }
+
+  .entry-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .entry-frame span{
+    font-family:'Aref Ruqaa', serif;
+    font-size:2.6rem;
+    color:var(--sand-deep);
+    opacity:0.6;
+  }
+
+  .entry-info{
+    padding:20px 22px 24px;
+    text-align:center;
+  }
+
+  .entry-name{
+    font-family:'Aref Ruqaa', serif;
+    font-size:1.3rem;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+
+  .entry-desc{
+    color:var(--mist);
+    font-size:0.88rem;
+  }
+
+  /* ---------- footer ---------- */
+
+  footer{
+    padding:32px 0;
+    text-align:center;
+    border-top:1px solid var(--line);
+  }
+
+  footer span{
+    color:var(--mist);
+    font-size:0.82rem;
+    direction:ltr;
+    display:inline-block;
+  }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- مؤشر التحميل -->
-        <div class="loader"></div>
-        
-        <!-- النصوص -->
-        <h1>الموقع قيد التطوير</h1>
-        <p>مرحباً بك في أرشيف <strong>عبد الله العايدي</strong>.</p>
-        <p>نحن نعمل حالياً على تجهيز هذه الصفحة لتكون جاهزة قريباً. شكراً !</p>
+<header>
+  <div class="wrap">
+    <h1>أرشيف عائلة عبد الله العايدي</h1>
+    <p>مساحة لحفظ صور العائلة وذكرياتها عبر السنين.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="grid">
+
+      <a class="entry" href="/mohammed">
+        <div class="entry-frame"><img src="archive/assets/img/mohammed/cover.jpg" alt="محمد" width="800" height="1000" loading="lazy" decoding="async"></div>
+        <div class="entry-info">
+          <div class="entry-name">محمد</div>
+          <div class="entry-desc">صور محمد عبر السنين</div>
+        </div>
+      </a>
+
+      <a class="entry" href="/abdulmajeed">
+        <div class="entry-frame"><img src="archive/assets/img/abdulmajeed/cover.jpg" alt="عبد المجيد" width="800" height="1000" loading="lazy" decoding="async"></div>
+        <div class="entry-info">
+          <div class="entry-name">عبد المجيد</div>
+          <div class="entry-desc">صور عبد المجيد عبر السنين</div>
+        </div>
+      </a>
+
+      <a class="entry" href="/family">
+        <div class="entry-frame"><img src="archive/assets/img/family/cover.jpg" alt="صور عائلية قديمة" width="800" height="1000" loading="lazy" decoding="async"></div>
+        <div class="entry-info">
+          <div class="entry-name">صور عائلية قديمة</div>
+          <div class="entry-desc">لقطات جماعية من أرشيف العائلة</div>
+        </div>
+      </a>
+
     </div>
+  </div>
+</main>
+
+<footer>
+  <span>archive.abdallahalaydi.com</span>
+</footer>
 
 </body>
 </html>
