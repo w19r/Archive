@@ -75,7 +75,7 @@
 
   /* ---------- archive grid ---------- */
 
-  main{padding:64px 0 40px;}
+  main{padding:64px 0 88px;}
 
   .grid{
     display:grid;
@@ -268,12 +268,16 @@
       <h2>المساهمة في الأرشيف</h2>
       <p>إذا كانت لديك صور أو ذكريات تود إضافتها، يسعدنا تواصلك معنا.</p>
 
-      <form action="https://formspree.io/f/xaeywkdr" method="POST" class="contact-form">
+      <!-- تمت إضافة المعرف id للنموذج هنا -->
+      <form id="my-contact-form" action="https://formspree.io/f/xaeywkdr" method="POST" class="contact-form">
         <input type="text" name="name" class="form-control" placeholder="الاسم" required>
         <input type="email" name="email" class="form-control" placeholder="البريد الإلكتروني" required>
         <textarea name="message" class="form-control" placeholder="اكتب رسالتك أو تفاصيل الصور..." required></textarea>
         <button type="submit" class="btn-submit">إرسال</button>
       </form>
+      
+      <!-- نص حالة الإرسال سيظهر هنا -->
+      <p id="form-status" style="margin-top: 15px; font-weight: 500; text-align: center; font-family: 'IBM Plex Sans Arabic', sans-serif;"></p>
     </div>
   </div>
 </section>
@@ -281,6 +285,51 @@
 <footer>
   <span>© 2026 ABDALLAH ALAYDI. All Rights Reserved.</span>
 </footer>
+
+<!-- تمت إضافة السكربت الخاص بإرسال البيانات في الخلفية -->
+<script>
+  const form = document.getElementById("my-contact-form");
+  const status = document.getElementById("form-status");
+
+  form.addEventListener("submit", async function(event) {
+    event.preventDefault(); // إيقاف إعادة التوجيه لصفحة Formspree
+    
+    // تغيير نص الزر أثناء الإرسال
+    const btn = form.querySelector('.btn-submit');
+    const originalBtnText = btn.innerText;
+    btn.innerText = "جاري الإرسال...";
+    
+    const data = new FormData(event.target);
+    
+    try {
+      const response = await fetch(event.target.action, {
+        method: form.method,
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      
+      if (response.ok) {
+        status.innerHTML = "شكرًا لك! تم إرسال رسالتك بنجاح.";
+        status.style.color = "var(--sand-deep)";
+        form.reset(); // تفريغ الحقول
+      } else {
+        status.innerHTML = "عذراً، حدث خطأ أثناء الإرسال. يرجى المحاولة لاحقاً.";
+        status.style.color = "#d9534f"; // أحمر هادئ للخطأ
+      }
+    } catch (error) {
+      status.innerHTML = "حدث خطأ في الاتصال، تأكد من جودة الإنترنت.";
+      status.style.color = "#d9534f";
+    }
+    
+    // إرجاع نص الزر كما كان
+    btn.innerText = originalBtnText;
+    
+    // إخفاء رسالة النجاح بعد 5 ثوانٍ (اختياري)
+    setTimeout(() => {
+        status.innerHTML = "";
+    }, 5000);
+  });
+</script>
 
 </body>
 </html>
