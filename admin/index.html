@@ -3,170 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>أرشيف عبد المجيد - عائلة العايدي</title>
-<meta name="description" content="أرشيف صور الشهيد عبد المجيد عبر السنين.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>لوحة التحكم - أرشيف العائلة</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#FAF6F0; --card:#FFFFFF; --ink:#332C24; 
-    --sand:#A9825F; --sand-deep:#8A6741; --mist:#8C8175; --line:#E7DDCE;
-  }
+  :root{ --bg:#FAF6F0; --card:#FFFFFF; --ink:#332C24; --sand-deep:#8A6741; --mist:#8C8175; --line:#E7DDCE; }
   *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--bg); color:var(--ink);
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    line-height:1.8; -webkit-font-smoothing:antialiased;
-  }
-  a{color:inherit; text-decoration:none;}
-  .wrap{max-width:1100px; margin:0 auto; padding:0 28px;}
+  body{ background:var(--bg); color:var(--ink); font-family:'IBM Plex Sans Arabic', sans-serif; padding:40px 20px; }
+  .wrap{max-width:700px; margin:0 auto;}
   
-  /* ---------- Header ---------- */
-  header{
-    padding:40px 0; text-align:center; border-bottom:1px solid var(--line);
-    position: relative;
-  }
-  .back-btn{
-    position: absolute; right: 28px; top: 40px;
-    color: var(--sand-deep); font-weight: 500; font-size: 0.9rem;
-    border: 1px solid var(--line); padding: 6px 14px; border-radius: 6px;
-    transition: 0.2s;
-  }
-  .back-btn:hover{background: var(--sand-deep); color: var(--card);}
-  header h1{
-    font-family:'Aref Ruqaa', serif; font-size:clamp(2rem, 4vw, 2.5rem);
-    color:var(--ink); margin-bottom:10px;
-  }
-  header p{color:var(--mist); font-size:1rem;}
-
-  /* ---------- Gallery Grid ---------- */
-  main{padding:60px 0 88px;}
-  .gallery{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
-    gap:32px;
-  }
-  .photo-card{
-    background:var(--card); border:1px solid var(--line);
-    border-radius:10px; overflow:hidden;
-    transition:box-shadow 0.2s ease, transform 0.2s ease;
-  }
-  .photo-card:hover{
-    box-shadow:0 12px 28px rgba(138,103,65,0.12); transform:translateY(-3px);
-  }
-  .photo-frame{
-    position: relative; aspect-ratio:1/1; 
-    background:var(--line); overflow:hidden;
-  }
-  .photo-frame img{
-    width:100%; height:100%; object-fit:cover;
-    transition: transform 0.4s ease;
-  }
-  .photo-card:hover .photo-frame img{transform: scale(1.03);}
-  .year-badge{
-    position: absolute; top: 12px; right: 12px;
-    background: rgba(255, 255, 255, 0.9); color: var(--sand-deep);
-    font-family:'Aref Ruqaa', serif; font-size: 1.2rem;
-    padding: 2px 12px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 2;
-  }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:32px; box-shadow:0 4px 20px rgba(138,103,65,0.05); margin-bottom: 24px;}
+  h1{font-size:1.6rem; color:var(--sand-deep); margin-bottom:8px; text-align:center;}
+  p{color:var(--mist); font-size:0.9rem; margin-bottom:24px; text-align:center;}
   
-  .photo-info{padding:20px;}
+  .form-group{margin-bottom:16px;}
+  label{display:block; margin-bottom:6px; font-weight:500; font-size:0.9rem;}
+  input, select, textarea{ width:100%; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--bg); font-family:inherit; font-size:0.95rem; }
+  input:focus, select:focus, textarea:focus{outline:none; border-color:var(--sand-deep);}
   
-  /* زر التنزيل */
-  .info-header {
-    display: flex; justify-content: space-between;
-    align-items: center; margin-bottom: 12px;
-  }
-  .photo-title {
-    font-family: 'Aref Ruqaa', serif; font-size: 1.4rem;
-    color: var(--ink); margin-bottom: 0;
-  }
-  .download-btn {
-    color: var(--mist); display: flex; align-items: center;
-    justify-content: center; padding: 8px;
-    border-radius: 8px; background: var(--bg); transition: all 0.2s ease;
-  }
-  .download-btn:hover {
-    color: var(--sand-deep); background: var(--line); transform: translateY(-2px);
-  }
-  .photo-desc {color: var(--mist); font-size: 0.9rem; line-height: 1.6;}
+  /* إخفاء حقول الكتابة المخصصة افتراضياً */
+  .custom-input { display: none; margin-top: 10px; }
   
-  @media (max-width:600px){
-    .back-btn {position: static; display: inline-block; margin-bottom: 20px;}
-  }
+  .btn{ width:100%; background:var(--sand-deep); color:#fff; border:none; padding:14px; border-radius:8px; font-size:1rem; font-weight:500; cursor:pointer; transition: background 0.2s; margin-top: 10px;}
+  .btn:hover{background:var(--ink);}
+  
+  .btn-outline{background: transparent; color: var(--sand-deep); border: 2px solid var(--sand-deep);}
+  .btn-outline:hover{background: var(--sand-deep); color: white;}
+  #status, #delete-status{margin-top:15px; text-align:center; font-weight:500;}
+  
+  .post-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--line); }
+  .post-item:last-child { border-bottom: none; }
+  .post-info { display: flex; flex-direction: column; gap: 4px; }
+  .post-title { font-weight: 600; color: var(--ink); }
+  .post-meta { display: flex; align-items: center; gap: 10px; }
+  .post-year { font-size: 0.85rem; color: var(--mist); }
+  .post-id { font-size: 0.75rem; color: #777; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+  
+  .btn-delete { background: #d9534f; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.85rem;}
+  .btn-delete:hover { background: #c9302c; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <a href="/" class="back-btn">← العودة للأرشيف</a>
-    <h1>أرشيف الشهيد عبد المجيد</h1>
-    <p>توثيق للصور والذكريات مرتبة زمنياً.</p>
-  </div>
-</header>
+<div class="wrap">
+  <!-- المربع الأول: قسم إضافة المنشور -->
+  <div class="card">
+    <h1>لوحة التحكم الآمنة</h1>
+    <p>أضف منشوراً جديداً</p>
 
-<main>
-  <div class="wrap">
-    <!-- الحاوية التي ستمتلئ بالصور من السحابة تلقائياً -->
-    <div id="gallery-container" class="gallery"></div>
-  </div>
-</main>
+    <form id="admin-form">
+      <div class="form-group">
+        <label>الأرشيف المستهدف</label>
+        <select id="target-archive">
+          <option value="mohammed">أرشيف محمد</option>
+          <option value="abdulmajeed">أرشيف عبد المجيد</option>
+        </select>
+      </div>
 
-<!-- كود جلب البيانات من JSONBin مباشرة -->
+      <div class="form-group">
+        <label>السنة / المرحلة</label>
+        <input type="text" id="item-year" placeholder="مثال: 2022" required>
+      </div>
+      
+      <div class="form-group">
+        <label>اسم الصورة (مع الامتداد)</label>
+        <input type="text" id="item-image" placeholder="مثال: photo2.jpg" required>
+      </div>
+
+      <div class="form-group">
+        <label>عنوان المنشور</label>
+        <select id="title-select" onchange="toggleCustomInput('title-select', 'custom-title')">
+          <option value="لحظات عفوية">لحظات عفوية</option>
+          <option value="مرحلة الطفولة">مرحلة الطفولة</option>
+          <option value="مرحلة الشباب">مرحلة الشباب</option>
+          <option value="ذكريات العائلة">ذكريات العائلة</option>
+          <option value="custom">كتابة عنوان مخصص...</option>
+        </select>
+        <input type="text" id="custom-title" class="custom-input" placeholder="اكتب العنوان هنا...">
+      </div>
+
+      <div class="form-group">
+        <label>الوصف</label>
+        <select id="desc-select" onchange="toggleCustomInput('desc-select', 'custom-desc')">
+          <option value="صورة تذكارية">صورة تذكارية.</option>
+          <option value="صورة تذكارية للذكرى.">صورة تذكارية للذكرى.</option>
+          <option value="لقطة عفوية تفيض بالحب، توثق لحظات لا تُنسى.">لقطة عفوية تفيض بالحب، توثق لحظات لا تُنسى.</option>
+          <option value="custom">كتابة وصف مخصص...</option>
+        </select>
+        <textarea id="custom-desc" class="custom-input" rows="2" placeholder="اكتب الوصف هنا..."></textarea>
+      </div>
+
+      <div class="form-group" style="border-top: 1px solid var(--line); padding-top: 15px; margin-top: 15px;">
+        <label style="color: #d9534f;">مفتاح الأمان (Master Key)</label>
+        <input type="password" id="master-key" placeholder="أدخل المفتاح السري الخاص بـ JSONBin" required>
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn">حفظ ونشر المنشور</button>
+    </form>
+    <p id="status"></p>
+  </div>
+
+  <!-- المربع الثاني: قسم إدارة وحذف المنشورات -->
+  <div class="card">
+    <h2 style="font-size: 1.3rem; color: var(--sand-deep); margin-bottom: 15px; text-align: center;">إدارة المنشورات الحالية</h2>
+    <p style="margin-bottom: 15px; font-size: 0.85rem;">اختر الأرشيف من الأعلى وضع مفتاح الأمان، ثم اضغط هنا:</p>
+    <button type="button" class="btn btn-outline" id="load-posts-btn">عرض المنشورات للتعديل/الحذف</button>
+    <p id="delete-status"></p>
+    <div id="posts-list" style="margin-top: 15px;"></div>
+  </div>
+</div>
+
 <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const container = document.getElementById("gallery-container");
-    if (!container) return;
+  // إظهار/إخفاء حقل الكتابة المخصصة
+  function toggleCustomInput(selectId, inputId) {
+    const select = document.getElementById(selectId);
+    const input = document.getElementById(inputId);
+    if (select.value === 'custom') {
+      input.style.display = 'block';
+      input.required = true;
+    } else {
+      input.style.display = 'none';
+      input.required = false;
+    }
+  }
 
-    // تم وضع الـ Bin ID الخاص بعبد المجيد هنا
-    const BIN_ID = "6a908f46da38895dfe196b09"; 
-    
+  // أرقام الـ Bin الخاصة بك
+  const BINS = {
+    "mohammed": "6a90878ef5f4af5e294ae1b6",
+    "abdulmajeed": "6a908f46da38895dfe196b09"
+  };
+
+  const masterKeyInput = document.getElementById("master-key");
+  if(localStorage.getItem("my_secret_key")) {
+    masterKeyInput.value = localStorage.getItem("my_secret_key");
+  }
+
+  // 1. كود إضافة منشور جديد مع توليد ID
+  document.getElementById("admin-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("submit-btn");
+    const status = document.getElementById("status");
+    btn.innerText = "جاري الحفظ...";
+    status.innerHTML = "";
+
+    const selectedArchive = document.getElementById("target-archive").value;
+    const binId = BINS[selectedArchive];
+    const masterKey = masterKeyInput.value;
+    localStorage.setItem("my_secret_key", masterKey);
+
+    let finalTitle = document.getElementById("title-select").value;
+    if (finalTitle === 'custom') finalTitle = document.getElementById("custom-title").value;
+
+    let finalDesc = document.getElementById("desc-select").value;
+    if (finalDesc === 'custom') finalDesc = document.getElementById("custom-desc").value;
+
+    const newItem = {
+      id: Date.now().toString(),
+      year: document.getElementById("item-year").value,
+      image: `../assets/img/${selectedArchive}/${document.getElementById("item-image").value}`,
+      title: finalTitle,
+      desc: finalDesc
+    };
+
     try {
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
+      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
+      if (!getRes.ok) throw new Error("المفتاح السري غير صحيح!");
       
-      if (!response.ok) throw new Error("تعذر جلب البيانات. تأكد أن الـ Bin مضبوط على Public.");
+      const getData = await getRes.json();
+      const currentGallery = getData.record.gallery || [];
       
-      const result = await response.json();
-      const galleryData = result.record.gallery || [];
+      currentGallery.push(newItem);
 
-      // الترتيب من الأحدث للأقدم
-      galleryData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
-
-      container.innerHTML = ""; 
-
-      galleryData.forEach(item => {
-        const card = document.createElement("article");
-        card.className = "photo-card";
-        card.innerHTML = `
-          <div class="photo-frame">
-              <span class="year-badge">${item.year}</span>
-              <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async">
-          </div>
-          <div class="photo-info">
-              <div class="info-header">
-                  <h2 class="photo-title">${item.title}</h2>
-                  <a href="${item.image}" download class="download-btn" title="تنزيل الصورة">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                          <polyline points="7 10 12 15 17 10"></polyline>
-                          <line x1="12" y1="15" x2="12" y2="3"></line>
-                      </svg>
-                  </a>
-              </div>
-              <p class="photo-desc">${item.desc}</p>
-          </div>
-        `;
-        container.appendChild(card);
+      const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': masterKey },
+        body: JSON.stringify({ gallery: currentGallery })
       });
 
-    } catch (error) {
-      console.error(error);
-      container.innerHTML = "<p style='text-align:center; color:var(--mist);'>عذراً، تعذر تحميل أرشيف عبد المجيد حالياً.</p>";
+      if (updateRes.ok) {
+        status.innerHTML = "تم نشر المنشور بنجاح! 🎉";
+        status.style.color = "var(--sand-deep)";
+        
+        document.getElementById("item-year").value = "";
+        document.getElementById("item-image").value = "";
+        document.getElementById("custom-title").value = "";
+        document.getElementById("custom-desc").value = "";
+      }
+    } catch (err) {
+      status.innerHTML = err.message;
+      status.style.color = "red";
+    }
+    btn.innerText = "حفظ ونشر المنشور";
+  });
+
+  // 2. كود جلب المنشورات للحذف
+  document.getElementById("load-posts-btn").addEventListener("click", async () => {
+    const listDiv = document.getElementById("posts-list");
+    const delStatus = document.getElementById("delete-status");
+    const selectedArchive = document.getElementById("target-archive").value;
+    const binId = BINS[selectedArchive];
+    const masterKey = masterKeyInput.value;
+    
+    if(!masterKey) {
+      delStatus.innerHTML = "الرجاء إدخال مفتاح الأمان أولاً في الأعلى.";
+      delStatus.style.color = "red";
+      return;
+    }
+
+    listDiv.innerHTML = "<p style='text-align:center;'>جاري التحميل...</p>";
+    delStatus.innerHTML = "";
+
+    try {
+      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
+      if (!getRes.ok) throw new Error("فشل الجلب، تأكد من مفتاح الأمان.");
+      
+      const getData = await getRes.json();
+      const gallery = getData.record.gallery || [];
+      
+      if(gallery.length === 0){
+        listDiv.innerHTML = "<p style='text-align:center;'>لا توجد منشورات حالياً.</p>";
+        return;
+      }
+
+      listDiv.innerHTML = "";
+      gallery.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "post-item";
+        
+        // التعديل هنا: إظهار الـ ID والسنة بتنسيق جميل
+        const displayId = item.id ? item.id : 'بدون ID (منشور قديم)';
+        
+        div.innerHTML = `
+          <div class="post-info">
+            <span class="post-title">${item.title || 'بدون عنوان'}</span>
+            <div class="post-meta">
+              <span class="post-year">السنة: ${item.year}</span>
+              <span class="post-id">ID: ${displayId}</span>
+            </div>
+          </div>
+          <button class="btn-delete" onclick="deletePost('${item.id || ''}', '${item.title}')">حذف</button>
+        `;
+        listDiv.appendChild(div);
+      });
+    } catch (err) {
+      listDiv.innerHTML = "";
+      delStatus.innerHTML = err.message;
+      delStatus.style.color = "red";
     }
   });
+
+  // 3. كود عملية الحذف الفعلي
+  window.deletePost = async (id, title) => {
+    if(!id) {
+      alert("عذراً، هذا المنشور القديم لا يمتلك ID. يجب حذفه يدوياً من موقع JSONBin.");
+      return;
+    }
+    if(!confirm(`هل أنت متأكد أنك تريد حذف منشور "${title}"؟`)) return;
+
+    const delStatus = document.getElementById("delete-status");
+    const selectedArchive = document.getElementById("target-archive").value;
+    const binId = BINS[selectedArchive];
+    const masterKey = masterKeyInput.value;
+
+    delStatus.innerHTML = "جاري الحذف...";
+    delStatus.style.color = "var(--ink)";
+
+    try {
+      const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { headers: { 'X-Master-Key': masterKey } });
+      const getData = await getRes.json();
+      let currentGallery = getData.record.gallery || [];
+
+      // إزالة المنشور
+      currentGallery = currentGallery.filter(item => item.id !== id);
+
+      const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': masterKey },
+        body: JSON.stringify({ gallery: currentGallery })
+      });
+
+      if (updateRes.ok) {
+        delStatus.innerHTML = "تم الحذف بنجاح!";
+        delStatus.style.color = "green";
+        document.getElementById("load-posts-btn").click(); // إعادة تحميل القائمة
+      }
+    } catch (err) {
+      delStatus.innerHTML = "حدث خطأ أثناء الحذف.";
+      delStatus.style.color = "red";
+    }
+  };
 </script>
 
 </body>
