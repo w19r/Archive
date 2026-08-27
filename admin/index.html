@@ -61,6 +61,7 @@
         </select>
       </div>
 
+      <!-- قائمة السنوات المنسدلة -->
       <div class="form-group">
         <label>السنة / المرحلة</label>
         <select id="year-select" onchange="toggleCustomInput('year-select', 'custom-year')"></select>
@@ -96,7 +97,7 @@
         <textarea id="custom-desc" class="custom-input" rows="2" placeholder="اكتب الوصف هنا..."></textarea>
       </div>
 
-      <!-- إعدادات الأمان (تخزن محلياً فقط ولا تُكتب في الكود) -->
+      <!-- إعدادات الأمان -->
       <div class="form-group" style="border-top: 1px solid var(--line); padding-top: 15px; margin-top: 15px;">
         <label style="color: var(--sand-deep);">مفاتيح الأمان (تُحفظ في متصفحك تلقائياً)</label>
       </div>
@@ -128,6 +129,7 @@
   const GITHUB_REPO_OWNER = "w19r";
   const GITHUB_REPO_NAME = "archive";
 
+  // توليد السنوات من 2025 إلى 1960
   const yearSelect = document.getElementById("year-select");
   let yearsHTML = "";
   for (let y = 2025; y >= 1960; y--) {
@@ -156,7 +158,6 @@
   const masterKeyInput = document.getElementById("master-key");
   const githubTokenInput = document.getElementById("github-token");
 
-  // استرجاع المفاتيح المخزنة محلياً في المتصفح تلقائياً
   if(localStorage.getItem("my_secret_key")) masterKeyInput.value = localStorage.getItem("my_secret_key");
   if(localStorage.getItem("github_token")) githubTokenInput.value = localStorage.getItem("github_token");
 
@@ -182,7 +183,6 @@
     const masterKey = masterKeyInput.value;
     const githubToken = githubTokenInput.value;
 
-    // حفظ المفاتيح في المتصفح محلياً لعدم إدخالها مرة أخرى
     localStorage.setItem("my_secret_key", masterKey);
     localStorage.setItem("github_token", githubToken);
 
@@ -243,7 +243,7 @@
       const currentGallery = getData.record.gallery || [];
       currentGallery.push(newItem);
 
-      const updateRes = بهذه طريقة fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+      const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'X-Master-Key': masterKey },
         body: JSON.stringify({ gallery: currentGallery })
