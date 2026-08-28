@@ -127,7 +127,25 @@
     font-family:'Aref Ruqaa', serif;
     font-size:1.3rem;
     color:var(--ink);
-    margin-bottom:6px;
+    margin-bottom:4px;
+  }
+
+  /* ---------- لمسة الزهور البنية التذكارية ---------- */
+  .memorial-flower {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 8px 0 10px;
+    color: var(--sand-deep);
+    opacity: 0.85;
+  }
+  .memorial-flower::before,
+  .memorial-flower::after {
+    content: "";
+    height: 1px;
+    width: 25px;
+    background-color: var(--line);
   }
 
   .entry-desc{
@@ -216,9 +234,35 @@
   /* ---------- footer ---------- */
 
   footer{
-    padding:32px 0;
+    padding:36px 0;
     text-align:center;
     border-top:1px solid var(--line);
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--sand-deep);
+  }
+
+  .footer-socials a {
+    transition: color 0.2s ease;
+  }
+
+  .footer-socials a:hover {
+    color: var(--ink);
+    text-decoration: underline;
   }
 
   footer span{
@@ -246,6 +290,11 @@
         <div class="entry-frame"><img src="assets/img/mohammed/IMG_7032_Original.jpeg" alt="محمد" width="800" height="1000" loading="lazy" decoding="async"></div>
         <div class="entry-info">
           <div class="entry-name">محمد</div>
+          <div class="memorial-flower">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
           <div class="entry-desc">صور الشهيد محمد عبر السنين</div>
         </div>
       </a>
@@ -254,6 +303,11 @@
         <div class="entry-frame"><img src="assets/img/abdulmajeed/IMG_0782.jpeg" alt="عبد المجيد" width="800" height="1000" loading="lazy" decoding="async"></div>
         <div class="entry-info">
           <div class="entry-name">عبد المجيد</div>
+          <div class="memorial-flower">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
           <div class="entry-desc">صور الشهيد عبد المجيد عبر السنين</div>
         </div>
       </a>
@@ -268,7 +322,6 @@
       <h2>المساهمة في الأرشيف</h2>
       <p>إذا كانت لديك صور أو ذكريات تود إضافتها، يسعدنا تواصلك معنا.</p>
 
-      <!-- تمت إضافة المعرف id للنموذج هنا -->
       <form id="my-contact-form" action="https://formspree.io/f/xaeywkdr" method="POST" class="contact-form">
         <input type="text" name="name" class="form-control" placeholder="الاسم" required>
         <input type="email" name="email" class="form-control" placeholder="البريد الإلكتروني" required>
@@ -276,25 +329,33 @@
         <button type="submit" class="btn-submit">إرسال</button>
       </form>
       
-      <!-- نص حالة الإرسال سيظهر هنا -->
       <p id="form-status" style="margin-top: 15px; font-weight: 500; text-align: center; font-family: 'IBM Plex Sans Arabic', sans-serif;"></p>
     </div>
   </div>
 </section>
 
 <footer>
-  <span>© 2026 ABDALLAH ALAYDI. All Rights Reserved.</span>
+  <div class="wrap">
+    <div class="footer-content">
+      <div class="footer-socials">
+        <a href="mailto:support@abdallahalaydi.com">support@abdallahalaydi.com</a>
+        <span>•</span>
+        <a href="https://tiktok.com/@w19r" target="_blank" rel="noopener">TikTok: @w19r</a>
+        <span>•</span>
+        <a href="https://t.me/w19r1" target="_blank" rel="noopener">Telegram: @w19r1</a>
+      </div>
+      <span>© 2026 ABDALLAH ALAYDI. All Rights Reserved.</span>
+    </div>
+  </div>
 </footer>
 
-<!-- تمت إضافة السكربت الخاص بإرسال البيانات في الخلفية -->
 <script>
   const form = document.getElementById("my-contact-form");
   const status = document.getElementById("form-status");
 
   form.addEventListener("submit", async function(event) {
-    event.preventDefault(); // إيقاف إعادة التوجيه لصفحة Formspree
+    event.preventDefault();
     
-    // تغيير نص الزر أثناء الإرسال
     const btn = form.querySelector('.btn-submit');
     const originalBtnText = btn.innerText;
     btn.innerText = "جاري الإرسال...";
@@ -311,20 +372,18 @@
       if (response.ok) {
         status.innerHTML = "شكرًا لك! تم إرسال رسالتك بنجاح.";
         status.style.color = "var(--sand-deep)";
-        form.reset(); // تفريغ الحقول
+        form.reset();
       } else {
         status.innerHTML = "عذراً، حدث خطأ أثناء الإرسال. يرجى المحاولة لاحقاً.";
-        status.style.color = "#d9534f"; // أحمر هادئ للخطأ
+        status.style.color = "#d9534f";
       }
     } catch (error) {
       status.innerHTML = "حدث خطأ في الاتصال، تأكد من جودة الإنترنت.";
       status.style.color = "#d9534f";
     }
     
-    // إرجاع نص الزر كما كان
     btn.innerText = originalBtnText;
     
-    // إخفاء رسالة النجاح بعد 5 ثوانٍ (اختياري)
     setTimeout(() => {
         status.innerHTML = "";
     }, 5000);
