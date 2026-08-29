@@ -153,6 +153,8 @@
   #mc_embed_signup .mc-field-group input:focus {
     border-color: var(--sand-deep);
   }
+  
+  /* تعديل زر الاشتراك لإلغاء أي تداخل في النصوص */
   #mc_embed_signup .button {
     background: var(--sand-deep) !important;
     color: #fff !important;
@@ -164,10 +166,17 @@
     font-weight: 500 !important;
     cursor: pointer !important;
     width: 100% !important;
+    text-indent: 0 !important;
+    display: block !important;
     transition: background 0.2s !important;
   }
   #mc_embed_signup .button:hover {
     background: var(--ink) !important;
+  }
+
+  /* إخفاء شعار وشارة Mailchimp نهائياً */
+  #mc_embed_signup div.clear.foot p a {
+    display: none !important;
   }
 
   /* ---------- Footer ---------- */
@@ -224,7 +233,7 @@
                 
                 <div class="mc-field-group">
                     <label for="mce-EMAIL">البريد الإلكتروني <span class="asterisk">*</span></label>
-                    <input type="emailname" name="EMAIL" class="required email" id="mce-EMAIL" required="" value="" placeholder="name@example.com">
+                    <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required="" value="" placeholder="name@example.com">
                 </div>
                 
                 <div class="mc-field-group" style="display:none;">
@@ -244,7 +253,7 @@
                 <div class="optionalParent">
                     <div class="clear foot">
                         <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="اشتراك">
-                        <p style="margin: 15px auto 0;"><a href="http://eepurl.com/5XR2Rgkb1M" title="Mailchimp - email marketing made easy and fun"><span style="display: inline-block; background-color: transparent; border-radius: 4px;"><img class="refferal_badge" src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg" alt="Intuit Mailchimp" style="width: 140px; height: 25px; display: inline-block; opacity: 0.7;"></span></a></p>
+                        <p style="margin: 0;"><a href="http://eepurl.com/5XR2Rgkb1M" title="Mailchimp - email marketing made easy and fun"><span style="display: inline-block; background-color: transparent; border-radius: 4px;"><img class="refferal_badge" src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg" alt="Intuit Mailchimp" style="width: 220px; height: 40px; display: flex; padding: 2px 0px; justify-content: center; align-items: center;"></span></a></p>
                     </div>
                 </div>
             </div>
@@ -343,7 +352,7 @@
       });
 
       // إضافة تفاعل أزرار المشاركة
-      document.querySelectorAll(".share-btn").forEach(btn => {
+      document.querySelectorAll(".share-btn").forEach, btn => {
         btn.addEventListener("click", (e) => {
           const postId = e.currentTarget.getAttribute("data-id");
           const shareUrl = `${window.location.origin}${window.location.pathname}?id=${postId}`;
