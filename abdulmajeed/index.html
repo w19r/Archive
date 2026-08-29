@@ -55,6 +55,11 @@
   .photo-card:hover{
     box-shadow:0 12px 28px rgba(138,103,65,0.12); transform:translateY(-3px);
   }
+  /* تنسيق البوست المحدد عند مشاركته وفتحه برابط مباشر */
+  .photo-card.highlighted {
+    border: 2px solid var(--sand-deep);
+    box-shadow: 0 0 20px rgba(138,103,65,0.25);
+  }
   .photo-frame{
     position: relative; aspect-ratio:1/1; 
     background:var(--line); overflow:hidden;
@@ -74,7 +79,7 @@
   
   .photo-info{padding:20px;}
   
-  /* زر التنزيل */
+  /* أزرار التنزيل والمشاركة */
   .info-header {
     display: flex; justify-content: space-between;
     align-items: center; margin-bottom: 12px;
@@ -83,15 +88,30 @@
     font-family: 'Aref Ruqaa', serif; font-size: 1.4rem;
     color: var(--ink); margin-bottom: 0;
   }
-  .download-btn {
+  .actions {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .action-btn {
     color: var(--mist); display: flex; align-items: center;
     justify-content: center; padding: 8px;
     border-radius: 8px; background: var(--bg); transition: all 0.2s ease;
+    border: none; cursor: pointer;
   }
-  .download-btn:hover {
+  .action-btn:hover {
     color: var(--sand-deep); background: var(--line); transform: translateY(-2px);
   }
   .photo-desc {color: var(--mist); font-size: 0.9rem; line-height: 1.6;}
+
+  /* إشعار نسخ الرابط */
+  #toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--ink); color: var(--card); padding: 10px 24px;
+    border-radius: 30px; font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease; z-index: 1000; opacity: 0;
+  }
+  #toast.show {
+    transform: translateX(-50%) translateY(0); opacity: 1;
+  }
   
   @media (max-width:600px){
     .back-btn {position: static; display: inline-block; margin-bottom: 20px;}
@@ -110,19 +130,30 @@
 
 <main>
   <div class="wrap">
-    <!-- الحاوية التي ستمتلئ بالصور من السحابة تلقائياً -->
     <div id="gallery-container" class="gallery"></div>
   </div>
 </main>
 
-<!-- كود جلب البيانات من JSONBin مباشرة -->
+<div id="toast">تم نسخ رابط البوست بنجاح!</div>
+
 <script>
+  function showToast() {
+    const toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2500);
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("gallery-container");
     if (!container) return;
 
-    // تم وضع الـ Bin ID الخاص بعبد المجيد هنا
     const BIN_ID = "6a908f46da38895dfe196b09"; 
+    
+    // التقاط الـ ID من الرابط
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetId = urlParams.get("id");
     
     try {
       const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
@@ -138,8 +169,12 @@
       container.innerHTML = ""; 
 
       galleryData.forEach(item => {
+        const itemId = item.id || item.title.replace(/\s+/g, '-');
+
         const card = document.createElement("article");
-        card.className = "photo-card";
+        card.className = `photo-card ${itemId === targetId ? 'highlighted' : ''}`;
+        card.id = `post-${itemId}`;
+
         card.innerHTML = `
           <div class="photo-frame">
               <span class="year-badge">${item.year}</span>
@@ -148,19 +183,61 @@
           <div class="photo-info">
               <div class="info-header">
                   <h2 class="photo-title">${item.title}</h2>
-                  <a href="${item.image}" download class="download-btn" title="تنزيل الصورة">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                          <polyline points="7 10 12 15 17 10"></polyline>
-                          <line x1="12" y1="15" x2="12" y2="3"></line>
-                      </svg>
-                  </a>
+                  <div class="actions">
+                      <!-- زر المشاركة -->
+                      <button class="action-btn share-btn" data-id="${itemId}" title="مشاركة البوست">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <circle cx="18" cy="5" r="3"></circle>
+                              <circle cx="6" cy="12" r="3"></circle>
+                              <circle cx="18" cy="19" r="3"></circle>
+                              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                          </svg>
+                      </button>
+                      <!-- زر التنزيل -->
+                      <a href="${item.image}" download class="action-btn" title="تنزيل الصورة">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                              <polyline points="7 10 12 15 17 10"></polyline>
+                              <line x1="12" y1="15" x2="12" y2="3"></line>
+                          </svg>
+                      </a>
+                  </div>
               </div>
               <p class="photo-desc">${item.desc}</p>
           </div>
         `;
         container.appendChild(card);
       });
+
+      // تفعيل أزرار المشاركة
+      document.querySelectorAll(".share-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const postId = e.currentTarget.getAttribute("data-id");
+          const shareUrl = `${window.location.origin}${window.location.pathname}?id=${postId}`;
+
+          if (navigator.share) {
+            navigator.share({
+              title: 'أرشيف عبد المجيد',
+              url: shareUrl
+            }).catch(() => {});
+          } else {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+              showToast();
+            });
+          }
+        });
+      });
+
+      // التمرير التلقائي للبوست المطلوب
+      if (targetId) {
+        const targetElement = document.getElementById(`post-${targetId}`);
+        if (targetElement) {
+          setTimeout(() => {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        }
+      }
 
     } catch (error) {
       console.error(error);
