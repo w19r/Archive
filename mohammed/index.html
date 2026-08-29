@@ -8,25 +8,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Mailchimp Embedded Styles -->
-<link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
 <style>
   :root{
     --bg:#FAF6F0; --card:#FFFFFF; --ink:#332C24; 
     --sand:#A9825F; --sand-deep:#8A6741; --mist:#8C8175; --line:#E7DDCE;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html, body {
-    overflow-x: hidden; /* لمنع التمدد الأفقي نهائياً */
-    width: 100%;
-  }
   body{
     background:var(--bg); color:var(--ink);
     font-family:'IBM Plex Sans Arabic', sans-serif;
     line-height:1.8; -webkit-font-smoothing:antialiased;
   }
   a{color:inherit; text-decoration:none;}
-  .wrap{max-width:1100px; margin:0 auto; padding:0 28px; width: 100%;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 28px;}
   
   /* ---------- Header ---------- */
   header{
@@ -61,6 +55,7 @@
   .photo-card:hover{
     box-shadow:0 12px 28px rgba(138,103,65,0.12); transform:translateY(-3px);
   }
+  /* تنسيق خاص للبوست المحدد عند فتح رابطه المباشر */
   .photo-card.highlighted {
     border: 2px solid var(--sand-deep);
     box-shadow: 0 0 20px rgba(138,103,65,0.25);
@@ -83,6 +78,8 @@
   }
   
   .photo-info{padding:20px;}
+  
+  /* أزرار التنزيل والمشاركة */
   .info-header {
     display: flex; justify-content: space-between;
     align-items: center; margin-bottom: 12px;
@@ -104,92 +101,7 @@
     color: var(--sand-deep); background: var(--line); transform: translateY(-2px);
   }
   .photo-desc {color: var(--mist); font-size: 0.9rem; line-height: 1.6;}
-
-  /* ---------- Mailchimp Section Styling (Fixed) ---------- */
-  .newsletter-section {
-    background: var(--card);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    padding: 50px 0;
-    text-align: center;
-    width: 100%;
-    overflow: hidden;
-  }
-  #mc_embed_shell {
-    max-width: 500px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 0 15px;
-  }
-  #mc_embed_signup {
-    background: transparent !important;
-    font: inherit !important;
-    width: 100% !important;
-  }
-  #mc_embed_signup h2 {
-    font-family: 'Aref Ruqaa', serif;
-    font-size: 1.8rem;
-    color: var(--ink);
-    margin-bottom: 10px;
-  }
-  #mc_embed_signup .indicates-required {
-    display: none;
-  }
-  #mc_embed_signup .mc-field-group {
-    width: 100% !important;
-    margin-bottom: 15px;
-    text-align: right;
-  }
-  #mc_embed_signup .mc-field-group label {
-    display: block;
-    font-size: 0.95rem;
-    color: var(--ink);
-    margin-bottom: 5px;
-  }
-  #mc_embed_signup .mc-field-group input {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 12px 16px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: inherit;
-    font-size: 1rem;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-  }
-  #mc_embed_signup .mc-field-group input:focus {
-    border-color: var(--sand-deep);
-  }
   
-  #mc_embed_signup .button {
-    background: var(--sand-deep) !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 12px 24px !important;
-    font-family: inherit !important;
-    font-size: 1rem !important;
-    font-weight: 500 !important;
-    cursor: pointer !important;
-    width: 100% !important;
-    text-indent: 0 !important;
-    display: block !important;
-    text-align: center !important;
-    line-height: 1.5 !important;
-    transition: background 0.2s !important;
-  }
-  #mc_embed_signup .button:hover {
-    background: var(--ink) !important;
-  }
-
-  /* إخفاء شعار Mailchimp تماماً */
-  #mc_embed_signup div.clear.foot p a {
-    display: none !important;
-  }
-
   /* ---------- Footer ---------- */
   footer {
     text-align: center;
@@ -197,8 +109,9 @@
     color: var(--mist);
     font-size: 0.85rem;
     border-top: 1px solid var(--line);
+    background: var(--card);
   }
-  
+
   /* إشعار نسخ الرابط */
   #toast {
     position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -231,49 +144,6 @@
   </div>
 </main>
 
-<!-- قسم النشرة البريدية (Mailchimp) -->
-<section class="newsletter-section">
-  <div class="wrap">
-    <div id="mc_embed_shell">
-      <div id="mc_embed_signup">
-        <form action="https://abdallahalaydi.us1.list-manage.com/subscribe/post?u=bd19feeb6d76bf68873fa1a57&amp;id=4c23a30bb3&amp;f_id=00d6a8e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
-            <div id="mc_embed_signup_scroll">
-                <h2>البقاء على عهد الوفاء</h2>
-                <p style="color: var(--mist); font-size: 0.95rem; margin-bottom: 20px;">أدخل بريدك الإلكتروني ليصلك إشعار فوري عند إضافة أي ذكرى جديدة للأرشيف.</p>
-                <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-                
-                <div class="mc-field-group">
-                    <label for="mce-EMAIL">البريد الإلكتروني <span class="asterisk">*</span></label>
-                    <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required="" value="" placeholder="name@example.com">
-                </div>
-                
-                <div class="mc-field-group" style="display:none;">
-                    <label for="mce-FNAME">First Name </label>
-                    <input type="text" name="FNAME" class="text" id="mce-FNAME" value="Visitor">
-                </div>
-
-                <div id="mce-responses" class="clear foot">
-                    <div class="response" id="mce-error-response" style="display: none;"></div>
-                    <div class="response" id="mce-success-response" style="display: none;"></div>
-                </div>
-
-                <div aria-hidden="true" style="position: absolute; left: -5000px;">
-                    <input type="text" name="b_bd19feeb6d76bf68873fa1a57_4c23a30bb3" tabindex="-1" value="">
-                </div>
-
-                <div class="optionalParent">
-                    <div class="clear foot">
-                        <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="اشتراك">
-                        <p style="margin: 0;"><a href="http://eepurl.com/5XR2Rgkb1M" title="Mailchimp - email marketing made easy and fun"><span style="display: inline-block; background-color: transparent; border-radius: 4px;"><img class="refferal_badge" src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg" alt="Intuit Mailchimp" style="width: 220px; height: 40px; display: flex; padding: 2px 0px; justify-content: center; align-items: center;"></span></a></p>
-                    </div>
-                </div>
-            </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- Footer -->
 <footer>
   <div class="wrap">
@@ -283,11 +153,8 @@
 
 <div id="toast">تم نسخ رابط البوست بنجاح!</div>
 
-<!-- Mailchimp Validation Script -->
-<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
-<script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';fnames[6]='COMPANY';ftypes[6]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
-
 <script>
+  // دالة إظهار رسالة التنبيه عند النسخ
   function showToast() {
     const toast = document.getElementById("toast");
     toast.classList.add("show");
@@ -302,6 +169,7 @@
 
     const BIN_ID = "6a90878ef5f4af5e294ae1b6"; 
     
+    // التقاط الـ ID الموجود في رابط المتصفح (مثلاً ?id=post-1)
     const urlParams = new URLSearchParams(window.location.search);
     const targetId = urlParams.get("id");
 
@@ -313,11 +181,13 @@
       const result = await response.json();
       const galleryData = result.record.gallery || [];
 
+      // الترتيب من الأحدث للأقدم
       galleryData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
 
       container.innerHTML = ""; 
 
       galleryData.forEach(item => {
+        // التأكد من وجود id لكل عنصر، إذا لم يكن موجوداً نستخدم الفهرس أو العنوان كمعرّف
         const itemId = item.id || item.title.replace(/\s+/g, '-');
 
         const card = document.createElement("article");
@@ -333,6 +203,7 @@
               <div class="info-header">
                   <h2 class="photo-title">${item.title}</h2>
                   <div class="actions">
+                      <!-- زر المشاركة -->
                       <button class="action-btn share-btn" data-id="${itemId}" title="مشاركة البوست">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <circle cx="18" cy="5" r="3"></circle>
@@ -342,6 +213,7 @@
                               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                           </svg>
                       </button>
+                      <!-- زر التنزيل -->
                       <a href="${item.image}" download class="action-btn" title="تنزيل الصورة">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -357,11 +229,13 @@
         container.appendChild(card);
       });
 
+      // إضافة تفاعل أزرار المشاركة
       document.querySelectorAll(".share-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
           const postId = e.currentTarget.getAttribute("data-id");
           const shareUrl = `${window.location.origin}${window.location.pathname}?id=${postId}`;
 
+          // استخدام نظام المشاركة المدمج في الهاتف إن وجد، أو النسخ للحافظة
           if (navigator.share) {
             navigator.share({
               title: 'أرشيف محمد',
@@ -375,6 +249,7 @@
         });
       });
 
+      // التمرير التلقائي للبوست المطلوب إذا وُجد في الرابط
       if (targetId) {
         const targetElement = document.getElementById(`post-${targetId}`);
         if (targetElement) {
