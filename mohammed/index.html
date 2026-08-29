@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Mailchimp Embedded Styles -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
 <style>
   :root{
     --bg:#FAF6F0; --card:#FFFFFF; --ink:#332C24; 
@@ -55,7 +57,6 @@
   .photo-card:hover{
     box-shadow:0 12px 28px rgba(138,103,65,0.12); transform:translateY(-3px);
   }
-  /* تنسيق خاص للبوست المحدد عند فتح رابطه المباشر */
   .photo-card.highlighted {
     border: 2px solid var(--sand-deep);
     box-shadow: 0 0 20px rgba(138,103,65,0.25);
@@ -78,8 +79,6 @@
   }
   
   .photo-info{padding:20px;}
-  
-  /* أزرار التنزيل والمشاركة */
   .info-header {
     display: flex; justify-content: space-between;
     align-items: center; margin-bottom: 12px;
@@ -101,6 +100,84 @@
     color: var(--sand-deep); background: var(--line); transform: translateY(-2px);
   }
   .photo-desc {color: var(--mist); font-size: 0.9rem; line-height: 1.6;}
+
+  /* ---------- Mailchimp Section Styling ---------- */
+  .newsletter-section {
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 50px 0;
+    text-align: center;
+  }
+  #mc_embed_shell {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  #mc_embed_signup {
+    background: transparent !important;
+    font: inherit !important;
+    width: 100% !important;
+  }
+  #mc_embed_signup h2 {
+    font-family: 'Aref Ruqaa', serif;
+    font-size: 1.8rem;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  #mc_embed_signup .indicates-required {
+    display: none;
+  }
+  #mc_embed_signup .mc-field-group {
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: right;
+  }
+  #mc_embed_signup .mc-field-group label {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+  #mc_embed_signup .mc-field-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #mc_embed_signup .mc-field-group input:focus {
+    border-color: var(--sand-deep);
+  }
+  #mc_embed_signup .button {
+    background: var(--sand-deep) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-family: inherit !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    transition: background 0.2s !important;
+  }
+  #mc_embed_signup .button:hover {
+    background: var(--ink) !important;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--mist);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
   
   /* إشعار نسخ الرابط */
   #toast {
@@ -134,7 +211,61 @@
   </div>
 </main>
 
+<!-- قسم النشرة البريدية (Mailchimp) -->
+<section class="newsletter-section">
+  <div class="wrap">
+    <div id="mc_embed_shell">
+      <div id="mc_embed_signup">
+        <form action="https://abdallahalaydi.us1.list-manage.com/subscribe/post?u=bd19feeb6d76bf68873fa1a57&amp;id=4c23a30bb3&amp;f_id=00d6a8e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+            <div id="mc_embed_signup_scroll">
+                <h2>البقاء على عهد الوفاء</h2>
+                <p style="color: var(--mist); font-size: 0.95rem; margin-bottom: 20px;">أدخل بريدك الإلكتروني ليصلك إشعار فوري عند إضافة أي ذكرى جديدة للأرشيف.</p>
+                <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                
+                <div class="mc-field-group">
+                    <label for="mce-EMAIL">البريد الإلكتروني <span class="asterisk">*</span></label>
+                    <input type="emailname" name="EMAIL" class="required email" id="mce-EMAIL" required="" value="" placeholder="name@example.com">
+                </div>
+                
+                <div class="mc-field-group" style="display:none;">
+                    <label for="mce-FNAME">First Name </label>
+                    <input type="text" name="FNAME" class="text" id="mce-FNAME" value="Visitor">
+                </div>
+
+                <div id="mce-responses" class="clear foot">
+                    <div class="response" id="mce-error-response" style="display: none;"></div>
+                    <div class="response" id="mce-success-response" style="display: none;"></div>
+                </div>
+
+                <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                    <input type="text" name="b_bd19feeb6d76bf68873fa1a57_4c23a30bb3" tabindex="-1" value="">
+                </div>
+
+                <div class="optionalParent">
+                    <div class="clear foot">
+                        <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="اشتراك">
+                        <p style="margin: 15px auto 0;"><a href="http://eepurl.com/5XR2Rgkb1M" title="Mailchimp - email marketing made easy and fun"><span style="display: inline-block; background-color: transparent; border-radius: 4px;"><img class="refferal_badge" src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg" alt="Intuit Mailchimp" style="width: 140px; height: 25px; display: inline-block; opacity: 0.7;"></span></a></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="wrap">
+    © 2026 ABDALLAH ALAYDI. All Rights Reserved.
+  </div>
+</footer>
+
 <div id="toast">تم نسخ رابط البوست بنجاح!</div>
+
+<!-- Mailchimp Validation Script -->
+<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+<script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';fnames[6]='COMPANY';ftypes[6]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
 
 <script>
   // دالة إظهار رسالة التنبيه عند النسخ
@@ -170,7 +301,6 @@
       container.innerHTML = ""; 
 
       galleryData.forEach(item => {
-        // التأكد من وجود id لكل عنصر، إذا لم يكن موجوداً نستخدم الفهرس أو العنوان كمعرّف
         const itemId = item.id || item.title.replace(/\s+/g, '-');
 
         const card = document.createElement("article");
@@ -218,7 +348,6 @@
           const postId = e.currentTarget.getAttribute("data-id");
           const shareUrl = `${window.location.origin}${window.location.pathname}?id=${postId}`;
 
-          // استخدام نظام المشاركة المدمج في الهاتف إن وجد، أو النسخ للحافظة
           if (navigator.share) {
             navigator.share({
               title: 'أرشيف محمد',
