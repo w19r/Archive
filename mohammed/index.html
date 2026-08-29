@@ -16,13 +16,17 @@
     --sand:#A9825F; --sand-deep:#8A6741; --mist:#8C8175; --line:#E7DDCE;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
+  html, body {
+    overflow-x: hidden; /* لمنع التمدد الأفقي نهائياً */
+    width: 100%;
+  }
   body{
     background:var(--bg); color:var(--ink);
     font-family:'IBM Plex Sans Arabic', sans-serif;
     line-height:1.8; -webkit-font-smoothing:antialiased;
   }
   a{color:inherit; text-decoration:none;}
-  .wrap{max-width:1100px; margin:0 auto; padding:0 28px;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 28px; width: 100%;}
   
   /* ---------- Header ---------- */
   header{
@@ -101,17 +105,21 @@
   }
   .photo-desc {color: var(--mist); font-size: 0.9rem; line-height: 1.6;}
 
-  /* ---------- Mailchimp Section Styling ---------- */
+  /* ---------- Mailchimp Section Styling (Fixed) ---------- */
   .newsletter-section {
     background: var(--card);
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
     padding: 50px 0;
     text-align: center;
+    width: 100%;
+    overflow: hidden;
   }
   #mc_embed_shell {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
+    width: 100%;
+    padding: 0 15px;
   }
   #mc_embed_signup {
     background: transparent !important;
@@ -128,7 +136,7 @@
     display: none;
   }
   #mc_embed_signup .mc-field-group {
-    width: 100%;
+    width: 100% !important;
     margin-bottom: 15px;
     text-align: right;
   }
@@ -139,7 +147,8 @@
     margin-bottom: 5px;
   }
   #mc_embed_signup .mc-field-group input {
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     padding: 12px 16px;
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -148,13 +157,13 @@
     font-family: inherit;
     font-size: 1rem;
     outline: none;
+    box-sizing: border-box;
     transition: border-color 0.2s;
   }
   #mc_embed_signup .mc-field-group input:focus {
     border-color: var(--sand-deep);
   }
   
-  /* تعديل زر الاشتراك لضبط المحاذاة ومنع أي تداخل */
   #mc_embed_signup .button {
     background: var(--sand-deep) !important;
     color: #fff !important;
@@ -176,7 +185,7 @@
     background: var(--ink) !important;
   }
 
-  /* إخفاء شعار وشارة Mailchimp نهائياً */
+  /* إخفاء شعار Mailchimp تماماً */
   #mc_embed_signup div.clear.foot p a {
     display: none !important;
   }
@@ -279,7 +288,6 @@
 <script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';fnames[6]='COMPANY';ftypes[6]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
 
 <script>
-  // دالة إظهار رسالة التنبيه عند النسخ
   function showToast() {
     const toast = document.getElementById("toast");
     toast.classList.add("show");
@@ -294,7 +302,6 @@
 
     const BIN_ID = "6a90878ef5f4af5e294ae1b6"; 
     
-    // التقاط الـ ID الموجود في رابط المتصفح (مثلاً ?id=post-1)
     const urlParams = new URLSearchParams(window.location.search);
     const targetId = urlParams.get("id");
 
@@ -306,7 +313,6 @@
       const result = await response.json();
       const galleryData = result.record.gallery || [];
 
-      // الترتيب من الأحدث للأقدم
       galleryData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
 
       container.innerHTML = ""; 
@@ -327,7 +333,6 @@
               <div class="info-header">
                   <h2 class="photo-title">${item.title}</h2>
                   <div class="actions">
-                      <!-- زر المشاركة -->
                       <button class="action-btn share-btn" data-id="${itemId}" title="مشاركة البوست">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <circle cx="18" cy="5" r="3"></circle>
@@ -337,7 +342,6 @@
                               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                           </svg>
                       </button>
-                      <!-- زر التنزيل -->
                       <a href="${item.image}" download class="action-btn" title="تنزيل الصورة">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -353,7 +357,6 @@
         container.appendChild(card);
       });
 
-      // إضافة تفاعل أزرار المشاركة (تم تصحيح الخطأ هنا)
       document.querySelectorAll(".share-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
           const postId = e.currentTarget.getAttribute("data-id");
@@ -372,7 +375,6 @@
         });
       });
 
-      // التمرير التلقائي للبوست المطلوب إذا وُجد في الرابط
       if (targetId) {
         const targetElement = document.getElementById(`post-${targetId}`);
         if (targetElement) {
