@@ -154,7 +154,7 @@
     border-color: var(--sand-deep);
   }
   
-  /* تعديل زر الاشتراك لإلغاء أي تداخل في النصوص */
+  /* تعديل زر الاشتراك لضبط المحاذاة ومنع أي تداخل */
   #mc_embed_signup .button {
     background: var(--sand-deep) !important;
     color: #fff !important;
@@ -168,6 +168,8 @@
     width: 100% !important;
     text-indent: 0 !important;
     display: block !important;
+    text-align: center !important;
+    line-height: 1.5 !important;
     transition: background 0.2s !important;
   }
   #mc_embed_signup .button:hover {
@@ -351,8 +353,8 @@
         container.appendChild(card);
       });
 
-      // إضافة تفاعل أزرار المشاركة
-      document.querySelectorAll(".share-btn").forEach, btn => {
+      // إضافة تفاعل أزرار المشاركة (تم تصحيح الخطأ هنا)
+      document.querySelectorAll(".share-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
           const postId = e.currentTarget.getAttribute("data-id");
           const shareUrl = `${window.location.origin}${window.location.pathname}?id=${postId}`;
