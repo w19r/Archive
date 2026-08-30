@@ -72,8 +72,8 @@
   .year-badge{
     position: absolute; top: 12px; right: 12px;
     background: rgba(255, 255, 255, 0.9); color: var(--sand-deep);
-    font-family:'Aref Ruqaa', serif; font-size: 1.2rem;
-    padding: 2px 12px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-family:'Aref Ruqaa', serif; font-size: 1rem;
+    padding: 3px 10px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     z-index: 2;
   }
   
@@ -109,7 +109,7 @@
     color: var(--mist);
     font-size: 0.85rem;
     border-top: 1px solid var(--line);
-    background: var(--bg); /* جعل لون الفوتر مطابقاً لخلفية الصفحة تماماً */
+    background: var(--bg);
   }
 
   /* إشعار نسخ الرابط */
@@ -178,8 +178,8 @@
       const result = await response.json();
       const galleryData = result.record.gallery || [];
 
-      // الترتيب من الأحدث للأقدم
-      galleryData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+      // الترتيب من الأحدث للأقدم بناءً على صيغة التاريخ الكاملة (YYYY-MM-DD)
+      galleryData.sort((a, b) => new Date(b.year) - new Date(a.year));
 
       container.innerHTML = ""; 
 
