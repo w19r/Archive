@@ -40,6 +40,39 @@
   }
   header p{color:var(--mist); font-size:1rem;}
 
+  /* ---------- Stats Bar (Compact & Horizontal) ---------- */
+  .stats-section {
+    padding: 30px 0;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(138,103,65,0.03);
+  }
+  .stat-num {
+    font-family: 'Aref Ruqaa', serif;
+    font-size: 1.1rem;
+    color: var(--sand-deep);
+  }
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--mist);
+  }
+
   /* ---------- Gallery Grid ---------- */
   main{padding:60px 0 88px;}
   .gallery{
@@ -144,6 +177,22 @@
   </div>
 </main>
 
+<!-- شريط الإحصائيات في الأسفل مرتب وجانبي -->
+<section class="stats-section" id="stats-section" style="display: none;">
+  <div class="wrap">
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-label">إجمالي الذكريات:</span>
+        <span class="stat-num" id="total-memories">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">النطاق الزمني:</span>
+        <span class="stat-num" id="time-span">-</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Footer -->
 <footer>
   <span>© 2026 ABDALLAH ALAYDI. All Rights Reserved.</span>
@@ -177,6 +226,20 @@
       
       const result = await response.json();
       const galleryData = result.record.gallery || [];
+
+      if (galleryData.length > 0) {
+        const totalCount = galleryData.length;
+        
+        // استخراج السنوات بشكل سليم من حقل التاريخ (مثلاً 2017 من 2017-10-20)
+        const years = galleryData.map(item => parseInt(String(item.year).substring(0, 4))).filter(y => !isNaN(y));
+        const minYear = Math.min(...years);
+        const maxYear = Math.max(...years);
+
+        document.getElementById("total-memories").textContent = totalCount;
+        document.getElementById("time-span").textContent = minYear === maxYear ? maxYear : `${minYear} - ${maxYear}`;
+        
+        document.getElementById("stats-section").style.display = "block";
+      }
 
       // الترتيب من الأحدث للأقدم بناءً على صيغة التاريخ الكاملة (YYYY-MM-DD)
       galleryData.sort((a, b) => new Date(b.year) - new Date(a.year));
