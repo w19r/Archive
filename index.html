@@ -140,29 +140,31 @@
 
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
     gap:28px;
   }
 
+  /* التصميم الفخم الجديد للبطاقات */
   .entry{
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:10px;
+    border-radius:16px;
     overflow:hidden;
-    transition:box-shadow 0.2s ease, transform 0.2s ease;
+    transition:box-shadow 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
   }
 
   .entry:hover{
-    box-shadow:0 10px 26px rgba(138,103,65,0.14);
-    transform:translateY(-2px);
+    box-shadow:0 15px 35px rgba(138,103,65,0.15);
+    transform:translateY(-4px);
   }
 
   .entry-frame{
+    position: relative;
     aspect-ratio:4/5;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(155deg, #F1E6D6, #E7D7BE);
+    background:var(--line);
     overflow:hidden;
   }
 
@@ -170,28 +172,67 @@
     width:100%;
     height:100%;
     object-fit:cover;
+    transition: transform 0.5s ease;
   }
 
-  .entry-frame span{
-    font-size:2.6rem;
-    color:var(--sand-deep);
-    opacity:0.6;
+  .entry:hover .entry-frame img{
+    transform: scale(1.05); /* تكبير بطيء للصورة عند التأشير */
+  }
+
+  /* تأثير التدرج (Fade) بين الصورة واللون الأبيض */
+  .entry-frame::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45%; 
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--card) 100%);
+    z-index: 1;
+    pointer-events: none;
   }
 
   .entry-info{
-    padding:20px 22px 24px;
-    text-align:center;
+    padding: 0 22px 30px;
+    position: relative;
+    z-index: 2;
+    margin-top: -35px; /* سحب النص للأعلى ليتداخل بنعومة مع التدرج */
   }
 
   .entry-name{
-    font-size:1.3rem;
-    color:var(--ink);
-    margin-bottom:6px;
+    font-size:1.6rem;
+    color:var(--sand-deep);
+    margin-bottom:8px;
+  }
+
+  /* صندوق تاريخ الإرتقاء */
+  .entry-meta {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 8px 20px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+
+  .meta-label {
+    font-size: 0.8rem;
+    color: var(--mist);
+  }
+
+  .meta-value {
+    font-family: 'Thamania Sans', sans-serif;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 0.95rem;
   }
 
   .entry-desc{
     color:var(--mist);
-    font-size:0.88rem;
+    font-size:0.95rem;
+    line-height: 1.6;
   }
 
   /* ---------- quote section ---------- */
@@ -322,19 +363,32 @@
   <div class="wrap">
     <div class="grid">
 
+      <!-- بطاقة الشهيد محمد -->
       <a class="entry" href="/mohammed">
-        <div class="entry-frame"><img src="assets/img/mohammed/IMG_7032_Original.jpeg" alt="محمد" width="800" height="1000" loading="lazy" decoding="async"></div>
+        <div class="entry-frame">
+          <img src="assets/img/mohammed/IMG_7032_Original.jpeg" alt="الشهيد محمد" width="800" height="1000" loading="lazy" decoding="async">
+        </div>
         <div class="entry-info">
-          <div class="entry-name">محمد</div>
-          <div class="entry-desc">صور الشهيد محمد عبر السنين</div>
+          <h2 class="entry-name">الشهيد محمد</h2>
+          <div class="entry-meta">
+            <span class="meta-label">تاريخ الإرتقاء</span>
+            <span class="meta-value">26-8-2025</span> 
+          <p class="entry-desc">صور الشهيد محمد عبر السنين</p>
         </div>
       </a>
 
+      <!-- بطاقة الشهيد عبد المجيد -->
       <a class="entry" href="/abdulmajeed">
-        <div class="entry-frame"><img src="assets/img/abdulmajeed/IMG_0782.jpeg" alt="عبد المجيد" width="800" height="1000" loading="lazy" decoding="async"></div>
+        <div class="entry-frame">
+          <img src="assets/img/abdulmajeed/IMG_0782.jpeg" alt="الشهيد عبد المجيد" width="800" height="1000" loading="lazy" decoding="async">
+        </div>
         <div class="entry-info">
-          <div class="entry-name">عبد المجيد</div>
-          <div class="entry-desc">صور الشهيد عبد المجيد عبر السنين</div>
+          <h2 class="entry-name">الشهيد عبد المجيد</h2>
+          <div class="entry-meta">
+            <span class="meta-label">تاريخ الإرتقاء</span>
+            <span class="meta-value">25-7-2014</span> 
+          </div>
+          <p class="entry-desc">صور الشهيد عبد المجيد عبر السنين</p>
         </div>
       </a>
 
