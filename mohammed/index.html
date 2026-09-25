@@ -10,7 +10,6 @@
   /* تعريف خط النصوص (ثمانية تيكست - عادي) */
   @font-face {
     font-family: 'Thamania Text';
-    /* تمت إضافة ../ للرجوع للمجلد الرئيسي */
     src: url('../assets/fonts/thmanyahseriftext-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
@@ -20,7 +19,6 @@
   /* تعريف خط العناوين (ثمانية سانس - عريض) */
   @font-face {
     font-family: 'Thamania Sans';
-    /* تمت إضافة ../ للرجوع للمجلد الرئيسي */
     src: url('../assets/fonts/thmanyahseriftext-Medium.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
@@ -36,13 +34,11 @@
   
   body{
     background:var(--bg); color:var(--ink);
-    /* تطبيق خط النصوص الكلاسيكي على كافة عناصر الصفحة */
     font-family: 'Thamania Text', serif;
     font-weight: 400;
     line-height:1.8; -webkit-font-smoothing:antialiased;
   }
 
-  /* تطبيق خط السانس العصري العريض على العناوين والأسماء والأرقام البارزة */
   h1, h2, h3, h4, h5, h6, .photo-title, .stat-num, .year-badge {
     font-family: 'Thamania Sans', sans-serif;
     font-weight: 700;
@@ -69,7 +65,7 @@
   }
   header p{color:var(--mist); font-size:1rem;}
 
-  /* ---------- Stats Bar (Compact & Bottom) ---------- */
+  /* ---------- Stats Bar ---------- */
   .stats-section {
     padding: 30px 0;
     border-top: 1px solid var(--line);
@@ -120,15 +116,42 @@
     border: 2px solid var(--sand-deep);
     box-shadow: 0 0 20px rgba(138,103,65,0.25);
   }
+
+  /* --- تعديلات Blur-up --- */
   .photo-frame{
-    position: relative; aspect-ratio:1/1; 
-    background:var(--line); overflow:hidden;
+    position: relative; 
+    aspect-ratio: 1/1; 
+    background: var(--line); 
+    overflow: hidden;
   }
-  .photo-frame img{
-    width:100%; height:100%; object-fit:cover;
-    transition: transform 0.4s ease;
+  /* الصورة المشوشة السريعة */
+  .img-blur {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: blur(15px);
+    transform: scale(1.1); /* إخفاء الحواف البيضاء للتشويش */
+    z-index: 0;
   }
-  .photo-card:hover .photo-frame img{transform: scale(1.03);}
+  /* الصورة الأصلية المحسنة */
+  .img-real {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0; /* مخفية بالبداية */
+    transition: opacity 0.6s ease-in-out, transform 0.4s ease;
+    z-index: 1;
+  }
+  .img-real.loaded {
+    opacity: 1; /* تظهر بسلاسة عند انتهاء التحميل */
+  }
+  .photo-card:hover .img-real.loaded {
+    transform: scale(1.03); /* تأثير التكبير عند الوقوف عليها */
+  }
+  /* ---------------------- */
+
   .year-badge{
     position: absolute; top: 12px; right: 12px;
     background: rgba(255, 255, 255, 0.9); color: var(--sand-deep);
@@ -170,7 +193,6 @@
     background: var(--bg);
   }
 
-  /* إشعار نسخ الرابط */
   #toast {
     position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
     background: var(--ink); color: var(--card); padding: 10px 24px;
@@ -202,7 +224,6 @@
   </div>
 </main>
 
-<!-- شريط الإحصائيات في الأسفل وبحجم صغير ومنسق -->
 <section class="stats-section" id="stats-section" style="display: none;">
   <div class="wrap">
     <div class="stats-bar">
@@ -218,7 +239,6 @@
   </div>
 </section>
 
-<!-- Footer -->
 <footer>
   <div class="wrap">
     © 2026 ABDALLAH ALAYDI. All Rights Reserved.
@@ -270,15 +290,23 @@
 
       galleryData.forEach(item => {
         const itemId = item.id || item.title.replace(/\s+/g, '-');
+        
+        // --- توليد روابط CDN ---
+        // 1. رابط للصورة المشوشة (عرض 20 بكسل فقط = بضع بايتات وتُحمل فوراً)
+        const blurUrl = `https://wsrv.nl/?url=${item.image}&w=20&q=20`;
+        // 2. رابط للصورة المحسنة (عرض 600 بكسل مناسبة للشبكة بصيغة WebP المضغوطة جداً)
+        const optimizedUrl = `https://wsrv.nl/?url=${item.image}&w=600&output=webp`;
 
         const card = document.createElement("article");
         card.className = `photo-card ${itemId === targetId ? 'highlighted' : ''}`;
         card.id = `post-${itemId}`;
 
+
         card.innerHTML = `
           <div class="photo-frame">
               <span class="year-badge">${item.year}</span>
-              <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async">
+              <img src="${blurUrl}" class="img-blur" alt="blur placeholder">
+              <img src="${optimizedUrl}" class="img-real" alt="${item.title}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
           </div>
           <div class="photo-info">
               <div class="info-header">
