@@ -11,56 +11,62 @@
   <title>أرشيف عائلة عبد الله العايدي</title>
   <meta name="description" content="أرشيف صور شهداء عائلة عبد الله العايدي، محفوظة ومرتبة عبر السنين.">
   <meta name="author" content="Abdallah Alaydi">
-  
-  <!-- الرابط الأصلي للصفحة لمنع مشاكل التكرار -->
   <link rel="canonical" href="https://archive.abdallahalaydi.com/">
 
   <!-- ==========================================
        2. الهوية البصرية والمتصفحات (Favicon & Manifest)
        ========================================== -->
-  <!-- أيقونات المتصفحات العادية -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  
-  <!-- أيقونة أجهزة Apple (تظهر عند إضافة الموقع للشاشة الرئيسية للآيفون) -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  
-  <!-- ملف إعدادات أندرويد (تطبيقات الويب) -->
-  <link rel="manifest" href="/site.webmanifest">
-  
-  <!-- لون شريط المتصفح العلوي في الهواتف (اخترت لون خلفية موقعك ليكون متناسقاً) -->
+  <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/favicon/site.webmanifest">
   <meta name="theme-color" content="#FAF6F0">
 
   <!-- ==========================================
        3. المشاركة على وسائل التواصل (Open Graph)
-       (تتحكم في شكل الرابط عند إرساله في واتساب، فيسبوك، تيليجرام...)
        ========================================== -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://archive.abdallahalaydi.com/">
   <meta property="og:title" content="أرشيف عائلة عبد الله العايدي">
   <meta property="og:description" content="مساحة لحفظ صور العائلة وذكرياتها عبر السنين.">
-  <!-- مسار الصورة التي ستظهر مع الرابط (بمقاس 1200x630) -->
   <meta property="og:image" content="https://archive.abdallahalaydi.com/assets/img/Family Archive.png">
   <meta property="og:site_name" content="أرشيف عائلة العايدي">
 
   <!-- ==========================================
        4. المشاركة على تويتر (X) - Twitter Cards
        ========================================== -->
-  <!-- هذا الوسم يجعل الصورة تظهر بحجم كبير وملفت في تويتر -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="أرشيف عائلة عبد الله العايدي">
   <meta name="twitter:description" content="مساحة لحفظ صور العائلة وذكرياتها عبر السنين.">
-  <meta name="twitter:image" content="https://archive.abdallahalaydi.com/assets/img/https://archive.abdallahalaydi.com/assets/img/Family Archive.png">
+  <meta name="twitter:image" content="https://archive.abdallahalaydi.com/assets/img/Family Archive.png">
 
   <!-- ==========================================
        5. الأداء (Performance & Fonts)
        ========================================== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
 <style>
+  /* تعريف خط النصوص (ثمانية تيكست - عادي) */
+  @font-face {
+    font-family: 'Thamania Text';
+    src: url('assets/fonts/thmanyah-text-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* تعريف خط العناوين (ثمانية سانس - عريض) */
+  @font-face {
+    font-family: 'Thamania Sans';
+    src: url('assets/fonts/thmanyah-sans-bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
   :root{
     --bg:#FAF6F0;
     --card:#FFFFFF;
@@ -73,10 +79,11 @@
 
   *{box-sizing:border-box; margin:0; padding:0;}
 
+  /* تطبيق خط النصوص الكلاسيكي على الموقع بالكامل */
   body{
     background:var(--bg);
     color:var(--ink);
-    font-family:'IBM Plex Sans Arabic', sans-serif;
+    font-family: 'Thamania Text', serif;
     font-weight:400;
     line-height:1.8;
     -webkit-font-smoothing:antialiased;
@@ -84,7 +91,11 @@
 
   a{color:inherit; text-decoration:none;}
 
-  .display{font-family:'Aref Ruqaa', serif;}
+  /* تطبيق خط السانس العصري العريض على العناوين والأسماء */
+  h1, h2, h3, h4, h5, h6, .entry-name, .display {
+    font-family: 'Thamania Sans', sans-serif;
+    font-weight: 700;
+  }
 
   :focus-visible{
     outline:2px solid var(--sand-deep);
@@ -111,8 +122,6 @@
   }
 
   header h1{
-    font-family:'Aref Ruqaa', serif;
-    font-weight:700;
     font-size:clamp(2rem, 5vw, 2.8rem);
     color:var(--sand-deep);
     margin-bottom:14px;
@@ -164,7 +173,6 @@
   }
 
   .entry-frame span{
-    font-family:'Aref Ruqaa', serif;
     font-size:2.6rem;
     color:var(--sand-deep);
     opacity:0.6;
@@ -176,7 +184,6 @@
   }
 
   .entry-name{
-    font-family:'Aref Ruqaa', serif;
     font-size:1.3rem;
     color:var(--ink);
     margin-bottom:6px;
@@ -226,7 +233,6 @@
   }
 
   .contact-box h2{
-    font-family:'Aref Ruqaa', serif;
     font-size:1.8rem;
     color:var(--sand-deep);
     margin-bottom:8px;
@@ -252,7 +258,7 @@
     border-radius:8px;
     background:var(--bg);
     color:var(--ink);
-    font-family:'IBM Plex Sans Arabic', sans-serif;
+    font-family: 'Thamania Text', serif;
     font-size:0.95rem;
     transition:border-color 0.2s ease, box-shadow 0.2s ease;
   }
@@ -274,9 +280,9 @@
     border:none;
     border-radius:8px;
     padding:13px;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
+    font-family: 'Thamania Sans', sans-serif;
     font-size:1rem;
-    font-weight:500;
+    font-weight:700;
     cursor:pointer;
     transition:background-color 0.2s ease, transform 0.2s ease;
     margin-top:6px;
@@ -358,7 +364,7 @@
         <button type="submit" class="btn-submit">إرسال</button>
       </form>
       
-      <p id="form-status" style="margin-top: 15px; font-weight: 500; text-align: center; font-family: 'IBM Plex Sans Arabic', sans-serif;"></p>
+      <p id="form-status" style="margin-top: 15px; font-weight: 500; text-align: center;"></p>
     </div>
   </div>
 </section>
