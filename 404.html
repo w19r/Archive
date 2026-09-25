@@ -8,9 +8,7 @@
   <meta name="description" content="عذراً، الصفحة التي تبحث عنها غير موجودة في أرشيف عائلة العايدي.">
   <meta name="theme-color" content="#FAF6F0">
 
-  <!-- ==========================================
-
-       ========================================== -->
+  <!-- أيقونات الموقع -->
   <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
@@ -18,7 +16,6 @@
   <link rel="manifest" href="/assets/favicon/site.webmanifest">
 
 <style>
-
   @font-face {
     font-family: 'Thamania Text';
     src: url('/assets/fonts/thmanyahseriftext-Regular.woff2') format('woff2');
@@ -26,7 +23,6 @@
     font-style: normal;
     font-display: swap;
   }
-
 
   @font-face {
     font-family: 'Thamania Sans';
@@ -38,9 +34,7 @@
 
   :root{
     --bg:#FAF6F0;
-    --card:#FFFFFF;
     --ink:#332C24;
-    --sand:#A9825F;
     --sand-deep:#8A6741;
     --mist:#8C8175;
     --line:#E7DDCE;
@@ -59,7 +53,6 @@
     font-weight:400;
     line-height:1.8;
     -webkit-font-smoothing:antialiased;
-
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -70,20 +63,14 @@
     text-decoration:none;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3 {
     font-family:'Thamania Sans', sans-serif;
     font-weight:700;
   }
 
-  .wrap{
-    max-width:980px;
-    margin:0 auto;
-    padding:0 28px;
-  }
-
   /* ---------- Header ---------- */
   header{
-    padding:40px 0 20px;
+    padding:64px 0 20px;
     text-align:center;
   }
 
@@ -97,68 +84,57 @@
     color: var(--sand-deep);
   }
 
-  /* ---------- 404 Main Content ---------- */
+  /* ---------- 404 Minimal Content ---------- */
   main{
-    flex: 1; /* لتعبئة المساحة المتبقية ودفع الفوتر للأسفل */
+    flex: 1; 
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 0 60px;
+    padding: 0 20px;
   }
 
-  .error-container {
+  .error-content {
     text-align: center;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 60px 40px;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 15px 35px rgba(138,103,65,0.08);
+    max-width: 500px;
   }
 
+  /* رقم 404 بلون هادئ جداً (لون الضباب) وحجم متوسط */
   .error-code {
     font-family: 'Thamania Sans', sans-serif;
-    font-size: clamp(5rem, 15vw, 7rem);
-    line-height: 1;
-    color: var(--sand-deep);
-    margin-bottom: 20px;
+    font-size: 4rem;
+    color: var(--mist);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
   }
 
-  .error-container h2 {
-    font-size: 1.8rem;
+  .error-content h2 {
+    font-size: 1.5rem;
     color: var(--ink);
     margin-bottom: 12px;
   }
 
-  .error-container p {
+  .error-content p {
     color: var(--mist);
-    font-size: 1.05rem;
-    margin-bottom: 36px;
-    max-width: 40ch;
-    margin-left: auto;
-    margin-right: auto;
+    font-size: 1rem;
+    margin-bottom: 40px;
   }
 
-
+  /* زر العودة: شفاف وأنيق (Ghost Button) */
   .btn-home {
     display: inline-block;
-    background: var(--sand-deep);
-    color: #FFFFFF;
-    border: none;
-    border-radius: 8px;
-    padding: 13px 32px;
+    background: transparent;
+    color: var(--sand-deep);
+    border: 1px solid var(--sand-deep);
+    border-radius: 6px;
+    padding: 10px 28px;
     font-family: 'Thamania Sans', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 1rem;
+    transition: all 0.3s ease;
   }
 
   .btn-home:hover {
-    background: var(--ink);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(51,44,36,0.15);
+    background: var(--sand-deep);
+    color: #FFFFFF;
   }
 
   /* ---------- Footer ---------- */
@@ -166,7 +142,6 @@
     padding:32px 0;
     text-align:center;
     border-top:1px solid var(--line);
-    background: var(--bg);
   }
 
   footer span{
@@ -182,21 +157,16 @@
 <body>
 
   <header>
-    <div class="wrap">
-
-      <a href="/"><h1>أرشيف عائلة عبد الله العايدي</h1></a>
-    </div>
+    <a href="/"><h1>أرشيف عائلة عبد الله العايدي</h1></a>
   </header>
 
   <main>
-    <div class="wrap">
-      <div class="error-container">
-        <div class="error-code">404</div>
-        <h2>عذراً، لم نتمكن من العثور على السجل</h2>
-        <p>يبدو أن الصفحة التي تحاول الوصول إليها قد تم نقلها أو أنها غير موجودة في الأرشيف.</p>
-        
-        <a href="/" class="btn-home">العودة إلى الصفحة الرئيسية</a>
-      </div>
+    <div class="error-content">
+      <div class="error-code">404</div>
+      <h2>عذراً، هذا السجل غير موجود</h2>
+      <p>ربما تم نقل الصفحة أو أن الرابط الذي اتبعته غير صحيح.</p>
+      
+      <a href="/" class="btn-home">العودة للرئيسية</a>
     </div>
   </main>
 
