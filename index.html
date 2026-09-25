@@ -4,7 +4,7 @@
   <meta name="apple-mobile-web-app-title" content="الأرشيف">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- ==========================================
        1. الإعدادات الأساسية ومحركات البحث (SEO)
        ========================================== -->
@@ -30,16 +30,25 @@
   <meta property="og:url" content="https://archive.abdallahalaydi.com/">
   <meta property="og:title" content="أرشيف عائلة عبد الله العايدي">
   <meta property="og:description" content="مساحة لحفظ صور العائلة وذكرياتها عبر السنين.">
-  <meta property="og:image" content="https://archive.abdallahalaydi.com/assets/img/Family Archive.png">
+
+  <!-- OG IMAGE -->
+  <meta property="og:image" content="https://archive.abdallahalaydi.com/assets/img/Family-Archive.png">
+  <meta property="og:image:secure_url" content="https://archive.abdallahalaydi.com/assets/img/Family-Archive.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="أرشيف عائلة عبد الله العايدي">
+
   <meta property="og:site_name" content="أرشيف عائلة العايدي">
 
   <!-- ==========================================
-       4. المشاركة على تويتر (X) - Twitter Cards
+       4. المشاركة على تويتر / X
        ========================================== -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="أرشيف عائلة عبد الله العايدي">
   <meta name="twitter:description" content="مساحة لحفظ صور العائلة وذكرياتها عبر السنين.">
-  <meta name="twitter:image" content="https://archive.abdallahalaydi.com/assets/img/Family Archive.png">
+  <meta name="twitter:image" content="https://archive.abdallahalaydi.com/assets/img/Family-Archive.png">
+  <meta name="twitter:image:alt" content="أرشيف عائلة عبد الله العايدي">
 
   <!-- ==========================================
        5. الأداء (Performance & Fonts)
@@ -49,7 +58,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
 <style>
-  /* تعريف خط النصوص (ثمانية تيكست - عادي) */
+  /* تعريف خط النصوص */
   @font-face {
     font-family: 'Thamania Text';
     src: url('assets/fonts/thmanyahseriftext-Regular.woff2') format('woff2');
@@ -58,7 +67,7 @@
     font-display: swap;
   }
 
-  /* تعريف خط العناوين (ثمانية سانس - عريض) */
+  /* تعريف خط العناوين */
   @font-face {
     font-family: 'Thamania Sans';
     src: url('assets/fonts/thmanyahseriftext-Medium.woff2') format('woff2');
@@ -77,24 +86,29 @@
     --line:#E7DDCE;
   }
 
-  *{box-sizing:border-box; margin:0; padding:0;}
+  *{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+  }
 
-  /* تطبيق خط النصوص الكلاسيكي على الموقع بالكامل */
   body{
     background:var(--bg);
     color:var(--ink);
-    font-family: 'Thamania Text', serif;
+    font-family:'Thamania Text', serif;
     font-weight:400;
     line-height:1.8;
     -webkit-font-smoothing:antialiased;
   }
 
-  a{color:inherit; text-decoration:none;}
+  a{
+    color:inherit;
+    text-decoration:none;
+  }
 
-  /* تطبيق خط السانس العصري العريض على العناوين والأسماء */
-  h1, h2, h3, h4, h5, h6, .entry-name, .display {
-    font-family: 'Thamania Sans', sans-serif;
-    font-weight: 700;
+  h1, h2, h3, h4, h5, h6, .entry-name, .display{
+    font-family:'Thamania Sans', sans-serif;
+    font-weight:700;
   }
 
   :focus-visible{
@@ -110,7 +124,9 @@
   }
 
   @media (max-width:600px){
-    .wrap{padding:0 20px;}
+    .wrap{
+      padding:0 20px;
+    }
   }
 
   /* ---------- header ---------- */
@@ -136,7 +152,9 @@
 
   /* ---------- archive grid ---------- */
 
-  main{padding:64px 0 30px;}
+  main{
+    padding:64px 0 30px;
+  }
 
   .grid{
     display:grid;
@@ -145,118 +163,120 @@
   }
 
   /* ---------- Premium Archive Cards ---------- */
+
   .entry{
-    background: #FFFFFF;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
+    background:#FFFFFF;
+    border:1px solid var(--line);
+    border-radius:16px;
+    overflow:hidden;
+    transition:box-shadow 0.3s ease, transform 0.3s ease;
+    display:flex;
+    flex-direction:column;
+    text-align:center;
   }
 
   .entry:hover{
-    box-shadow: 0 15px 35px rgba(138,103,65,0.12);
-    transform: translateY(-4px);
+    box-shadow:0 15px 35px rgba(138,103,65,0.12);
+    transform:translateY(-4px);
   }
 
   .entry-frame{
-    position: relative;
-    aspect-ratio: 4/4.5;
-    background: #FFFFFF;
-    overflow: hidden;
+    position:relative;
+    aspect-ratio:4/4.5;
+    background:#FFFFFF;
+    overflow:hidden;
   }
 
   .entry-frame img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:transform 0.5s ease;
   }
 
   .entry:hover .entry-frame img{
-    transform: scale(1.05);
+    transform:scale(1.05);
   }
 
-  /* التدرج اللوني (Fade) السلس - تم إصلاح مشكلة الخط القاطع */
-  .entry-frame::after {
-    content: '';
-    position: absolute;
-    bottom: -2px; 
-    left: 0;
-    width: 100%;
-    height: 55%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #FFFFFF 100%);
-    z-index: 1;
-    pointer-events: none;
+  .entry-frame::after{
+    content:'';
+    position:absolute;
+    bottom:-2px;
+    left:0;
+    width:100%;
+    height:55%;
+    background:linear-gradient(
+      to bottom,
+      rgba(255,255,255,0) 0%,
+      #FFFFFF 100%
+    );
+    z-index:1;
+    pointer-events:none;
   }
 
-  /* قسم المعلومات تحت الصورة */
   .entry-info{
-    padding: 10px 22px 30px;
-    position: relative;
-    z-index: 2;
-    background: #FFFFFF; 
-    margin-top: -40px; 
+    padding:10px 22px 30px;
+    position:relative;
+    z-index:2;
+    background:#FFFFFF;
+    margin-top:-40px;
   }
 
   .entry-name{
-    font-size: 1.6rem;
-    color: var(--sand-deep);
-    margin-bottom: 12px;
+    font-size:1.6rem;
+    color:var(--sand-deep);
+    margin-bottom:12px;
   }
 
-  /* صندوق تاريخ الإرتقاء الفخم (بدون إطار حاد) */
-  .entry-meta {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    background: var(--bg);
-    padding: 8px 24px;
-    border-radius: 12px;
-    margin-bottom: 16px;
+  .entry-meta{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    background:var(--bg);
+    padding:8px 24px;
+    border-radius:12px;
+    margin-bottom:16px;
   }
 
-  .meta-label {
-    font-size: 0.8rem;
-    color: var(--mist);
-    margin-bottom: 4px;
+  .meta-label{
+    font-size:0.8rem;
+    color:var(--mist);
+    margin-bottom:4px;
   }
 
-  .meta-value {
-    font-family: 'Thamania Sans', sans-serif;
-    font-weight: 700;
-    color: var(--ink);
-    font-size: 0.95rem;
+  .meta-value{
+    font-family:'Thamania Sans', sans-serif;
+    font-weight:700;
+    color:var(--ink);
+    font-size:0.95rem;
   }
 
   .entry-desc{
-    color: var(--mist);
-    font-size: 0.95rem;
-    line-height: 1.6;
+    color:var(--mist);
+    font-size:0.95rem;
+    line-height:1.6;
   }
 
   /* ---------- quote section ---------- */
 
-  .quote-section {
-    padding: 30px 0 50px;
-    text-align: center;
+  .quote-section{
+    padding:30px 0 50px;
+    text-align:center;
   }
 
-  .quote-box {
-    max-width: 650px;
-    margin: 0 auto;
-    padding: 0 20px;
+  .quote-box{
+    max-width:650px;
+    margin:0 auto;
+    padding:0 20px;
   }
 
-  .quote-text {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1.15rem;
-    color: var(--sand-deep);
-    line-height: 1.9;
-    letter-spacing: 0.3px;
+  .quote-text{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--sand-deep);
+    line-height:1.9;
+    letter-spacing:0.3px;
   }
 
   /* ---------- contact section ---------- */
@@ -301,7 +321,7 @@
     border-radius:8px;
     background:var(--bg);
     color:var(--ink);
-    font-family: 'Thamania Text', serif;
+    font-family:'Thamania Text', serif;
     font-size:0.95rem;
     transition:border-color 0.2s ease, box-shadow 0.2s ease;
   }
@@ -323,7 +343,7 @@
     border:none;
     border-radius:8px;
     padding:13px;
-    font-family: 'Thamania Sans', sans-serif;
+    font-family:'Thamania Sans', sans-serif;
     font-size:1rem;
     font-weight:700;
     cursor:pointer;
@@ -352,6 +372,7 @@
   }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -368,14 +389,24 @@
       <!-- بطاقة الشهيد محمد -->
       <a class="entry" href="/mohammed">
         <div class="entry-frame">
-          <img src="assets/img/mohammed/IMG_7032_Original.jpeg" alt="الشهيد محمد" width="800" height="1000" loading="lazy" decoding="async">
+          <img
+            src="assets/img/mohammed/IMG_7032_Original.jpeg"
+            alt="الشهيد محمد"
+            width="800"
+            height="1000"
+            loading="lazy"
+            decoding="async"
+          >
         </div>
+
         <div class="entry-info">
           <h2 class="entry-name">الشهيد محمد</h2>
+
           <div class="entry-meta">
             <span class="meta-label">تاريخ الإرتقاء</span>
-            <span class="meta-value">26-8-2025</span> 
-          </div> <!-- تم إضافة إغلاق الديف هنا الذي كان مفقوداً -->
+            <span class="meta-value">26-8-2025</span>
+          </div>
+
           <p class="entry-desc">صور الشهيد محمد عبر السنين</p>
         </div>
       </a>
@@ -383,14 +414,24 @@
       <!-- بطاقة الشهيد عبد المجيد -->
       <a class="entry" href="/abdulmajeed">
         <div class="entry-frame">
-          <img src="assets/img/abdulmajeed/IMG_0782.jpeg" alt="الشهيد عبد المجيد" width="800" height="1000" loading="lazy" decoding="async">
+          <img
+            src="assets/img/abdulmajeed/IMG_0782.jpeg"
+            alt="الشهيد عبد المجيد"
+            width="800"
+            height="1000"
+            loading="lazy"
+            decoding="async"
+          >
         </div>
+
         <div class="entry-info">
           <h2 class="entry-name">الشهيد عبد المجيد</h2>
+
           <div class="entry-meta">
             <span class="meta-label">تاريخ الإرتقاء</span>
-            <span class="meta-value">25-7-2014</span> 
+            <span class="meta-value">25-7-2014</span>
           </div>
+
           <p class="entry-desc">صور الشهيد عبد المجيد عبر السنين</p>
         </div>
       </a>
@@ -399,11 +440,13 @@
   </div>
 </main>
 
-<!-- قسم الاقتباس  -->
+<!-- قسم الاقتباس -->
 <div class="quote-section">
   <div class="wrap">
     <div class="quote-box">
-      <p class="quote-text">“He loved them so much he was scared to let go he never realized sometimes loving someone means letting them go”</p>
+      <p class="quote-text">
+        “He loved them so much he was scared to let go he never realized sometimes loving someone means letting them go”
+      </p>
     </div>
   </div>
 </div>
@@ -411,23 +454,60 @@
 <section class="contact-section">
   <div class="wrap">
     <div class="contact-box">
-      <h2>المساهمة في الأرشيف</h2>
-      <p>إذا كانت لديك صور أو ذكريات تود إضافتها، تواصل معي.</p>
 
-      <form id="my-contact-form" action="https://formspree.io/f/xaeywkdr" method="POST" class="contact-form">
-        <input type="text" name="name" class="form-control" placeholder="الاسم" required>
-        <input type="email" name="email" class="form-control" placeholder="البريد الإلكتروني" required>
-        <textarea name="message" class="form-control" placeholder="اكتب رسالتك ..." required></textarea>
-        <button type="submit" class="btn-submit">إرسال</button>
+      <h2>المساهمة في الأرشيف</h2>
+
+      <p>
+        إذا كانت لديك صور أو ذكريات تود إضافتها، تواصل معي.
+      </p>
+
+      <form
+        id="my-contact-form"
+        action="https://formspree.io/f/xaeywkdr"
+        method="POST"
+        class="contact-form"
+      >
+
+        <input
+          type="text"
+          name="name"
+          class="form-control"
+          placeholder="الاسم"
+          required
+        >
+
+        <input
+          type="email"
+          name="email"
+          class="form-control"
+          placeholder="البريد الإلكتروني"
+          required
+        >
+
+        <textarea
+          name="message"
+          class="form-control"
+          placeholder="اكتب رسالتك ..."
+          required
+        ></textarea>
+
+        <button type="submit" class="btn-submit">
+          إرسال
+        </button>
+
       </form>
-      
-      <p id="form-status" style="margin-top: 15px; font-weight: 500; text-align: center;"></p>
+
+      <p
+        id="form-status"
+        style="margin-top:15px; font-weight:500; text-align:center;"
+      ></p>
+
     </div>
   </div>
 </section>
 
 <footer>
-  <span> 2026 ABDALLAH ALAYDI. All Rights Reserved.©</span>
+  <span>2026 ABDALLAH ALAYDI. All Rights Reserved.©</span>
 </footer>
 
 <script>
@@ -436,20 +516,23 @@
 
   form.addEventListener("submit", async function(event) {
     event.preventDefault();
-    
+
     const btn = form.querySelector('.btn-submit');
     const originalBtnText = btn.innerText;
+
     btn.innerText = "جاري الإرسال...";
-    
+
     const data = new FormData(event.target);
-    
+
     try {
       const response = await fetch(event.target.action, {
         method: form.method,
         body: data,
-        headers: { 'Accept': 'application/json' }
+        headers: {
+          'Accept': 'application/json'
+        }
       });
-      
+
       if (response.ok) {
         status.innerHTML = "شكرًا لك! تم إرسال رسالتك بنجاح.";
         status.style.color = "var(--sand-deep)";
@@ -458,15 +541,16 @@
         status.innerHTML = "عذراً، حدث خطأ أثناء الإرسال. يرجى المحاولة لاحقاً.";
         status.style.color = "#d9534f";
       }
+
     } catch (error) {
       status.innerHTML = "حدث خطأ في الاتصال، تأكد من جودة الإنترنت.";
       status.style.color = "#d9534f";
     }
-    
+
     btn.innerText = originalBtnText;
-    
+
     setTimeout(() => {
-        status.innerHTML = "";
+      status.innerHTML = "";
     }, 5000);
   });
 </script>
