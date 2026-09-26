@@ -58,7 +58,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
 <style>
-  /* تعريف خط النصوص */
+
   @font-face {
     font-family: 'Thamania Text';
     src: url('assets/fonts/thmanyahseriftext-Regular.woff2') format('woff2');
@@ -67,7 +67,7 @@
     font-display: swap;
   }
 
-  /* تعريف خط العناوين */
+
   @font-face {
     font-family: 'Thamania Sans';
     src: url('assets/fonts/thmanyahseriftext-Medium.woff2') format('woff2');
@@ -85,6 +85,36 @@
     --mist:#8C8175;
     --line:#E7DDCE;
   }
+
+
+  
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+
+  ::selection {
+    background-color: var(--sand);
+    color: #FFFFFF;
+  }
+
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg); 
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--mist); 
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--sand-deep); 
+  }
+
+  /* -------------------------------------- */
 
   *{
     box-sizing:border-box;
@@ -150,7 +180,7 @@
     margin:0 auto;
   }
 
-  /* ---------- archive grid ---------- */
+
 
   main{
     padding:64px 0 30px;
@@ -162,7 +192,7 @@
     gap:28px;
   }
 
-  /* ---------- Premium Archive Cards ---------- */
+
 
   .entry{
     background:#FFFFFF;
@@ -192,26 +222,14 @@
     height:100%;
     object-fit:cover;
     transition:transform 0.5s ease;
+    
+
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
   }
 
   .entry:hover .entry-frame img{
     transform:scale(1.05);
-  }
-
-  .entry-frame::after{
-    content:'';
-    position:absolute;
-    bottom:-2px;
-    left:0;
-    width:100%;
-    height:55%;
-    background:linear-gradient(
-      to bottom,
-      rgba(255,255,255,0) 0%,
-      #FFFFFF 100%
-    );
-    z-index:1;
-    pointer-events:none;
   }
 
   .entry-info{
@@ -219,7 +237,7 @@
     position:relative;
     z-index:2;
     background:#FFFFFF;
-    margin-top:-40px;
+    margin-top:-15px;
   }
 
   .entry-name{
@@ -295,6 +313,15 @@
     text-align:center;
   }
 
+  /* النبذة الصغيرة عن مؤسس الأرشيف */
+  .creator-note {
+    font-size: 0.85rem;
+    color: var(--sand);
+    font-style: italic;
+    margin-bottom: 24px;
+    display: block;
+  }
+
   .contact-box h2{
     font-size:1.8rem;
     color:var(--sand-deep);
@@ -304,7 +331,7 @@
   .contact-box p{
     color:var(--mist);
     font-size:0.92rem;
-    margin-bottom:28px;
+    margin-bottom:12px;
   }
 
   .contact-form{
@@ -366,9 +393,21 @@
 
   footer span{
     color:var(--mist);
-    font-size:0.82rem;
+    font-size:0.85rem;
     direction:ltr;
     display:inline-block;
+  }
+  
+
+  footer a {
+    color: var(--sand-deep);
+    font-weight: 700;
+    transition: color 0.2s ease;
+  }
+  
+  footer a:hover {
+    color: var(--ink);
+    text-decoration: underline;
   }
 </style>
 </head>
@@ -378,7 +417,7 @@
 <header>
   <div class="wrap">
     <h1>أرشيف عائلة عبد الله العايدي</h1>
-    <p>مساحة لحفظ صور العائلة وذكرياتها عبر السنين.</p>
+    <p>مساحة لحفظ صور شهداء العائلة وذكرياتها عبر السنين.</p>
   </div>
 </header>
 
@@ -404,7 +443,7 @@
 
           <div class="entry-meta">
             <span class="meta-label">تاريخ الإرتقاء</span>
-            <span class="meta-value">26-8-2025</span>
+            <span class="meta-value">26 أغسطس 2025</span>
           </div>
 
           <p class="entry-desc">صور الشهيد محمد عبر السنين</p>
@@ -429,7 +468,7 @@
 
           <div class="entry-meta">
             <span class="meta-label">تاريخ الإرتقاء</span>
-            <span class="meta-value">25-7-2014</span>
+            <span class="meta-value">25 يوليو 2014</span>
           </div>
 
           <p class="entry-desc">صور الشهيد عبد المجيد عبر السنين</p>
@@ -456,10 +495,8 @@
     <div class="contact-box">
 
       <h2>المساهمة في الأرشيف</h2>
-
-      <p>
-        إذا كانت لديك صور أو ذكريات تود إضافتها، تواصل معي.
-      </p>
+      <p>إذا كانت لديك صور أو ذكريات تود إضافتها، تواصل معي.</p>
+      
 
       <form
         id="my-contact-form"
@@ -507,7 +544,7 @@
 </section>
 
 <footer>
-  <span>2026 ABDALLAH ALAYDI. All Rights Reserved.©</span>
+  <span>2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.©</span>
 </footer>
 
 <script>
