@@ -462,6 +462,218 @@
     transform:translateY(-1px);
   }
 
+  /* ---------- قسم (حول الأرشيف وتثبيت التطبيق) في الفوتر ---------- */
+
+  .footer-about-wrap {
+    max-width: 720px;
+    margin: 0 auto 26px;
+    padding: 0 20px;
+  }
+
+  .about-toggle-btn {
+    background: var(--card);
+    color: var(--sand-deep);
+    border: 1px solid var(--line);
+    padding: 11px 24px;
+    border-radius: 30px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(138, 103, 65, 0.06);
+  }
+
+  .about-toggle-btn:hover {
+    border-color: var(--sand);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(138, 103, 65, 0.12);
+  }
+
+  .about-toggle-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    font-size: 0.78rem;
+  }
+
+  .about-toggle-btn.active .about-toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .about-drawer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s ease, opacity 0.35s ease, margin-top 0.35s ease;
+    opacity: 0;
+    margin-top: 0;
+  }
+
+  .about-drawer.open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 18px;
+  }
+
+  .about-drawer-inner {
+    overflow: hidden;
+  }
+
+  .about-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 26px;
+    text-align: right;
+    box-shadow: 0 12px 32px rgba(138, 103, 65, 0.08);
+  }
+
+  .about-block {
+    margin-bottom: 22px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .about-block:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .about-block h3 {
+    font-size: 1.12rem;
+    color: var(--sand-deep);
+    margin-bottom: 8px;
+  }
+
+  .about-block p {
+    font-size: 0.93rem;
+    color: var(--ink);
+    line-height: 1.85;
+  }
+
+  .about-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .about-badge {
+    display: inline-block;
+    background: var(--bg);
+    color: var(--sand-deep);
+    border: 1px solid var(--line);
+    padding: 4px 13px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-family: 'Thamania Sans', sans-serif;
+  }
+
+  .inline-link {
+    color: var(--sand-deep);
+    font-family: 'Thamania Sans', sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .inline-link:hover {
+    color: var(--ink);
+  }
+
+  /* بطاقات شرح التثبيت للآيفون والأندرويد */
+  .install-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .install-os-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+
+  .install-os-title {
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.98rem;
+    color: var(--sand-deep);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .install-os-tag {
+    font-size: 0.75rem;
+    color: var(--mist);
+    font-weight: 400;
+  }
+
+  .install-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .install-list li {
+    font-size: 0.87rem;
+    color: var(--ink);
+    line-height: 1.7;
+    margin-bottom: 8px;
+    position: relative;
+    padding-right: 22px;
+  }
+
+  .install-list li:last-child {
+    margin-bottom: 0;
+  }
+
+  .step-num {
+    position: absolute;
+    right: 0;
+    top: 3px;
+    width: 17px;
+    height: 17px;
+    background: var(--sand-deep);
+    color: #FFFFFF;
+    border-radius: 50%;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .install-list strong {
+    font-family: 'Thamania Sans', sans-serif;
+    color: var(--sand-deep);
+  }
+
+  .app-installed-note {
+    display: none;
+    background: var(--bg);
+    border: 1px solid var(--sand);
+    color: var(--sand-deep);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  body.is-app .app-installed-note {
+    display: block;
+  }
+
   /* ---------- footer ---------- */
 
   footer{
@@ -470,20 +682,20 @@
     border-top:1px solid var(--line);
   }
 
-  footer span{
+  footer > span{
     color:var(--mist);
     font-size:0.85rem;
     direction:ltr;
     display:inline-block;
   }
 
-  footer a {
+  footer > span a {
     color: var(--sand-deep);
     font-weight: 700;
     transition: color 0.2s ease;
   }
   
-  footer a:hover {
+  footer > span a:hover {
     color: var(--ink);
     text-decoration: underline;
   }
@@ -512,7 +724,7 @@
   </div>
 
   <div class="splash-footer">
-    <span class="splash-from">from</span>
+    <span class="splash-from">By</span>
     <span class="splash-brand">ABDALLAH</span>
   </div>
 </div>
@@ -593,7 +805,7 @@
   </div>
 </div>
 
-<section class="contact-section">
+<section class="contact-section" id="contribute-section">
   <div class="wrap">
     <div class="contact-box">
 
@@ -609,6 +821,7 @@
 
         <input
           type="text"
+          id="contributor-name"
           name="name"
           class="form-control"
           placeholder="الاسم"
@@ -646,6 +859,98 @@
 </section>
 
 <footer>
+  <!-- قسم (حول مشروع الأرشيف وتثبيت التطبيق) القابل للفتح -->
+  <div class="footer-about-wrap">
+    <button type="button" class="about-toggle-btn" id="aboutToggleBtn" aria-expanded="false">
+      <span>حول مشروع الأرشيف </span>
+      <span class="about-toggle-icon">▼</span>
+    </button>
+
+    <div class="about-drawer" id="aboutDrawer">
+      <div class="about-drawer-inner">
+        <div class="about-card">
+
+          <!-- 1. فكرة الأرشيف والجانب البرمجي -->
+          <div class="about-block">
+            <h3>فكرة الأرشيف والجانب البرمجي</h3>
+            <p>
+              أُنشئت هذه الصفحة بمبادرة فردية لترسيخ تاريخ العائلة وتوثيق سيرة وصور شهدائنا لتبقى ذكراهم حية عبر السنين. كما يُعد هذا الموقع مشروعاً تقنياً خاصاً وتطبيقاً عملياً لخبراتي في مجال البرمجة وتطوير الويب.
+            </p>
+            <div class="about-badges">
+              <span class="about-badge">تاريخ التأسيس: سبتمبر 2026</span>
+              <span class="about-badge">الموقع قيد التطوير والتحديث المستمر</span>
+            </div>
+          </div>
+
+          <!-- 2. المساهمة واقتراح التعديلات -->
+          <div class="about-block">
+            <h3>المساهمة واقتراح التعديلات</h3>
+            <p>
+              هذا الأرشيف ينمو بمساهماتكم؛ يمكنك دائماً اقتراح تعديلات لتحسين الموقع أو إرسال صور وذكريات إضافية للشهداء المعروضين (<strong>الشهيد محمد</strong> و<strong>الشهيد عبد المجيد</strong>) عبر <a href="#contribute-section" class="inline-link" id="goToFormLink">نموذج المساهمة أعلاه</a>.
+            </p>
+          </div>
+
+          <!-- 3. شرح تثبيت التطبيق على الآيفون والأندرويد -->
+          <div class="about-block">
+            <h3>طريقة تثبيت الأرشيف كتطبيق على الواجهة الرئيسية</h3>
+            <p>لتصفح الأرشيف بسهولة وفي أي وقت كأنه تطبيق مستقل على هاتفك، اتبع الخطوات حسب نوع جهازك:</p>
+
+            <div class="app-installed-note">
+              ✓ أنت تتصفح الأرشيف حالياً من خلال التطبيق المثبّت على جهازك.
+            </div>
+
+            <div class="install-grid">
+              <!-- خطوات الآيفون -->
+              <div class="install-os-card">
+                <div class="install-os-title">
+                  <span>أجهزة الآيفون (iPhone)</span>
+                  <span class="install-os-tag">متصفح Safari</span>
+                </div>
+                <ol class="install-list">
+                  <li>
+                    <span class="step-num">1</span>
+                    افتح الموقع باستخدام متصفح <strong>Safari</strong>.
+                  </li>
+                  <li>
+                    <span class="step-num">2</span>
+                    اضغط على أيقونة <strong>المشاركة (Share)</strong> في الشريط السفلي (المربع الذي يخرج منه سهم للأعلى).
+                  </li>
+                  <li>
+                    <span class="step-num">3</span>
+                    مرر للأسفل واختر <strong>"إضافة إلى الصفحة الرئيسية" (Add to Home Screen)</strong> ثم اضغط <strong>إضافة (Add)</strong>.
+                  </li>
+                </ol>
+              </div>
+
+              <!-- خطوات الأندرويد -->
+              <div class="install-os-card">
+                <div class="install-os-title">
+                  <span>أجهزة الأندرويد (Android)</span>
+                  <span class="install-os-tag">متصفح Chrome</span>
+                </div>
+                <ol class="install-list">
+                  <li>
+                    <span class="step-num">1</span>
+                    افتح الموقع باستخدام متصفح <strong>Google Chrome</strong>.
+                  </li>
+                  <li>
+                    <span class="step-num">2</span>
+                    اضغط على رمز <strong>النقاط الثلاث (⋮)</strong> في أعلى زاوية المتصفح.
+                  </li>
+                  <li>
+                    <span class="step-num">3</span>
+                    اختر <strong>"تثبيت التطبيق" (Install app)</strong> أو <strong>"الإضافة إلى الشاشة الرئيسية" (Add to Home screen)</strong> ثم أكد التثبيت.
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
   <span>2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.©</span>
 </footer>
 
@@ -659,6 +964,24 @@
         document.body.classList.remove("splash-active");
       }, 1200);
     }
+  });
+
+  // فتح وإغلاق قسم (حول مشروع الأرشيف • تثبيت التطبيق)
+  const aboutBtn = document.getElementById("aboutToggleBtn");
+  const aboutDrawer = document.getElementById("aboutDrawer");
+  const goToFormLink = document.getElementById("goToFormLink");
+
+  aboutBtn.addEventListener("click", function() {
+    const isOpen = aboutDrawer.classList.toggle("open");
+    aboutBtn.classList.toggle("active", isOpen);
+    aboutBtn.setAttribute("aria-expanded", isOpen);
+  });
+
+  // الانتقال السلس إلى نموذج المساهمة عند الضغط على الرابط داخل القسم
+  goToFormLink.addEventListener("click", function() {
+    setTimeout(function() {
+      document.getElementById("contributor-name")?.focus();
+    }, 500);
   });
 
   // كود نموذج التواصل
