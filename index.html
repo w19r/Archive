@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta name="apple-mobile-web-app-title" content="الأرشيف">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,11 +18,11 @@
   <!-- ==========================================
        2. الهوية البصرية والمتصفحات (Favicon & Manifest)
        ========================================== -->
-  <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/favicon/site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#FAF6F0">
 
   <!-- ==========================================
@@ -67,7 +69,6 @@
     font-display: swap;
   }
 
-
   @font-face {
     font-family: 'Thamania Sans';
     src: url('assets/fonts/thmanyahseriftext-Medium.woff2') format('woff2');
@@ -86,19 +87,14 @@
     --line:#E7DDCE;
   }
 
-
-  
-
   html {
     scroll-behavior: smooth;
   }
-
 
   ::selection {
     background-color: var(--sand);
     color: #FFFFFF;
   }
-
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -130,6 +126,88 @@
     line-height:1.8;
     -webkit-font-smoothing:antialiased;
   }
+
+  body.splash-active {
+    overflow: hidden;
+  }
+
+  /* ---------- Splash Screen (واجهة التحميل الافتتاحية) ---------- */
+
+  #splash-screen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    background-color: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+
+  #splash-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .splash-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .splash-logo {
+    width: 105px;
+    height: 105px;
+    border-radius: 24px;
+    object-fit: contain;
+    box-shadow: 0 10px 30px rgba(138, 103, 65, 0.12);
+    border: 1px solid var(--line);
+    animation: splashPulse 1.8s infinite ease-in-out;
+  }
+
+  .splash-footer {
+    position: absolute;
+    bottom: 42px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    direction: ltr;
+    text-align: center;
+  }
+
+  .splash-from {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.8rem;
+    color: var(--mist);
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .splash-brand {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.35em;
+    padding-left: 0.35em; /* لموازنة المسافات البادئة وجعل الكلمة في المنتصف تماماً */
+    text-transform: uppercase;
+  }
+
+  @keyframes splashPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.04);
+    }
+  }
+
+  /* -------------------------------------- */
 
   a{
     color:inherit;
@@ -180,8 +258,6 @@
     margin:0 auto;
   }
 
-
-
   main{
     padding:64px 0 30px;
   }
@@ -191,8 +267,6 @@
     grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
     gap:28px;
   }
-
-
 
   .entry{
     background:#FFFFFF;
@@ -222,8 +296,6 @@
     height:100%;
     object-fit:cover;
     transition:transform 0.5s ease;
-    
-
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
   }
@@ -313,7 +385,6 @@
     text-align:center;
   }
 
-  /* النبذة الصغيرة عن مؤسس الأرشيف */
   .creator-note {
     font-size: 0.85rem;
     color: var(--sand);
@@ -397,7 +468,6 @@
     direction:ltr;
     display:inline-block;
   }
-  
 
   footer a {
     color: var(--sand-deep);
@@ -412,7 +482,26 @@
 </style>
 </head>
 
-<body>
+<body class="splash-active">
+
+<!-- ==========================================
+     واجهة التحميل الافتتاحية (Splash Screen)
+     ========================================== -->
+<div id="splash-screen">
+  <div class="splash-center">
+    <img 
+      src="/android-chrome-512x512.png" 
+      onerror="this.onerror=null; this.src='/apple-touch-icon.png';" 
+      alt="أيقونة الأرشيف" 
+      class="splash-logo"
+    >
+  </div>
+
+  <div class="splash-footer">
+    <span class="splash-from">from</span>
+    <span class="splash-brand">ABDALLAH</span>
+  </div>
+</div>
 
 <header>
   <div class="wrap">
@@ -497,7 +586,6 @@
       <h2>المساهمة في الأرشيف</h2>
       <p>إذا كانت لديك صور أو ذكريات تود إضافتها، تواصل معي.</p>
       
-
       <form
         id="my-contact-form"
         action="https://formspree.io/f/xaeywkdr"
@@ -548,6 +636,16 @@
 </footer>
 
 <script>
+  // إخفاء شاشة التحميل الافتتاحية بسلاسة بعد فتح التطبيق
+  window.addEventListener("load", function() {
+    const splash = document.getElementById("splash-screen");
+    setTimeout(function() {
+      splash.classList.add("fade-out");
+      document.body.classList.remove("splash-active");
+    }, 1200); // 1200 ملي ثانية = 1.2 ثانية
+  });
+
+  // كود نموذج التواصل
   const form = document.getElementById("my-contact-form");
   const status = document.getElementById("form-status");
 
