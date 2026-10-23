@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- الصفحة الرئيسية -->
+  <url>
+    <loc>https://archive.abdallahalaydi.com/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- صفحة أرشيف الشهيد محمد -->
+  <url>
+    <loc>https://archive.abdallahalaydi.com/mohammed/</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- صفحة أرشيف الشهيد عبد المجيد -->
+  <url>
+    <loc>https://archive.abdallahalaydi.com/abdulmajeed/</loc>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>
