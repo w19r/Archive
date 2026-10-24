@@ -1,1 +1,264 @@
-hey
+{
+  "record": {
+    "gallery": [
+      {
+        "id": "1787862486251",
+        "year": "2021",
+        "image": "../assets/img/mohammed/IMG_0504_Original.jpeg",
+        "title": "لحضات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787863078670",
+        "year": "2022",
+        "image": "../assets/img/mohammed/IMG_1860_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787864223358",
+        "year": "2021",
+        "image": "../assets/img/mohammed/IMG_1680_Original.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787866775493",
+        "year": "2021",
+        "image": "../assets/img/mohammed/IMG_4054_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787911957079",
+        "year": "2022",
+        "image": "../assets/img/mohammed/IMG_4216_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787911992498",
+        "year": "2022",
+        "image": "../assets/img/mohammed/IMG_3986_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912038235",
+        "year": "2022",
+        "image": "../assets/img/mohammed/IMG_3446_Original.jpeg",
+        "title": "ذكريات العائلة على الشاطئ",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912070138",
+        "year": "2022",
+        "image": "../assets/img/mohammed/IMG_3437_Original.jpeg",
+        "title": "ذكريات العائلة على الشاطئ",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912141103",
+        "year": "1995-2005",
+        "image": "../assets/img/mohammed/IMG_8800_Original.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912257558",
+        "year": "2021",
+        "image": "../assets/img/mohammed/IMG_5335_Original.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912290963",
+        "year": "2021",
+        "image": "../assets/img/mohammed/IMG_4146_Original.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912350619",
+        "year": "2021",
+        "image": "../assets/img/mohammed/IMG_٢٠٢١٠٧٢٧_١٩٥١٠٧_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912391718",
+        "year": "2021",
+        "image": "../assets/img/mohammed/IMG_٢٠٢١٠٢٢٢_١٩٠٨٠١_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787912422887",
+        "year": "2020",
+        "image": "../assets/img/mohammed/IMG_٢٠٢٠٠٩١٠_١٧٠٣٥٩_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787918849935",
+        "year": "2023",
+        "image": "../assets/img/mohammed/4052a4a88o4e657f664933e75d383930.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787918890404",
+        "year": "2023",
+        "image": "../assets/img/mohammed/64364ee02ja9822babdc4dcc5c9dec70.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787918934026",
+        "year": "2024",
+        "image": "../assets/img/mohammed/725a47812vafcaf8f0aaff8be404010d.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787918974079",
+        "year": "2023",
+        "image": "../assets/img/mohammed/2c45ec112qb2bf89432a71e8ce51c929.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787919050857",
+        "year": "2011",
+        "image": "../assets/img/mohammed/ca4678fb9r35d6863ff9853b94357b7d.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787919097023",
+        "year": "2011",
+        "image": "../assets/img/mohammed/e41c6ad8blc2d8dd7d382be8a1d61315.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787919148615",
+        "year": "2022",
+        "image": "../assets/img/mohammed/IMG_8616.HEIC.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787919186286",
+        "year": "2011",
+        "image": "../assets/img/mohammed/bbcc1b40cmd8e7b34496171f3eddfb77.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1787940741004",
+        "year": "2022",
+        "image": "../assets/img/mohammed/IMG_2568_Original.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286395751",
+        "year": "2020-2022",
+        "image": "../assets/img/mohammed/IMG_1067.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286489209",
+        "year": "1987-1990",
+        "image": "../assets/img/mohammed/IMG_1066.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286537835",
+        "year": "1990-1993",
+        "image": "../assets/img/mohammed/IMG_1065.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286571888",
+        "year": "2017-2020",
+        "image": "../assets/img/mohammed/IMG_1064.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286620090",
+        "year": "1998-2004",
+        "image": "../assets/img/mohammed/IMG_1063.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286684644",
+        "year": "1996-2003",
+        "image": "../assets/img/mohammed/IMG_1062.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286724736",
+        "year": "2004-2007",
+        "image": "../assets/img/mohammed/IMG_1061.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286771131",
+        "year": "1989-1993",
+        "image": "../assets/img/mohammed/IMG_1060.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286828424",
+        "year": "1999-2004",
+        "image": "../assets/img/mohammed/IMG_1059.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286891811",
+        "year": "2018-2021",
+        "image": "../assets/img/mohammed/IMG_1058.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286927268",
+        "year": "1986-1990",
+        "image": "../assets/img/mohammed/IMG_1057.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788286970143",
+        "year": "1999-2004",
+        "image": "../assets/img/mohammed/IMG_1056.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788287026800",
+        "year": "2012-2016",
+        "image": "../assets/img/mohammed/IMG_1055.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      }
+    ]
+  },
+  "metadata": {
+    "id": "6a90878ef5f4af5e294ae1b6",
+    "private": false,
+    "createdAt": "2026-08-27T18:53:02.321Z",
+    "name": "Mohammed"
+  }
+}
