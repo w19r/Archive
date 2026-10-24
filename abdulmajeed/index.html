@@ -762,8 +762,8 @@
     });
 
     try {
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
-      if (!response.ok) throw new Error("تعذر جلب البيانات. تأكد أن الـ Bin مضبوط على Public.");
+      const response = await fetch('../assets/data/abdulmajeed.json');
+      if (!response.ok) throw new Error("تعذر جلب البيانات.");
       
       const result = await response.json();
       const rawGallery = result.record.gallery || [];
