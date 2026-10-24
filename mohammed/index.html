@@ -766,9 +766,8 @@
     });
 
     try {
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
+      const response = await fetch('../assets/data/mohammed.json');
       if (!response.ok) throw new Error("تعذر جلب البيانات.");
-      
       const result = await response.json();
       const rawGallery = result.record.gallery || [];
 
