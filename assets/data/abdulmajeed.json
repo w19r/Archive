@@ -1,1 +1,495 @@
-hey
+{
+  "record": {
+    "gallery": [
+      {
+        "id": "1788117831413",
+        "year": "2014-05-10",
+        "image": "../assets/img/abdulmajeed/IMG_0990.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788117884235",
+        "year": "2014-05-10",
+        "image": "../assets/img/abdulmajeed/IMG_0991.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788117927124",
+        "year": "2014-05-10",
+        "image": "../assets/img/abdulmajeed/IMG_0992.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788117981848",
+        "year": "2013-09-05",
+        "image": "../assets/img/abdulmajeed/IMG_0993.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118010326",
+        "year": "2013-09-05",
+        "image": "../assets/img/abdulmajeed/IMG_0994.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118051786",
+        "year": "2013-09-05",
+        "image": "../assets/img/abdulmajeed/IMG_0995.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118085694",
+        "year": "2013-09-05",
+        "image": "../assets/img/abdulmajeed/IMG_0996.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118116359",
+        "year": "2013-09-05",
+        "image": "../assets/img/abdulmajeed/IMG_0997.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118144020",
+        "year": "2013-09-05",
+        "image": "../assets/img/abdulmajeed/IMG_0998.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118178694",
+        "year": "2013-09-05",
+        "image": "../assets/img/abdulmajeed/IMG_0999.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118591805",
+        "year": "2014-05-10",
+        "image": "../assets/img/abdulmajeed/IMG_0989.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118636181",
+        "year": "2014-06-19",
+        "image": "../assets/img/abdulmajeed/IMG_0988.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118691562",
+        "year": "2014-06-13",
+        "image": "../assets/img/abdulmajeed/IMG_0987.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118730673",
+        "year": "2014-06-05",
+        "image": "../assets/img/abdulmajeed/IMG_0986.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118769584",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0985.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118806387",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0984.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118838092",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0983.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118864399",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0982.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118896105",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0981.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788118934170",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0980.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788120521159",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0979.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788120567204",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0978.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788120613913",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0977.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788120664041",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0975.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788120690843",
+        "year": "2014-05-23",
+        "image": "../assets/img/abdulmajeed/IMG_0973.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788120753909",
+        "year": "2011-08-30",
+        "image": "../assets/img/abdulmajeed/IMG_0972.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788121012087",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0970.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788121090456",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0968.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788121199028",
+        "year": "2012-02-8",
+        "image": "../assets/img/abdulmajeed/IMG_0969.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788121247238",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0967.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172445030",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0966.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172482804",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0965.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172519026",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0964.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172548481",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0963.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172573018",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0962.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172930932",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0961.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172953638",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0960.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788172982962",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0959.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788173020281",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0958.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788173053813",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0957.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788173080027",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0956.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788173102832",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0955.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788173193858",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0954.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788173216284",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0953.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174058178",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0952.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174096391",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0951.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174138851",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0950.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174180420",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0949.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174206880",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0948.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174242676",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0947.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174276564",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0946.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174834192",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0945.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174866255",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0944.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174891965",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0943.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174910515",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0942.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174957199",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0941.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788174971408",
+        "year": "2012-02-08",
+        "image": "../assets/img/abdulmajeed/IMG_0940.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788175011885",
+        "year": "2012-02-07",
+        "image": "../assets/img/abdulmajeed/IMG_0939.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788175034614",
+        "year": "2012-02-07",
+        "image": "../assets/img/abdulmajeed/IMG_0938.jpeg",
+        "title": "من حفلة عبد المجيد",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788175072684",
+        "year": "2009-2013",
+        "image": "../assets/img/abdulmajeed/IMG_0937.jpeg",
+        "title": "لحظات عفوية",
+        "desc": "صورة تذكارية"
+      },
+      {
+        "id": "1788188045063",
+        "year": "2003-2008",
+        "image": "../assets/img/abdulmajeed/IMG_1073.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188132886",
+        "year": "1992-1998",
+        "image": "../assets/img/abdulmajeed/IMG_1072.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188166512",
+        "year": "1992-1998",
+        "image": "../assets/img/abdulmajeed/IMG_1071.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188242890",
+        "year": "1996-2003",
+        "image": "../assets/img/abdulmajeed/IMG_1070.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188278606",
+        "year": "1996-2003",
+        "image": "../assets/img/abdulmajeed/IMG_1069.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188354931",
+        "year": "2007-2012",
+        "image": "../assets/img/abdulmajeed/IMG_1068.jpeg",
+        "title": "مرحلة الشباب",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188468329",
+        "year": "1987-1990",
+        "image": "../assets/img/abdulmajeed/IMG_1066.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188523286",
+        "year": "1990-1993",
+        "image": "../assets/img/abdulmajeed/IMG_1065.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية للذكرى."
+      },
+      {
+        "id": "1788188612821",
+        "year": "1995-2000",
+        "image": "../assets/img/abdulmajeed/IMG_1062.jpeg",
+        "title": "ذكريات العائلة",
+        "desc": "صورة تذكارية للذكرى."
+      }
+    ]
+  },
+  "metadata": {
+    "id": "6a908f46da38895dfe196b09",
+    "private": false,
+    "createdAt": "2026-08-27T19:25:58.232Z",
+    "name": "AbdulMjeed"
+  }
+}
