@@ -73,7 +73,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
   <!-- ==========================================
-       6. نظام الإشعارات (OneSignal) - نسخة موحدة ونظيفة
+       6. نظام الإشعارات (OneSignal) - التعديل الصارم لأجهزة آبل
        ========================================== -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
@@ -83,14 +83,19 @@
         await OneSignal.init({
           appId: "8a8880b0-521b-42da-8b7f-6cc930a151ea",
           serviceWorkerPath: "sw.js",
-          notifyButton: { enable: false } // إيقاف الدائرة الافتراضية للاعتماد على الشريط البيضاوي المخصص
+          notifyButton: { enable: false } 
         });
 
-        // فحص دقيق لحالة الإشعارات في المتصفح وفي OneSignal v16
+        // السر هنا: تسجيل أي جهاز وافق مسبقاً (مثل الآيباد الخاص بك) في سيرفراتنا فوراً
+        if ('Notification' in window && Notification.permission === 'granted') {
+          await OneSignal.User.PushSubscription.optIn();
+        }
+
         const nativePerm = ('Notification' in window) ? Notification.permission : 'default';
         const isAlreadySubscribed = OneSignal.Notifications.permission === true || nativePerm === 'granted';
         const isDismissed = localStorage.getItem('hideArchiveNotifyPill') === 'true';
 
+        // إظهار الشريط البيضاوي للمستخدمين الجدد فقط
         if (!isAlreadySubscribed && nativePerm !== 'denied' && !isDismissed) {
           setTimeout(() => {
             const pill = document.getElementById('notify-pill-banner');
@@ -130,796 +135,170 @@
     --line:#E7DDCE;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
+  ::selection { background-color: var(--sand); color: #FFFFFF; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--mist); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--sand-deep); }
 
-  ::selection {
-    background-color: var(--sand);
-    color: #FFFFFF;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--bg); 
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--mist); 
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--sand-deep); 
-  }
-
-  *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
 
   body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Thamania Text', serif;
-    font-weight:400;
-    line-height:1.8;
+    background:var(--bg); color:var(--ink);
+    font-family:'Thamania Text', serif; font-weight:400; line-height:1.8;
     -webkit-font-smoothing:antialiased;
   }
-
-  body.splash-active {
-    overflow: hidden;
-  }
+  body.splash-active { overflow: hidden; }
 
   /* ---------- Splash Screen (للـ App فقط) ---------- */
   #splash-screen {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%; background-color: var(--bg);
+    flex-direction: column; justify-content: center; align-items: center;
+    z-index: 99999; transition: opacity 0.6s ease, visibility 0.6s ease;
   }
-
-  body.is-app #splash-screen {
-    display: flex;
-  }
-
-  #splash-screen.fade-out {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  .splash-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
+  body.is-app #splash-screen { display: flex; }
+  #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+  .splash-center { display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .splash-logo {
-    width: 105px;
-    height: 105px;
-    border-radius: 24px;
-    object-fit: contain;
-    box-shadow: 0 10px 30px rgba(138, 103, 65, 0.12);
-    border: 1px solid var(--line);
+    width: 105px; height: 105px; border-radius: 24px; object-fit: contain;
+    box-shadow: 0 10px 30px rgba(138, 103, 65, 0.12); border: 1px solid var(--line);
     animation: splashPulse 1.8s infinite ease-in-out;
   }
+  .splash-footer { position: absolute; bottom: 42px; display: flex; flex-direction: column; align-items: center; direction: ltr; text-align: center; }
+  .splash-from { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--mist); margin-bottom: 4px; }
+  .splash-brand { font-family: -apple-system, sans-serif; font-size: 1rem; font-weight: 600; color: var(--ink); letter-spacing: 0.35em; padding-left: 0.35em; text-transform: uppercase; }
 
-  .splash-footer {
-    position: absolute;
-    bottom: 42px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    direction: ltr;
-    text-align: center;
-  }
+  @keyframes splashPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
-  .splash-from {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 0.8rem;
-    color: var(--mist);
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
-  }
-
-  .splash-brand {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--ink);
-    letter-spacing: 0.35em;
-    padding-left: 0.35em;
-    text-transform: uppercase;
-  }
-
-  @keyframes splashPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.04); }
-  }
-
-  /* ---------- 1. الشريط العلوي للتحديث فقط (Update Banner) ---------- */
+  /* ---------- 1. الشريط العلوي للتحديث ---------- */
   #update-banner {
-    position: fixed;
-    top: -100px;
-    left: 0;
-    width: 100%;
-    background-color: var(--sand-deep);
-    color: #FFFFFF;
-    text-align: center;
-    padding: 12px 20px;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.95rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    z-index: 100001;
-    transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
+    position: fixed; top: -100px; left: 0; width: 100%; background-color: var(--sand-deep);
+    color: #FFFFFF; text-align: center; padding: 12px 20px; font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 100001;
+    transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; justify-content: center; align-items: center; gap: 12px;
   }
-
-  #update-banner.show {
-    top: 0;
-  }
-
-  #update-banner button {
-    background-color: #FFFFFF;
-    color: var(--ink);
-    border: none;
-    border-radius: 20px;
-    padding: 6px 18px;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.85rem;
-    cursor: pointer;
-    font-weight: 700;
-    transition: transform 0.2s ease;
-  }
-
-  #update-banner button:hover {
-    transform: scale(1.05);
-  }
+  #update-banner.show { top: 0; }
+  #update-banner button { background-color: #FFFFFF; color: var(--ink); border: none; border-radius: 20px; padding: 6px 18px; font-family: 'Thamania Sans', sans-serif; font-size: 0.85rem; cursor: pointer; font-weight: 700; transition: transform 0.2s ease; }
+  #update-banner button:hover { transform: scale(1.05); }
 
   /* ---------- 2. الزر البيضاوي العريض لتفعيل الإشعارات (Notification Pill) ---------- */
   #notify-pill-banner {
-    position: fixed;
-    bottom: -120px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 32px);
-    max-width: 520px;
-    background-color: var(--ink);
-    color: #FFFFFF;
-    border: 1px solid rgba(169, 130, 95, 0.45);
-    border-radius: 999px; /* شكل بيضاوي عريض بالكامل */
-    padding: 10px 14px 10px 16px;
-    box-shadow: 0 14px 35px rgba(51, 44, 36, 0.28);
-    z-index: 100000;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    transition: bottom 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
-    opacity: 0;
-    pointer-events: none;
+    position: fixed; bottom: -120px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px);
+    max-width: 520px; background-color: var(--ink); color: #FFFFFF; border: 1px solid rgba(169, 130, 95, 0.45);
+    border-radius: 999px; padding: 10px 14px 10px 16px; box-shadow: 0 14px 35px rgba(51, 44, 36, 0.28);
+    z-index: 100000; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    transition: bottom 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease; opacity: 0; pointer-events: none;
   }
-
-  #notify-pill-banner.show {
-    bottom: 22px;
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .notify-pill-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .notify-bell-circle {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(169, 130, 95, 0.2);
-    color: #E7DDCE;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .notify-bell-circle svg {
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
-    animation: bellRing 2.5s infinite ease-in-out;
-  }
-
-  @keyframes bellRing {
-    0%, 100% { transform: rotate(0); }
-    10%, 30% { transform: rotate(12deg); }
-    20%, 40% { transform: rotate(-12deg); }
-    50% { transform: rotate(0); }
-  }
-
-  .notify-pill-text {
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.86rem;
-    color: #FAF6F0;
-    line-height: 1.4;
-    text-align: right;
-  }
-
-  .notify-pill-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-
-  .btn-pill-accept {
-    background-color: var(--sand);
-    color: #FFFFFF;
-    border: none;
-    border-radius: 999px;
-    padding: 7px 16px;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-  }
-
-  .btn-pill-accept:hover {
-    background-color: var(--sand-deep);
-    transform: scale(1.03);
-  }
-
-  .btn-pill-later {
-    background: transparent;
-    color: #C2B8AD;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 999px;
-    padding: 7px 12px;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.78rem;
-    cursor: pointer;
-    transition: color 0.2s ease, border-color 0.2s ease;
-  }
-
-  .btn-pill-later:hover {
-    color: #FFFFFF;
-    border-color: rgba(255, 255, 255, 0.5);
-  }
-
+  #notify-pill-banner.show { bottom: 22px; opacity: 1; pointer-events: auto; }
+  .notify-pill-content { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  .notify-bell-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(169, 130, 95, 0.2); color: #E7DDCE; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .notify-bell-circle svg { width: 18px; height: 18px; fill: currentColor; animation: bellRing 2.5s infinite ease-in-out; }
+  @keyframes bellRing { 0%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(12deg); } 20%, 40% { transform: rotate(-12deg); } 50% { transform: rotate(0); } }
+  .notify-pill-text { font-family: 'Thamania Sans', sans-serif; font-size: 0.86rem; color: #FAF6F0; line-height: 1.4; text-align: right; }
+  .notify-pill-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .btn-pill-accept { background-color: var(--sand); color: #FFFFFF; border: none; border-radius: 999px; padding: 7px 16px; font-family: 'Thamania Sans', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; }
+  .btn-pill-accept:hover { background-color: var(--sand-deep); transform: scale(1.03); }
+  .btn-pill-later { background: transparent; color: #C2B8AD; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 999px; padding: 7px 12px; font-family: 'Thamania Sans', sans-serif; font-size: 0.78rem; cursor: pointer; transition: color 0.2s ease, border-color 0.2s ease; }
+  .btn-pill-later:hover { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.5); }
   @media (max-width: 480px) {
-    #notify-pill-banner {
-      padding: 8px 10px 8px 12px;
-      gap: 8px;
-    }
-    .notify-pill-text {
-      font-size: 0.78rem;
-    }
-    .btn-pill-accept {
-      padding: 6px 13px;
-      font-size: 0.78rem;
-    }
-    .btn-pill-later {
-      padding: 6px 10px;
-      font-size: 0.74rem;
-    }
-  }
-
-  /* -------------------------------------- */
-
-  a{
-    color:inherit;
-    text-decoration:none;
-  }
-
-  h1, h2, h3, h4, h5, h6, .entry-name, .display{
-    font-family:'Thamania Sans', sans-serif;
-    font-weight:700;
-  }
-
-  :focus-visible{
-    outline:2px solid var(--sand-deep);
-    outline-offset:3px;
-    border-radius:2px;
-  }
-
-  .wrap{
-    max-width:980px;
-    margin:0 auto;
-    padding:0 28px;
-  }
-
-  @media (max-width:600px){
-    .wrap{
-      padding:0 20px;
-    }
-  }
-
-  /* ---------- header ---------- */
-
-  header{
-    padding:64px 0 40px;
-    text-align:center;
-    border-bottom:1px solid var(--line);
-  }
-
-  header h1{
-    font-size:clamp(2rem, 5vw, 2.8rem);
-    color:var(--sand-deep);
-    margin-bottom:14px;
-  }
-
-  header p{
-    color:var(--mist);
-    font-size:1.02rem;
-    max-width:38ch;
-    margin:0 auto;
-  }
-
-  main{
-    padding:64px 0 30px;
-  }
-
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-    gap:28px;
-  }
-
-  .entry{
-    background:#FFFFFF;
-    border:1px solid var(--line);
-    border-radius:16px;
-    overflow:hidden;
-    transition:box-shadow 0.3s ease, transform 0.3s ease;
-    display:flex;
-    flex-direction:column;
-    text-align:center;
-  }
-
-  .entry:hover{
-    box-shadow:0 15px 35px rgba(138,103,65,0.12);
-    transform:translateY(-4px);
-  }
-
-  .entry-frame{
-    position:relative;
-    aspect-ratio:4/4.5;
-    background:#FFFFFF;
-    overflow:hidden;
-  }
-
-  .entry-frame img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    transition:transform 0.5s ease;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
-  }
-
-  .entry:hover .entry-frame img{
-    transform:scale(1.05);
-  }
-
-  .entry-info{
-    padding:10px 22px 30px;
-    position:relative;
-    z-index:2;
-    background:#FFFFFF;
-    margin-top:-15px;
-  }
-
-  .entry-name{
-    font-size:1.6rem;
-    color:var(--sand-deep);
-    margin-bottom:12px;
-  }
-
-  .entry-meta{
-    display:inline-flex;
-    flex-direction:column;
-    align-items:center;
-    background:var(--bg);
-    padding:8px 24px;
-    border-radius:12px;
-    margin-bottom:16px;
-  }
-
-  .meta-label{
-    font-size:0.8rem;
-    color:var(--mist);
-    margin-bottom:4px;
-  }
-
-  .meta-value{
-    font-family:'Thamania Sans', sans-serif;
-    font-weight:700;
-    color:var(--ink);
-    font-size:0.95rem;
-  }
-
-  .entry-desc{
-    color:var(--mist);
-    font-size:0.95rem;
-    line-height:1.6;
-  }
-
-  /* ---------- quote section ---------- */
-
-  .quote-section{
-    padding:30px 0 50px;
-    text-align:center;
-  }
-
-  .quote-box{
-    max-width:650px;
-    margin:0 auto;
-    padding:0 20px;
-  }
-
-  .quote-text{
-    font-family:'Playfair Display', serif;
-    font-style:italic;
-    font-size:1.15rem;
-    color:var(--sand-deep);
-    line-height:1.9;
-    letter-spacing:0.3px;
-  }
-
-  /* ---------- contact section ---------- */
-
-  .contact-section{
-    padding:20px 0 72px;
-  }
-
-  .contact-box{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:40px 32px;
-    max-width:560px;
-    margin:0 auto;
-    text-align:center;
-  }
-
-  .contact-box h2{
-    font-size:1.8rem;
-    color:var(--sand-deep);
-    margin-bottom:8px;
-  }
-
-  .contact-box p{
-    color:var(--mist);
-    font-size:0.92rem;
-    margin-bottom:12px;
-  }
-
-  .contact-form{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-    text-align:right;
-  }
-
-  .form-control{
-    width:100%;
-    padding:12px 16px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Thamania Text', serif;
-    font-size:0.95rem;
-    transition:border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .form-control:focus{
-    outline:none;
-    border-color:var(--sand-deep);
-    box-shadow:0 0 0 3px rgba(138,103,65,0.12);
-  }
-
-  textarea.form-control{
-    resize:vertical;
-    min-height:100px;
-  }
-
-  .btn-submit{
-    background:var(--sand-deep);
-    color:#FFFFFF;
-    border:none;
-    border-radius:8px;
-    padding:13px;
-    font-family:'Thamania Sans', sans-serif;
-    font-size:1rem;
-    font-weight:700;
-    cursor:pointer;
-    transition:background-color 0.2s ease, transform 0.2s ease;
-    margin-top:6px;
-  }
-
-  .btn-submit:hover{
-    background:var(--ink);
-    transform:translateY(-1px);
-  }
-
-  /* ---------- قسم (حول الأرشيف وتثبيت التطبيق) في الفوتر ---------- */
-
-  .footer-about-wrap {
-    max-width: 720px;
-    margin: 0 auto 26px;
-    padding: 0 20px;
-  }
-
-  .about-toggle-btn {
-    background: var(--card);
-    color: var(--sand-deep);
-    border: 1px solid var(--line);
-    padding: 11px 24px;
-    border-radius: 30px;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.93rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(138, 103, 65, 0.06);
-  }
-
-  .about-toggle-btn:hover {
-    border-color: var(--sand);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(138, 103, 65, 0.12);
-  }
-
-  .about-toggle-icon {
-    display: inline-block;
-    transition: transform 0.3s ease;
-    font-size: 0.78rem;
-  }
-
-  .about-toggle-btn.active .about-toggle-icon {
-    transform: rotate(180deg);
-  }
-
-  .about-drawer {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.4s ease, opacity 0.35s ease, margin-top 0.35s ease;
-    opacity: 0;
-    margin-top: 0;
-  }
-
-  .about-drawer.open {
-    grid-template-rows: 1fr;
-    opacity: 1;
-    margin-top: 18px;
-  }
-
-  .about-drawer-inner {
-    overflow: hidden;
-  }
-
-  .about-card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 28px 26px;
-    text-align: right;
-    box-shadow: 0 12px 32px rgba(138, 103, 65, 0.08);
-  }
-
-  .about-block {
-    margin-bottom: 22px;
-    padding-bottom: 20px;
-    border-bottom: 1px dashed var(--line);
-  }
-
-  .about-block:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-
-  .about-block h3 {
-    font-size: 1.12rem;
-    color: var(--sand-deep);
-    margin-bottom: 8px;
-  }
-
-  .about-block p {
-    font-size: 0.93rem;
-    color: var(--ink);
-    line-height: 1.85;
-  }
-
-  .about-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .about-badge {
-    display: inline-block;
-    background: var(--bg);
-    color: var(--sand-deep);
-    border: 1px solid var(--line);
-    padding: 4px 13px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-family: 'Thamania Sans', sans-serif;
-  }
-
-  .inline-link {
-    color: var(--sand-deep);
-    font-family: 'Thamania Sans', sans-serif;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-  }
-
-  .inline-link:hover {
-    color: var(--ink);
-  }
-
-  .install-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 14px;
-    margin-top: 14px;
-  }
-
-  .install-os-card {
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 16px 18px;
-  }
-
-  .install-os-title {
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.98rem;
-    color: var(--sand-deep);
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .install-os-tag {
-    font-size: 0.75rem;
-    color: var(--mist);
-    font-weight: 400;
-  }
-
-  .install-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .install-list li {
-    font-size: 0.87rem;
-    color: var(--ink);
-    line-height: 1.7;
-    margin-bottom: 8px;
-    position: relative;
-    padding-right: 22px;
-  }
-
-  .install-list li:last-child {
-    margin-bottom: 0;
-  }
-
-  .step-num {
-    position: absolute;
-    right: 0;
-    top: 3px;
-    width: 17px;
-    height: 17px;
-    background: var(--sand-deep);
-    color: #FFFFFF;
-    border-radius: 50%;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.7rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .install-list strong {
-    font-family: 'Thamania Sans', sans-serif;
-    color: var(--sand-deep);
-  }
-
-  .app-installed-note {
-    display: none;
-    background: var(--bg);
-    border: 1px solid var(--sand);
-    color: var(--sand-deep);
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 0.85rem;
-    margin-top: 10px;
-    text-align: center;
-  }
-
-  body.is-app .app-installed-note {
-    display: block;
-  }
-
-  /* ---------- footer ---------- */
-
-  footer{
-    padding:32px 0;
-    text-align:center;
-    border-top:1px solid var(--line);
-  }
-
-  footer > span{
-    color:var(--mist);
-    font-size:0.85rem;
-    display:inline-block;
-  }
-
-  footer > span a {
-    color: var(--sand-deep);
-    font-weight: 700;
-    transition: color 0.2s ease;
-  }
-  
-  footer > span a:hover {
-    color: var(--ink);
-    text-decoration: underline;
-  }
+    #notify-pill-banner { padding: 8px 10px 8px 12px; gap: 8px; }
+    .notify-pill-text { font-size: 0.78rem; }
+    .btn-pill-accept { padding: 6px 13px; font-size: 0.78rem; }
+    .btn-pill-later { padding: 6px 10px; font-size: 0.74rem; }
+  }
+
+  /* تنسيقات عامة */
+  a{ color:inherit; text-decoration:none; }
+  h1, h2, h3, h4, h5, h6, .entry-name{ font-family:'Thamania Sans', sans-serif; font-weight:700; }
+  :focus-visible{ outline:2px solid var(--sand-deep); outline-offset:3px; border-radius:2px; }
+  .wrap{ max-width:980px; margin:0 auto; padding:0 28px; }
+  @media (max-width:600px){ .wrap{ padding:0 20px; } }
+
+  header{ padding:64px 0 40px; text-align:center; border-bottom:1px solid var(--line); }
+  header h1{ font-size:clamp(2rem, 5vw, 2.8rem); color:var(--sand-deep); margin-bottom:14px; }
+  header p{ color:var(--mist); font-size:1.02rem; max-width:38ch; margin:0 auto; }
+
+  main{ padding:64px 0 30px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:28px; }
+  .entry{ background:#FFFFFF; border:1px solid var(--line); border-radius:16px; overflow:hidden; transition:box-shadow 0.3s ease, transform 0.3s ease; display:flex; flex-direction:column; text-align:center; }
+  .entry:hover{ box-shadow:0 15px 35px rgba(138,103,65,0.12); transform:translateY(-4px); }
+  .entry-frame{ position:relative; aspect-ratio:4/4.5; background:#FFFFFF; overflow:hidden; }
+  .entry-frame img{ width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%); }
+  .entry:hover .entry-frame img{ transform:scale(1.05); }
+  .entry-info{ padding:10px 22px 30px; position:relative; z-index:2; background:#FFFFFF; margin-top:-15px; }
+  .entry-name{ font-size:1.6rem; color:var(--sand-deep); margin-bottom:12px; }
+  .entry-meta{ display:inline-flex; flex-direction:column; align-items:center; background:var(--bg); padding:8px 24px; border-radius:12px; margin-bottom:16px; }
+  .meta-label{ font-size:0.8rem; color:var(--mist); margin-bottom:4px; }
+  .meta-value{ font-family:'Thamania Sans', sans-serif; font-weight:700; color:var(--ink); font-size:0.95rem; }
+  .entry-desc{ color:var(--mist); font-size:0.95rem; line-height:1.6; }
+
+  .quote-section{ padding:30px 0 50px; text-align:center; }
+  .quote-box{ max-width:650px; margin:0 auto; padding:0 20px; }
+  .quote-text{ font-family:'Playfair Display', serif; font-style:italic; font-size:1.15rem; color:var(--sand-deep); line-height:1.9; letter-spacing:0.3px; }
+
+  .contact-section{ padding:20px 0 72px; }
+  .contact-box{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:40px 32px; max-width:560px; margin:0 auto; text-align:center; }
+  .contact-box h2{ font-size:1.8rem; color:var(--sand-deep); margin-bottom:8px; }
+  .contact-box p{ color:var(--mist); font-size:0.92rem; margin-bottom:12px; }
+  .contact-form{ display:flex; flex-direction:column; gap:14px; text-align:right; }
+  .form-control{ width:100%; padding:12px 16px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink); font-family:'Thamania Text', serif; font-size:0.95rem; transition:border-color 0.2s ease, box-shadow 0.2s ease; }
+  .form-control:focus{ outline:none; border-color:var(--sand-deep); box-shadow:0 0 0 3px rgba(138,103,65,0.12); }
+  textarea.form-control{ resize:vertical; min-height:100px; }
+  .btn-submit{ background:var(--sand-deep); color:#FFFFFF; border:none; border-radius:8px; padding:13px; font-family:'Thamania Sans', sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:background-color 0.2s ease, transform 0.2s ease; margin-top:6px; }
+  .btn-submit:hover{ background:var(--ink); transform:translateY(-1px); }
+
+  .footer-about-wrap { max-width: 720px; margin: 0 auto 26px; padding: 0 20px; }
+  .about-toggle-btn { background: var(--card); color: var(--sand-deep); border: 1px solid var(--line); padding: 11px 24px; border-radius: 30px; font-family: 'Thamania Sans', sans-serif; font-size: 0.93rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(138, 103, 65, 0.06); }
+  .about-toggle-btn:hover { border-color: var(--sand); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(138, 103, 65, 0.12); }
+  .about-toggle-icon { display: inline-block; transition: transform 0.3s ease; font-size: 0.78rem; }
+  .about-toggle-btn.active .about-toggle-icon { transform: rotate(180deg); }
+  .about-drawer { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease, opacity 0.35s ease, margin-top 0.35s ease; opacity: 0; margin-top: 0; }
+  .about-drawer.open { grid-template-rows: 1fr; opacity: 1; margin-top: 18px; }
+  .about-drawer-inner { overflow: hidden; }
+  .about-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px 26px; text-align: right; box-shadow: 0 12px 32px rgba(138, 103, 65, 0.08); }
+  .about-block { margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px dashed var(--line); }
+  .about-block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .about-block h3 { font-size: 1.12rem; color: var(--sand-deep); margin-bottom: 8px; }
+  .about-block p { font-size: 0.93rem; color: var(--ink); line-height: 1.85; }
+  .about-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .about-badge { display: inline-block; background: var(--bg); color: var(--sand-deep); border: 1px solid var(--line); padding: 4px 13px; border-radius: 20px; font-size: 0.8rem; font-family: 'Thamania Sans', sans-serif; }
+  .inline-link { color: var(--sand-deep); font-family: 'Thamania Sans', sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .inline-link:hover { color: var(--ink); }
+
+  .install-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 14px; }
+  .install-os-card { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .install-os-title { font-family: 'Thamania Sans', sans-serif; font-size: 0.98rem; color: var(--sand-deep); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
+  .install-os-tag { font-size: 0.75rem; color: var(--mist); font-weight: 400; }
+  .install-list { list-style: none; padding: 0; margin: 0; }
+  .install-list li { font-size: 0.87rem; color: var(--ink); line-height: 1.7; margin-bottom: 8px; position: relative; padding-right: 22px; }
+  .install-list li:last-child { margin-bottom: 0; }
+  .step-num { position: absolute; right: 0; top: 3px; width: 17px; height: 17px; background: var(--sand-deep); color: #FFFFFF; border-radius: 50%; font-family: 'Thamania Sans', sans-serif; font-size: 0.7rem; display: inline-flex; align-items: center; justify-content: center; }
+  .app-installed-note { display: none; background: var(--bg); border: 1px solid var(--sand); color: var(--sand-deep); padding: 10px 14px; border-radius: 10px; font-family: 'Thamania Sans', sans-serif; font-size: 0.85rem; margin-top: 10px; text-align: center; }
+  body.is-app .app-installed-note { display: block; }
+
+  footer{ padding:32px 0; text-align:center; border-top:1px solid var(--line); }
+  footer > span{ color:var(--mist); font-size:0.85rem; display:inline-block; }
+  footer > span a { color: var(--sand-deep); font-weight: 700; transition: color 0.2s ease; }
+  footer > span a:hover { color: var(--ink); text-decoration: underline; }
 </style>
 </head>
 
 <body>
 <script>
-  // تفعيل شاشة البداية فقط إذا تم فتح الموقع كتطبيق ولم تظهر مسبقاً في هذه الجلسة
   if ((window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) && !sessionStorage.getItem('splashShown')) {
     document.body.classList.add('is-app', 'splash-active');
   }
 </script>
 
-<!-- ==========================================
-     1. شريط التحديث العلوي الذكي (PWA Update Banner)
-     ========================================== -->
+<!-- 1. شريط التحديث العلوي الذكي (PWA Update Banner) -->
 <div id="update-banner">
   <span>يتوفر تحديث جديد للأرشيف!</span>
   <button id="refresh-app-btn" type="button">تحديث الآن</button>
 </div>
 
-<!-- ==========================================
-     2. الزر البيضاوي العريض لتفعيل الإشعارات (Notification Pill)
-     ========================================== -->
+<!-- 2. الزر البيضاوي العريض لتفعيل الإشعارات (Notification Pill) -->
 <div id="notify-pill-banner" role="dialog" aria-label="تفعيل الإشعارات">
   <div class="notify-pill-content">
     <div class="notify-bell-circle" aria-hidden="true">
@@ -935,19 +314,11 @@
   </div>
 </div>
 
-<!-- ==========================================
-     واجهة التحميل الافتتاحية (Splash Screen)
-     ========================================== -->
+<!-- واجهة التحميل الافتتاحية (Splash Screen) -->
 <div id="splash-screen">
   <div class="splash-center">
-    <img 
-      src="/android-chrome-512x512.png" 
-      onerror="this.onerror=null; this.src='/apple-touch-icon.png';" 
-      alt="أيقونة الأرشيف" 
-      class="splash-logo"
-    >
+    <img src="/android-chrome-512x512.png" onerror="this.onerror=null; this.src='/apple-touch-icon.png';" alt="أيقونة الأرشيف" class="splash-logo">
   </div>
-
   <div class="splash-footer">
     <span class="splash-from">By</span>
     <span class="splash-brand">ABDALLAH</span>
@@ -964,28 +335,17 @@
 <main>
   <div class="wrap">
     <div class="grid">
-
       <!-- بطاقة الشهيد محمد -->
       <a class="entry" href="/mohammed">
         <div class="entry-frame">
-          <img
-            src="assets/img/mohammed/IMG_7032_Original.jpeg"
-            alt="الشهيد محمد"
-            width="800"
-            height="1000"
-            loading="lazy"
-            decoding="async"
-          >
+          <img src="assets/img/mohammed/IMG_7032_Original.jpeg" alt="الشهيد محمد" width="800" height="1000" loading="lazy" decoding="async">
         </div>
-
         <div class="entry-info">
           <h2 class="entry-name">الشهيد محمد</h2>
-
           <div class="entry-meta">
             <span class="meta-label">تاريخ الإرتقاء</span>
             <span class="meta-value">26 أغسطس 2025</span>
           </div>
-
           <p class="entry-desc">صور الشهيد محمد عبر السنين</p>
         </div>
       </a>
@@ -993,33 +353,21 @@
       <!-- بطاقة الشهيد عبد المجيد -->
       <a class="entry" href="/abdulmajeed">
         <div class="entry-frame">
-          <img
-            src="assets/img/abdulmajeed/IMG_0782.jpeg"
-            alt="الشهيد عبد المجيد"
-            width="800"
-            height="1000"
-            loading="lazy"
-            decoding="async"
-          >
+          <img src="assets/img/abdulmajeed/IMG_0782.jpeg" alt="الشهيد عبد المجيد" width="800" height="1000" loading="lazy" decoding="async">
         </div>
-
         <div class="entry-info">
           <h2 class="entry-name">الشهيد عبد المجيد</h2>
-
           <div class="entry-meta">
             <span class="meta-label">تاريخ الإرتقاء</span>
             <span class="meta-value">25 يوليو 2014</span>
           </div>
-
           <p class="entry-desc">صور الشهيد عبد المجيد عبر السنين</p>
         </div>
       </a>
-
     </div>
   </div>
 </main>
 
-<!-- قسم الاقتباس -->
 <div class="quote-section">
   <div class="wrap">
     <div class="quote-box">
@@ -1033,154 +381,72 @@
 <section class="contact-section" id="contribute-section">
   <div class="wrap">
     <div class="contact-box">
-
       <h2>المساهمة في الأرشيف</h2>
       <p>إذا كانت لديك صور أو ذكريات تود إضافتها، تواصل معي.</p>
-      
-      <form
-        id="my-contact-form"
-        action="https://formspree.io/f/xaeywkdr"
-        method="POST"
-        class="contact-form"
-      >
-
-        <input
-          type="text"
-          id="contributor-name"
-          name="name"
-          class="form-control"
-          placeholder="الاسم"
-          required
-        >
-
-        <input
-          type="email"
-          name="email"
-          class="form-control"
-          placeholder="البريد الإلكتروني"
-          required
-        >
-
-        <textarea
-          name="message"
-          class="form-control"
-          placeholder="اكتب رسالتك ..."
-          required
-        ></textarea>
-
-        <button type="submit" class="btn-submit">
-          إرسال
-        </button>
-
+      <form id="my-contact-form" action="https://formspree.io/f/xaeywkdr" method="POST" class="contact-form">
+        <input type="text" id="contributor-name" name="name" class="form-control" placeholder="الاسم" required>
+        <input type="email" name="email" class="form-control" placeholder="البريد الإلكتروني" required>
+        <textarea name="message" class="form-control" placeholder="اكتب رسالتك ..." required></textarea>
+        <button type="submit" class="btn-submit">إرسال</button>
       </form>
-
-      <p
-        id="form-status"
-        style="margin-top:15px; font-weight:500; text-align:center;"
-      ></p>
-
+      <p id="form-status" style="margin-top:15px; font-weight:500; text-align:center;"></p>
     </div>
   </div>
 </section>
 
 <footer>
-  <!-- قسم (حول مشروع الأرشيف وتثبيت التطبيق) القابل للفتح -->
   <div class="footer-about-wrap">
     <button type="button" class="about-toggle-btn" id="aboutToggleBtn" aria-expanded="false">
       <span>حول مشروع الأرشيف </span>
       <span class="about-toggle-icon">▼</span>
     </button>
-
     <div class="about-drawer" id="aboutDrawer">
       <div class="about-drawer-inner">
         <div class="about-card">
-
-          <!-- 1. فكرة الأرشيف والجانب البرمجي -->
           <div class="about-block">
             <h3>فكرة الأرشيف</h3>
-            <p>
-              أُنشئت هذه الصفحة بمبادرة فردية لترسيخ تاريخ العائلة وتوثيق سيرة وصور شهدائنا لتبقى ذكراهم حية عبر السنين. كما يُعد هذا الموقع مشروعاً تقنياً خاصاً وتطبيقاً عملياً لخبراتي في مجال البرمجة وتطوير الويب.
-            </p>
+            <p>أُنشئت هذه الصفحة بمبادرة فردية لترسيخ تاريخ العائلة وتوثيق سيرة وصور شهدائنا لتبقى ذكراهم حية عبر السنين. كما يُعد هذا الموقع مشروعاً تقنياً خاصاً وتطبيقاً عملياً لخبراتي في مجال البرمجة وتطوير الويب.</p>
             <div class="about-badges">
               <span class="about-badge">تاريخ التأسيس: اغسطس 2026</span>
               <span class="about-badge">الموقع قيد التطوير والتحديث المستمر</span>
             </div>
           </div>
-
-          <!-- 2. المساهمة واقتراح التعديلات -->
           <div class="about-block">
             <h3>المساهمة واقتراح التعديلات</h3>
-            <p>
-               يمكنك دائماً اقتراح تعديلات لتحسين الموقع أو إرسال صور وذكريات إضافية للشهداء المعروضين (<strong>الشهيد محمد</strong> و<strong>الشهيد عبد المجيد</strong>) عبر <a href="#contribute-section" class="inline-link" id="goToFormLink">نموذج المساهمة أعلاه</a>.
-            </p>
+            <p>يمكنك دائماً اقتراح تعديلات لتحسين الموقع أو إرسال صور وذكريات إضافية للشهداء المعروضين عبر <a href="#contribute-section" class="inline-link" id="goToFormLink">نموذج المساهمة أعلاه</a>.</p>
           </div>
-
-          <!-- 3. شرح تثبيت التطبيق على الآيفون والأندرويد -->
           <div class="about-block">
             <h3>طريقة تثبيت الأرشيف كتطبيق على الواجهة الرئيسية</h3>
             <p>لتصفح الأرشيف بسهولة وفي أي وقت كأنه تطبيق مستقل على هاتفك، اتبع الخطوات حسب نوع جهازك:</p>
-
-            <div class="app-installed-note">
-              ✓ أنت تتصفح الأرشيف حالياً من خلال التطبيق المثبّت على جهازك.
-            </div>
-
+            <div class="app-installed-note">✓ أنت تتصفح الأرشيف حالياً من خلال التطبيق المثبّت على جهازك.</div>
             <div class="install-grid">
-              <!-- خطوات الآيفون -->
               <div class="install-os-card">
-                <div class="install-os-title">
-                  <span>أجهزة الآيفون (iPhone)</span>
-                  <span class="install-os-tag">متصفح Safari</span>
-                </div>
+                <div class="install-os-title"><span>أجهزة الآيفون (iPhone)</span><span class="install-os-tag">متصفح Safari</span></div>
                 <ol class="install-list">
-                  <li>
-                    <span class="step-num">1</span>
-                    افتح الموقع باستخدام متصفح <strong>Safari</strong>.
-                  </li>
-                  <li>
-                    <span class="step-num">2</span>
-                    اضغط على أيقونة <strong>المشاركة (Share)</strong> في الشريط السفلي (المربع الذي يخرج منه سهم للأعلى).
-                  </li>
-                  <li>
-                    <span class="step-num">3</span>
-                    مرر للأسفل واختر <strong>"إضافة إلى الصفحة الرئيسية" (Add to Home Screen)</strong> ثم اضغط <strong>إضافة (Add)</strong>.
-                  </li>
+                  <li><span class="step-num">1</span>افتح الموقع باستخدام متصفح <strong>Safari</strong>.</li>
+                  <li><span class="step-num">2</span>اضغط على أيقونة <strong>المشاركة (Share)</strong> في الشريط السفلي.</li>
+                  <li><span class="step-num">3</span>مرر للأسفل واختر <strong>"إضافة إلى الصفحة الرئيسية"</strong> ثم اضغط إضافة.</li>
                 </ol>
               </div>
-
-              <!-- خطوات الأندرويد -->
               <div class="install-os-card">
-                <div class="install-os-title">
-                  <span>أجهزة الأندرويد (Android)</span>
-                  <span class="install-os-tag">متصفح Chrome</span>
-                </div>
+                <div class="install-os-title"><span>أجهزة الأندرويد (Android)</span><span class="install-os-tag">متصفح Chrome</span></div>
                 <ol class="install-list">
-                  <li>
-                    <span class="step-num">1</span>
-                    افتح الموقع باستخدام متصفح <strong>Google Chrome</strong>.
-                  </li>
-                  <li>
-                    <span class="step-num">2</span>
-                    اضغط على رمز <strong>النقاط الثلاث (⋮)</strong> في أعلى زاوية المتصفح.
-                  </li>
-                  <li>
-                    <span class="step-num">3</span>
-                    اختر <strong>"تثبيت التطبيق" (Install app)</strong> أو <strong>"الإضافة إلى الشاشة الرئيسية" (Add to Home screen)</strong> ثم أكد التثبيت.
-                  </li>
+                  <li><span class="step-num">1</span>افتح الموقع باستخدام متصفح <strong>Chrome</strong>.</li>
+                  <li><span class="step-num">2</span>اضغط على رمز <strong>النقاط الثلاث (⋮)</strong> في أعلى الزاوية.</li>
+                  <li><span class="step-num">3</span>اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"الإضافة إلى الشاشة"</strong>.</li>
                 </ol>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-
   <span style="direction: ltr; display: inline-block;">© 2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.</span>
 </footer>
 
 <script>
-  // 1. إخفاء شاشة التحميل بعد فتح التطبيق وتسجيل ظهورها في الذاكرة
+  // 1. إخفاء شاشة التحميل بعد فتح التطبيق
   window.addEventListener("load", function() {
     if (document.body.classList.contains("is-app")) {
       const splash = document.getElementById("splash-screen");
@@ -1192,7 +458,7 @@
     }
   });
 
-  // 2. التحكم بالزر البيضاوي للإشعارات (مربوط مباشرة بالأزرار لضمان الاستجابة الفورية)
+  // 2. التحكم بالزر البيضاوي للإشعارات (معالج ومجهز لأجهزة آبل)
   const notifyPill = document.getElementById("notify-pill-banner");
   const acceptNotifyBtn = document.getElementById("accept-notify-btn");
   const rejectNotifyBtn = document.getElementById("reject-notify-btn");
@@ -1200,14 +466,24 @@
   acceptNotifyBtn.addEventListener("click", async function() {
     notifyPill.classList.remove("show");
     localStorage.setItem('hideArchiveNotifyPill', 'true');
+    
     try {
-      if (window.OneSignal && OneSignal.Notifications) {
-        await OneSignal.Notifications.requestPermission();
-      } else if ('Notification' in window) {
-        await Notification.requestPermission();
+      // طلب الإذن الصارم لمتصفح سفاري (أبل) بشكل مباشر
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          // بمجرد الموافقة، نخبر OneSignal بتسجيل هذا الجهاز فوراً
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          window.OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.User.PushSubscription.optIn();
+          });
+          
+          // تحديث سريع لربط الجهاز بالسيرفر وتأكيد التفعيل
+          setTimeout(() => { window.location.reload(); }, 400);
+        }
       }
     } catch (err) {
-      console.warn("Permission request error:", err);
+      console.warn("Permission error:", err);
     }
   });
 
@@ -1216,7 +492,7 @@
     localStorage.setItem('hideArchiveNotifyPill', 'true');
   });
 
-  // 3. فتح وإغلاق قسم (حول مشروع الأرشيف • تثبيت التطبيق)
+  // 3. فتح وإغلاق قسم (حول مشروع الأرشيف)
   const aboutBtn = document.getElementById("aboutToggleBtn");
   const aboutDrawer = document.getElementById("aboutDrawer");
   const goToFormLink = document.getElementById("goToFormLink");
@@ -1239,23 +515,13 @@
 
   form.addEventListener("submit", async function(event) {
     event.preventDefault();
-
     const btn = form.querySelector('.btn-submit');
     const originalBtnText = btn.innerText;
-
     btn.innerText = "جاري الإرسال...";
-
     const data = new FormData(event.target);
 
     try {
-      const response = await fetch(event.target.action, {
-        method: form.method,
-        body: data,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
+      const response = await fetch(event.target.action, { method: form.method, body: data, headers: { 'Accept': 'application/json' } });
       if (response.ok) {
         status.innerHTML = "شكرًا لك! تم إرسال رسالتك بنجاح.";
         status.style.color = "var(--sand-deep)";
@@ -1264,29 +530,21 @@
         status.innerHTML = "عذراً، حدث خطأ أثناء الإرسال. يرجى المحاولة لاحقاً.";
         status.style.color = "#d9534f";
       }
-
     } catch (error) {
       status.innerHTML = "حدث خطأ في الاتصال، تأكد من جودة الإنترنت.";
       status.style.color = "#d9534f";
     }
-
     btn.innerText = originalBtnText;
-
-    setTimeout(() => {
-      status.innerHTML = "";
-    }, 5000);
+    setTimeout(() => { status.innerHTML = ""; }, 5000);
   });
 
-  // ==========================================
-  // 5. نظام التحديث الذكي (PWA Update Manager - بدون تعليق أو تكرار)
-  // ==========================================
+  // 5. نظام التحديث الذكي 
   let swRegistration = null;
   let newWorker = null;
   const updateBanner = document.getElementById('update-banner');
   const refreshBtn = document.getElementById('refresh-app-btn');
 
   function showUpdateBar() {
-    // منع ظهور الشريط إذا قام المستخدم بالضغط على التحديث للتو في نفس الجلسة
     if (sessionStorage.getItem('justUpdatedArchive') === 'true') {
       sessionStorage.removeItem('justUpdatedArchive');
       return;
@@ -1298,18 +556,13 @@
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').then(reg => {
         swRegistration = reg;
-
-        // إذا كان هناك تحديث محمّل مسبقاً بالانتظار
         if (reg.waiting && navigator.serviceWorker.controller) {
           newWorker = reg.waiting;
           showUpdateBar();
         }
-
-        // عند اكتشاف تحديث جديد أثناء التصفح
         reg.addEventListener('updatefound', () => {
           newWorker = reg.installing;
           if (!newWorker) return;
-
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               showUpdateBar();
@@ -1319,37 +572,25 @@
       }).catch(err => console.error('SW Registration Error:', err));
     });
 
-    // عند ضغط المستخدم على زر "تحديث الآن"
     refreshBtn.addEventListener('click', async () => {
       refreshBtn.innerText = "جاري التحديث...";
       updateBanner.classList.remove('show');
       sessionStorage.setItem('justUpdatedArchive', 'true');
 
       try {
-        // 1. إرسال أمر التفعيل الفوري للـ Service Worker الجديد
         const workerToActivate = (swRegistration && swRegistration.waiting) ? swRegistration.waiting : newWorker;
         if (workerToActivate) {
           workerToActivate.postMessage({ action: 'skipWaiting' });
           workerToActivate.postMessage('skipWaiting');
         }
-
-        // 2. مسح كاش الصفحات القديم فقط (مع الحفاظ على كاش الصور كما هو) لضمان جلب أحدث نسخة
         if ('caches' in window) {
           const cacheNames = await caches.keys();
-          await Promise.all(
-            cacheNames
-              .filter(name => name.startsWith('alaydi-core'))
-              .map(name => caches.delete(name))
-          );
+          await Promise.all( cacheNames.filter(name => name.startsWith('alaydi-core')).map(name => caches.delete(name)) );
         }
       } catch (e) {
         console.warn('Cache update note:', e);
       }
-
-      // 3. إعادة تحميل الصفحة بنظافة
-      setTimeout(() => {
-        window.location.reload();
-      }, 250);
+      setTimeout(() => { window.location.reload(); }, 250);
     });
   }
 </script>
