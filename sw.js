@@ -1,4 +1,4 @@
-const CACHE_NAME = 'alaydi-core-v2';
+const CACHE_NAME = 'alaydi-core-v1.181';
 const IMAGES_CACHE = 'alaydi-images-v1';
 
 // الملفات البرمجية والصفحات فقط
