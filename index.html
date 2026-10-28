@@ -73,7 +73,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
   <!-- ==========================================
-       6. نظام الإشعارات (OneSignal) - النسخة الرسمية الصحيحة
+       6. نظام الإشعارات (OneSignal) - النسخة المصححة
        ========================================== -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
@@ -83,17 +83,20 @@
         await OneSignal.init({
           appId: "8a8880b0-521b-42da-8b7f-6cc930a151ea",
           serviceWorkerPath: "sw.js",
+          serviceWorkerParam: { scope: "/" },
           notifyButton: { enable: false } 
         });
 
-        // 1. الأجهزة القديمة التي وافقت مسبقاً: إجبار OneSignal على تسجيلها في لوحة التحكم فوراً
-        if (Notification.permission === 'granted') {
+        // تم إضافة التأمين هنا لتجنب أي خطأ في هواتف أبل
+        if ('Notification' in window && Notification.permission === 'granted') {
           await OneSignal.User.PushSubscription.optIn();
         }
 
-        // 2. إظهار الشريط البيضاوي فقط لمن لم يتخذ قراراً بعد (الأجهزة الجديدة)
+        const nativePerm = ('Notification' in window) ? Notification.permission : 'default';
         const isDismissed = localStorage.getItem('hideArchiveNotifyPill') === 'true';
-        if (Notification.permission === 'default' && !isDismissed) {
+
+        // إظهار الشريط البيضاوي فقط لمن لم يتخذ قراراً بعد
+        if (nativePerm === 'default' && !isDismissed) {
           setTimeout(() => {
             const pill = document.getElementById('notify-pill-banner');
             if (pill) pill.classList.add('show');
@@ -148,7 +151,7 @@
   }
   body.splash-active { overflow: hidden; }
 
-  /* ---------- Splash Screen (للـ App فقط) ---------- */
+  /* ---------- Splash Screen ---------- */
   #splash-screen {
     display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     width: 100%; height: 100%; background-color: var(--bg);
@@ -284,7 +287,176 @@
 
 <body>
 <script>
-  // 1. إخفاء شاشة التحميل بعد فتح التطبيق
+  if ((window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) && !sessionStorage.getItem('splashShown')) {
+    document.body.classList.add('is-app', 'splash-active');
+    
+    // مؤقت إنقاذ إجباري: يخفي الشاشة البيضاء بعد ثانيتين ونصف مهما حدث! (يمنع تعليق الموقع)
+    setTimeout(function() {
+      const splash = document.getElementById("splash-screen");
+      if (splash && !splash.classList.contains("fade-out")) {
+        splash.classList.add("fade-out");
+        document.body.classList.remove("splash-active");
+        sessionStorage.setItem('splashShown', 'true');
+      }
+    }, 2500);
+  }
+</script>
+
+<!-- 1. شريط التحديث العلوي الذكي (PWA Update Banner) -->
+<div id="update-banner">
+  <span>يتوفر تحديث جديد للأرشيف!</span>
+  <button id="refresh-app-btn" type="button">تحديث الآن</button>
+</div>
+
+<!-- 2. الزر البيضاوي العريض لتفعيل الإشعارات (Notification Pill) -->
+<div id="notify-pill-banner" role="dialog" aria-label="تفعيل الإشعارات">
+  <div class="notify-pill-content">
+    <div class="notify-bell-circle" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+      </svg>
+    </div>
+    <span class="notify-pill-text">تلقي الإشعارات عند إضافة صور جديدة للأرشيف</span>
+  </div>
+  <div class="notify-pill-actions">
+    <button type="button" id="accept-notify-btn" class="btn-pill-accept">موافق</button>
+    <button type="button" id="reject-notify-btn" class="btn-pill-later">لاحقاً</button>
+  </div>
+</div>
+
+<!-- واجهة التحميل الافتتاحية (Splash Screen) -->
+<div id="splash-screen">
+  <div class="splash-center">
+    <img src="/android-chrome-512x512.png" onerror="this.onerror=null; this.src='/apple-touch-icon.png';" alt="أيقونة الأرشيف" class="splash-logo">
+  </div>
+  <div class="splash-footer">
+    <span class="splash-from">By</span>
+    <span class="splash-brand">ABDALLAH</span>
+  </div>
+</div>
+
+<header>
+  <div class="wrap">
+    <h1>أرشيف عائلة عبد الله العايدي</h1>
+    <p>مساحة لحفظ صور شهداء العائلة وذكرياتها عبر السنين.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="grid">
+      <!-- بطاقة الشهيد محمد -->
+      <a class="entry" href="/mohammed">
+        <div class="entry-frame">
+          <img src="assets/img/mohammed/IMG_7032_Original.jpeg" alt="الشهيد محمد" width="800" height="1000" loading="lazy" decoding="async">
+        </div>
+        <div class="entry-info">
+          <h2 class="entry-name">الشهيد محمد</h2>
+          <div class="entry-meta">
+            <span class="meta-label">تاريخ الإرتقاء</span>
+            <span class="meta-value">26 أغسطس 2025</span>
+          </div>
+          <p class="entry-desc">صور الشهيد محمد عبر السنين</p>
+        </div>
+      </a>
+
+      <!-- بطاقة الشهيد عبد المجيد -->
+      <a class="entry" href="/abdulmajeed">
+        <div class="entry-frame">
+          <img src="assets/img/abdulmajeed/IMG_0782.jpeg" alt="الشهيد عبد المجيد" width="800" height="1000" loading="lazy" decoding="async">
+        </div>
+        <div class="entry-info">
+          <h2 class="entry-name">الشهيد عبد المجيد</h2>
+          <div class="entry-meta">
+            <span class="meta-label">تاريخ الإرتقاء</span>
+            <span class="meta-value">25 يوليو 2014</span>
+          </div>
+          <p class="entry-desc">صور الشهيد عبد المجيد عبر السنين</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<div class="quote-section">
+  <div class="wrap">
+    <div class="quote-box">
+      <p class="quote-text">
+        “He loved them so much he was scared to let go he never realized sometimes loving someone means letting them go”
+      </p>
+    </div>
+  </div>
+</div>
+
+<section class="contact-section" id="contribute-section">
+  <div class="wrap">
+    <div class="contact-box">
+      <h2>المساهمة في الأرشيف</h2>
+      <p>إذا كانت لديك صور أو ذكريات تود إضافتها، تواصل معي.</p>
+      <form id="my-contact-form" action="https://formspree.io/f/xaeywkdr" method="POST" class="contact-form">
+        <input type="text" id="contributor-name" name="name" class="form-control" placeholder="الاسم" required>
+        <input type="email" name="email" class="form-control" placeholder="البريد الإلكتروني" required>
+        <textarea name="message" class="form-control" placeholder="اكتب رسالتك ..." required></textarea>
+        <button type="submit" class="btn-submit">إرسال</button>
+      </form>
+      <p id="form-status" style="margin-top:15px; font-weight:500; text-align:center;"></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-about-wrap">
+    <button type="button" class="about-toggle-btn" id="aboutToggleBtn" aria-expanded="false">
+      <span>حول مشروع الأرشيف </span>
+      <span class="about-toggle-icon">▼</span>
+    </button>
+    <div class="about-drawer" id="aboutDrawer">
+      <div class="about-drawer-inner">
+        <div class="about-card">
+          <div class="about-block">
+            <h3>فكرة الأرشيف</h3>
+            <p>أُنشئت هذه الصفحة بمبادرة فردية لترسيخ تاريخ العائلة وتوثيق سيرة وصور شهدائنا لتبقى ذكراهم حية عبر السنين. كما يُعد هذا الموقع مشروعاً تقنياً خاصاً وتطبيقاً عملياً لخبراتي في مجال البرمجة وتطوير الويب.</p>
+            <div class="about-badges">
+              <span class="about-badge">تاريخ التأسيس: اغسطس 2026</span>
+              <span class="about-badge">الموقع قيد التطوير والتحديث المستمر</span>
+            </div>
+          </div>
+          <div class="about-block">
+            <h3>المساهمة واقتراح التعديلات</h3>
+            <p>يمكنك دائماً اقتراح تعديلات لتحسين الموقع أو إرسال صور وذكريات إضافية للشهداء المعروضين عبر <a href="#contribute-section" class="inline-link" id="goToFormLink">نموذج المساهمة أعلاه</a>.</p>
+          </div>
+          <div class="about-block">
+            <h3>طريقة تثبيت الأرشيف كتطبيق على الواجهة الرئيسية</h3>
+            <p>لتصفح الأرشيف بسهولة وفي أي وقت كأنه تطبيق مستقل على هاتفك، اتبع الخطوات حسب نوع جهازك:</p>
+            <div class="app-installed-note">✓ أنت تتصفح الأرشيف حالياً من خلال التطبيق المثبّت على جهازك.</div>
+            <div class="install-grid">
+              <div class="install-os-card">
+                <div class="install-os-title"><span>أجهزة الآيفون (iPhone)</span><span class="install-os-tag">متصفح Safari</span></div>
+                <ol class="install-list">
+                  <li><span class="step-num">1</span>افتح الموقع باستخدام متصفح <strong>Safari</strong>.</li>
+                  <li><span class="step-num">2</span>اضغط على أيقونة <strong>المشاركة (Share)</strong> في الشريط السفلي.</li>
+                  <li><span class="step-num">3</span>مرر للأسفل واختر <strong>"إضافة إلى الصفحة الرئيسية"</strong> ثم اضغط إضافة.</li>
+                </ol>
+              </div>
+              <div class="install-os-card">
+                <div class="install-os-title"><span>أجهزة الأندرويد (Android)</span><span class="install-os-tag">متصفح Chrome</span></div>
+                <ol class="install-list">
+                  <li><span class="step-num">1</span>افتح الموقع باستخدام متصفح <strong>Chrome</strong>.</li>
+                  <li><span class="step-num">2</span>اضغط على رمز <strong>النقاط الثلاث (⋮)</strong> في أعلى الزاوية.</li>
+                  <li><span class="step-num">3</span>اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"الإضافة إلى الشاشة"</strong>.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span style="direction: ltr; display: inline-block;">© 2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.</span>
+</footer>
+
+<script>
+  // 1. إخفاء شاشة التحميل الافتتاحية
   window.addEventListener("load", function() {
     if (document.body.classList.contains("is-app")) {
       const splash = document.getElementById("splash-screen");
@@ -292,11 +464,11 @@
         splash.classList.add("fade-out");
         document.body.classList.remove("splash-active");
         sessionStorage.setItem('splashShown', 'true');
-      }, 1200);
+      }, 1000);
     }
   });
 
-  // 2. التحكم بالزر البيضاوي للإشعارات (الطريقة الصحيحة 100% بدون تأخير)
+  // 2. التحكم بالزر البيضاوي للإشعارات (مضمون ومتوافق 100% مع أبل وأندرويد)
   const notifyPill = document.getElementById("notify-pill-banner");
   const acceptNotifyBtn = document.getElementById("accept-notify-btn");
   const rejectNotifyBtn = document.getElementById("reject-notify-btn");
@@ -307,13 +479,20 @@
     localStorage.setItem('hideArchiveNotifyPill', 'true');
     
     try {
-      // السر هنا: المناداة المباشرة لمكتبة OneSignal في نفس لحظة الضغط
-      // لكي يتم طلب الإذن وتسجيل الجهاز في لوحة التحكم بشكل صحيح
-      if (window.OneSignal && window.OneSignal.Notifications) {
-        await window.OneSignal.Notifications.requestPermission();
+      if ('Notification' in window) {
+        // نطلب الإذن مباشرة من المتصفح ليتوافق مع صرامة أجهزة أبل
+        const permission = await window.Notification.requestPermission();
+        
+        if (permission === 'granted') {
+          // بمجرد الموافقة، نخبر OneSignal بتسجيل الجهاز فوراً بالسيرفر
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          window.OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.User.PushSubscription.optIn();
+          });
+        }
       }
     } catch (err) {
-      console.error("OneSignal Permission error:", err);
+      console.warn("Permission error:", err);
     }
   });
 
@@ -334,9 +513,7 @@
   });
 
   goToFormLink.addEventListener("click", function() {
-    setTimeout(function() {
-      document.getElementById("contributor-name")?.focus();
-    }, 500);
+    setTimeout(function() { document.getElementById("contributor-name")?.focus(); }, 500);
   });
 
   // 4. كود نموذج التواصل
@@ -368,7 +545,7 @@
     setTimeout(() => { status.innerHTML = ""; }, 5000);
   });
 
-  // 5. نظام التحديث الذكي 
+  // 5. نظام التحديث الذكي (ينظف الكاش بأمان دون التسبب بأي شاشة بيضاء)
   let swRegistration = null;
   let newWorker = null;
   const updateBanner = document.getElementById('update-banner');
@@ -411,7 +588,6 @@
         const workerToActivate = (swRegistration && swRegistration.waiting) ? swRegistration.waiting : newWorker;
         if (workerToActivate) {
           workerToActivate.postMessage({ action: 'skipWaiting' });
-          workerToActivate.postMessage('skipWaiting');
         }
         if ('caches' in window) {
           const cacheNames = await caches.keys();
@@ -420,10 +596,10 @@
       } catch (e) {
         console.warn('Cache update note:', e);
       }
-      setTimeout(() => { window.location.reload(); }, 250);
+      
+      setTimeout(() => { window.location.reload(true); }, 500);
     });
   }
 </script>
-
 </body>
 </html>
