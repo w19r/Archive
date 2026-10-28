@@ -1,5 +1,7 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
-const CACHE_NAME = 'alaydi-core-v1.190';
+
+// تم رفع الإصدار إلى 1.191 لإجبار المتصفحات على التحديث
+const CACHE_NAME = 'alaydi-core-v1.191';
 const IMAGES_CACHE = 'alaydi-images-v1';
 
 // الملفات البرمجية والصفحات فقط
@@ -102,9 +104,9 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// 4. الاستماع لرسالة التحديث الفوري القادمة من زر الشريط العلوي في التطبيق
+// 4. الاستماع لرسالة التحديث الفوري القادمة من زر الشريط العلوي في التطبيق (تم تعزيزها لتكون قاطعة)
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.action === 'skipWaiting') {
+  if (event.data === 'skipWaiting' || (event.data && event.data.action === 'skipWaiting')) {
     self.skipWaiting();
   }
 });
