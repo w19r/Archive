@@ -1157,10 +1157,9 @@
 
 <script>
   // ==========================================
-  // نظام التحديث الذكي (PWA Update Manager) - تم إصلاح مشكلة التعليق
+  // نظام التحديث الذكي (PWA Update Manager - مُحدث)
   // ==========================================
   let newWorker;
-  let isUserTriggeredUpdate = false; // القفل الذي يمنع التحديث العشوائي
   const updateBanner = document.getElementById('update-banner');
   const refreshBtn = document.getElementById('refresh-app-btn');
 
@@ -1180,23 +1179,30 @@
       }).catch(err => console.error('خطأ في تسجيل Service Worker:', err));
     });
 
-    // عندما يضغط المستخدم بنفسه على زر "تحديث الآن"
+    // عندما يضغط المستخدم على زر "تحديث الآن"
     refreshBtn.addEventListener('click', () => {
+      // إخفاء الشريط فوراً ببصريات سلسة
+      updateBanner.classList.remove('show');
+      
       if (newWorker) {
-        isUserTriggeredUpdate = true; // نفتح القفل هنا فقط
         newWorker.postMessage({ action: 'skipWaiting' });
       }
+      
+      // إجبار المتصفح على إعادة التحميل فوراً لضمان اختفاء الشريط وتطبيق التحديث
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
     });
 
-    // عملية الـ Reload لن تتم إلا إذا كان المستخدم هو من ضغط الزر
     let refreshing;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing || !isUserTriggeredUpdate) return;
+      if (refreshing) return;
       refreshing = true;
       window.location.reload();
     });
   }
 </script>
+
 
 </body>
 </html>
