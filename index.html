@@ -1155,54 +1155,7 @@
   });
 </script>
 
-<script>
-  // ==========================================
-  // نظام التحديث الذكي (PWA Update Manager - الحل الجذري)
-  // ==========================================
-  let newWorker;
-  const updateBanner = document.getElementById('update-banner');
-  const refreshBtn = document.getElementById('refresh-app-btn');
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then(reg => {
-        
-        reg.addEventListener('updatefound', () => {
-          newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              updateBanner.classList.add('show');
-            }
-          });
-        });
-
-      }).catch(err => console.error('خطأ في تسجيل Service Worker:', err));
-    });
-
-    // عندما يضغط المستخدم على زر "تحديث الآن"
-    refreshBtn.addEventListener('click', () => {
-      // إخفاء الشريط فوراً من الشاشة وبشكل جذري
-      updateBanner.classList.remove('show');
-      updateBanner.style.display = 'none';
-      
-      if (newWorker) {
-        newWorker.postMessage({ action: 'skipWaiting' });
-      }
-      
-      // إجبار المتصفح على إعادة التحميل الحقيقي (تجاوز الكاش)
-      setTimeout(() => {
-        window.location.reload(true);
-      }, 200);
-    });
-
-    let refreshing;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing) return;
-      refreshing = true;
-      window.location.reload();
-    });
-  }
-</script>
 
 
 
