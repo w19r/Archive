@@ -1,3 +1,4 @@
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 const CACHE_NAME = 'alaydi-core-v1.181';
 const IMAGES_CACHE = 'alaydi-images-v1';
 
