@@ -768,11 +768,13 @@
 
 <body>
 <script>
-  // تفعيل شاشة البداية فقط إذا تم فتح الموقع كتطبيق (Web App) من الشاشة الرئيسية
-  if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
+  // تفعيل شاشة البداية فقط إذا تم فتح الموقع كتطبيق، **وبشرط ألا تكون قد ظهرت مسبقاً في هذه الجلسة**
+  if ((window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) && !sessionStorage.getItem('splashShown')) {
     document.body.classList.add('is-app', 'splash-active');
   }
 </script>
+
+
 
 <!-- ==========================================
      شريط التحديث العلوي الذكي (PWA Update Banner)
@@ -1027,15 +1029,19 @@
 </footer>
 
 <script>
-  // إخفاء شاشة التحميل بعد فتح التطبيق
+  // إخفاء شاشة التحميل بعد فتح التطبيق وتسجيل ظهورها في الذاكرة
   window.addEventListener("load", function() {
     if (document.body.classList.contains("is-app")) {
       const splash = document.getElementById("splash-screen");
       setTimeout(function() {
         splash.classList.add("fade-out");
         document.body.classList.remove("splash-active");
+        
+        // حفظ أمر في ذاكرة الجلسة بأن الشاشة ظهرت ولن تظهر مجدداً إلا إذا أغلق التطبيق بالكامل
+        sessionStorage.setItem('splashShown', 'true');
       }, 1200);
     }
+
   });
 
   // فتح وإغلاق قسم (حول مشروع الأرشيف • تثبيت التطبيق)
