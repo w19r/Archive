@@ -73,7 +73,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
   <!-- ==========================================
-       6. نظام الإشعارات (OneSignal) - التعديل الصارم لأجهزة آبل
+       6. نظام الإشعارات (OneSignal) - النسخة المضمونة
        ========================================== -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
@@ -86,16 +86,16 @@
           notifyButton: { enable: false } 
         });
 
-        // السر هنا: تسجيل أي جهاز وافق مسبقاً (مثل الآيباد الخاص بك) في سيرفراتنا فوراً
+        // علاج الأجهزة العالقة: إذا كان الجهاز سامحاً للإشعارات مسبقاً، اجبر السيرفر على تسجيله الآن
         if ('Notification' in window && Notification.permission === 'granted') {
           await OneSignal.User.PushSubscription.optIn();
         }
 
         const nativePerm = ('Notification' in window) ? Notification.permission : 'default';
-        const isAlreadySubscribed = OneSignal.Notifications.permission === true || nativePerm === 'granted';
+        const isAlreadySubscribed = OneSignal.User.PushSubscription.optedIn || nativePerm === 'granted';
         const isDismissed = localStorage.getItem('hideArchiveNotifyPill') === 'true';
 
-        // إظهار الشريط البيضاوي للمستخدمين الجدد فقط
+        // إظهار الشريط البيضاوي فقط لمن لم يوافق أو يرفض بعد
         if (!isAlreadySubscribed && nativePerm !== 'denied' && !isDismissed) {
           setTimeout(() => {
             const pill = document.getElementById('notify-pill-banner');
@@ -107,6 +107,7 @@
       }
     });
   </script>
+
 
 <style>
   @font-face {
@@ -458,34 +459,38 @@
     }
   });
 
-  // 2. التحكم بالزر البيضاوي للإشعارات (معالج ومجهز لأجهزة آبل)
+  // 2. التحكم بالزر البيضاوي للإشعارات (معالج ومجهز لأجهزة آبل)  // 2. التحكم بالزر البيضاوي للإشعارات (الإصدار المصحح للربط بالسيرفر)
   const notifyPill = document.getElementById("notify-pill-banner");
   const acceptNotifyBtn = document.getElementById("accept-notify-btn");
   const rejectNotifyBtn = document.getElementById("reject-notify-btn");
 
-  acceptNotifyBtn.addEventListener("click", async function() {
+  acceptNotifyBtn.addEventListener("click", function() {
+    // إخفاء الشريط فوراً
     notifyPill.classList.remove("show");
     localStorage.setItem('hideArchiveNotifyPill', 'true');
     
-    try {
-      // طلب الإذن الصارم لمتصفح سفاري (أبل) بشكل مباشر
-      if ('Notification' in window) {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          // بمجرد الموافقة، نخبر OneSignal بتسجيل هذا الجهاز فوراً
-          window.OneSignalDeferred = window.OneSignalDeferred || [];
-          window.OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.User.PushSubscription.optIn();
-          });
-          
-          // تحديث سريع لربط الجهاز بالسيرفر وتأكيد التفعيل
-          setTimeout(() => { window.location.reload(); }, 400);
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      try {
+        // 1. طلب الإذن الرسمي عبر محرك OneSignal
+        await OneSignal.Notifications.requestPermission();
+        
+        // 2. التأكد من أن المستخدم ضغط (السماح) فعلياً في المتصفح
+        if (OneSignal.Notifications.permission === true || Notification.permission === 'granted') {
+          // 3. إرسال أمر التسجيل الفوري لسيرفرات OneSignal
+          await OneSignal.User.PushSubscription.optIn();
         }
+      } catch (err) {
+        console.warn("Permission error:", err);
       }
-    } catch (err) {
-      console.warn("Permission error:", err);
-    }
+    });
   });
+
+  rejectNotifyBtn.addEventListener("click", function() {
+    notifyPill.classList.remove("show");
+    localStorage.setItem('hideArchiveNotifyPill', 'true');
+  });
+
 
   rejectNotifyBtn.addEventListener("click", function() {
     notifyPill.classList.remove("show");
