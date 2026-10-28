@@ -97,7 +97,7 @@
     font-weight: 400; line-height:1.8; -webkit-font-smoothing:antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6, .photo-title, .stat-num, .year-badge, .sort-btn, .modal-title, .condition-title, .modal-btn-confirm {
+  h1, h2, h3, h4, h5, h6, .photo-title, .stat-num, .year-badge, .sort-btn, .pdf-btn, .back-btn, .modal-title, .condition-title, .modal-btn-confirm {
     font-family: 'Thamania Sans', sans-serif;
     font-weight: 700;
   }
@@ -112,15 +112,47 @@
   }
   
   header{
-    padding:40px 0 32px; text-align:center; border-bottom:1px solid var(--line);
+    padding:32px 0 32px; text-align:center; border-bottom:1px solid var(--line);
     position: relative;
   }
+
+  /* زر العودة للرئيسية في أعلى الهيدر */
+  .header-top-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    color: var(--sand-deep);
+    border: 1px solid var(--line);
+    padding: 6px 18px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(138,103,65,0.04);
+  }
+  .back-btn:hover {
+    background: var(--sand-deep);
+    color: var(--card);
+    border-color: var(--sand-deep);
+    transform: translateY(-1px);
+  }
+  .back-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+  }
+
   header h1{font-size:clamp(2rem, 4vw, 2.5rem); color:var(--ink); margin-bottom:10px;}
   header p{color:var(--mist); font-size:1rem;}
 
   .header-meta-bar {
     margin-top: 20px; display: flex; justify-content: center;
-    align-items: center; gap: 12px; flex-wrap: wrap;
+    align-items: center; gap: 10px; flex-wrap: wrap;
   }
   .memorial-pill {
     display: inline-flex; align-items: center; gap: 8px;
@@ -129,13 +161,23 @@
     color: var(--ink); box-shadow: 0 2px 8px rgba(138,103,65,0.05);
   }
   .memorial-pill strong {color: var(--sand-deep);}
-  .sort-btn {
+  
+  .sort-btn, .pdf-btn {
     background: var(--card); color: var(--sand-deep);
     border: 1px solid var(--line); padding: 6px 16px;
     border-radius: 30px; font-size: 0.85rem; cursor: pointer;
-    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 7px;
+    box-shadow: 0 2px 8px rgba(138,103,65,0.04);
   }
-  .sort-btn:hover {background: var(--sand-deep); color: var(--card); border-color: var(--sand-deep);}
+  .sort-btn:hover, .pdf-btn:hover:not(:disabled) {
+    background: var(--sand-deep); color: var(--card); border-color: var(--sand-deep);
+  }
+  .pdf-btn:disabled {
+    opacity: 0.75; cursor: wait; background: var(--bg);
+  }
+  .pdf-btn svg {
+    width: 15px; height: 15px; stroke: currentColor; flex-shrink: 0;
+  }
 
   .stats-section {padding: 30px 0; border-top: 1px solid var(--line); background: var(--bg);}
   .stats-bar {display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;}
@@ -258,6 +300,188 @@
   }
   #toast.show {transform: translateX(-50%) translateY(0); opacity: 1;}
 
+  /* ==========================================
+     قالب صفحات الـ PDF المخفي (دقة A4 قياسية)
+     ========================================== */
+  #pdf-render-stage {
+    position: fixed;
+    top: -12000px;
+    left: -12000px;
+    width: 794px;
+    height: 1123px;
+    background-color: #FAF6F0;
+    color: #332C24;
+    padding: 38px 44px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    direction: rtl;
+    font-family: 'Thamania Text', serif;
+    z-index: -1;
+  }
+  .pdf-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #E7DDCE;
+    padding-bottom: 10px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 13px;
+    color: #8A6741;
+  }
+  .pdf-page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #E7DDCE;
+    padding-top: 10px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 12px;
+    color: #8C8175;
+  }
+  .pdf-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 18px;
+    flex: 1;
+    margin: 18px 0;
+  }
+  .pdf-card {
+    background: #FFFFFF;
+    border: 1px solid #E7DDCE;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .pdf-card-frame {
+    position: relative;
+    width: 100%;
+    height: 325px;
+    background: #E7DDCE;
+    overflow: hidden;
+  }
+  .pdf-card-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .pdf-year-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #8A6741;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 11.5px;
+    padding: 3px 10px;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .pdf-card-info {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .pdf-card-title {
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 15px;
+    color: #332C24;
+    line-height: 1.3;
+  }
+  .pdf-card-elapsed {
+    font-size: 11px;
+    color: #A9825F;
+  }
+  .pdf-card-desc {
+    font-size: 12.5px;
+    color: #8C8175;
+    line-height: 1.55;
+    margin-top: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* غلاف الـ PDF */
+  .pdf-cover-box {
+    flex: 1;
+    border: 2px solid #E7DDCE;
+    border-radius: 20px;
+    background: #FFFFFF;
+    margin: 18px 0;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .pdf-cover-img {
+    width: 240px;
+    height: 270px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid #E7DDCE;
+    margin-bottom: 22px;
+  }
+  .pdf-cover-title {
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 30px;
+    color: #8A6741;
+    margin-bottom: 8px;
+  }
+  .pdf-cover-sub {
+    font-size: 15px;
+    color: #8C8175;
+    max-width: 430px;
+    line-height: 1.8;
+    margin-bottom: 22px;
+  }
+  .pdf-cover-pills {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .pdf-cover-pill {
+    background: #FAF6F0;
+    border: 1px solid #E7DDCE;
+    padding: 10px 22px;
+    border-radius: 12px;
+  }
+  .pdf-cover-pill span {
+    display: block;
+    font-size: 11.5px;
+    color: #8C8175;
+  }
+  .pdf-cover-pill strong {
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 14.5px;
+    color: #332C24;
+  }
+  .pdf-cover-qr {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #8C8175;
+  }
+  .pdf-cover-qr img {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #E7DDCE;
+    padding: 4px;
+    border-radius: 8px;
+    background: #FFFFFF;
+  }
+
   @media (max-width:600px){
     .wrap {padding: 0 20px;}
     .modal-box {padding: 20px;}
@@ -270,16 +494,40 @@
 
 <header>
   <div class="wrap">
+    <!-- زر العودة للخلف في رأس الصفحة -->
+    <div class="header-top-nav">
+      <a href="/" class="back-btn" title="العودة إلى الصفحة الرئيسية">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+        <span>العودة للأرشيف الرئيسي</span>
+      </a>
+    </div>
+
     <h1>أرشيف الشهيد محمد</h1>
     <p>توثيق للصور والذكريات مرتبة زمنياً.</p>
+
     <div class="header-meta-bar">
       <div class="memorial-pill">
         <span>تاريخ الارتقاء: <strong>26 أغسطس 2025</strong></span>
         <span id="martyrdom-elapsed"></span>
       </div>
+
       <button type="button" class="sort-btn" id="sort-toggle-btn">
         <span id="sort-label">الترتيب: الأحدث أولاً</span>
         <span>⇅</span>
+      </button>
+
+      <!-- زر تصدير سجل الـ PDF الهادئ -->
+      <button type="button" class="pdf-btn" id="export-pdf-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line>
+          <polyline points="9 15 12 18 15 15"></polyline>
+        </svg>
+        <span id="pdf-btn-label">تصدير الأرشيف (PDF)</span>
       </button>
     </div>
   </div>
@@ -352,6 +600,9 @@
   </button>
 </div>
 
+<!-- مسرح خفي لبناء صفحات الـ PDF بدقة A4 -->
+<div id="pdf-render-stage" aria-hidden="true"></div>
+
 <footer><div class="wrap"><span dir="ltr">© 2026 ABDALLAH ALAYDI. All Rights Reserved.</span></div></footer>
 <div id="toast">تم نسخ رابط البوست بنجاح!</div>
 
@@ -401,9 +652,50 @@
     return (years >= 3 && years <= 10) ? `${prefix}${years} أعوام` : `${prefix}${years} عاماً`;
   }
 
-  function showToast() {
-    const toast = document.getElementById("toast"); toast.classList.add("show");
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg || "تم نسخ رابط البوست بنجاح!";
+    toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 2500);
+  }
+
+  // دالة مساعدة لتحميل المكتبات عند الطلب فقط
+  function loadExternalScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) return resolve();
+      const s = document.createElement("script");
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  // دالة قص الصور بأسلوب (Object-Fit: Cover) عبر Canvas لضمان عدم تمطط الصور في الـ PDF
+  function cropImageToDataUrl(url, targetW, targetH) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = targetW;
+          canvas.height = targetH;
+          const ctx = canvas.getContext("2d");
+          const scale = Math.max(targetW / img.width, targetH / img.height);
+          const sw = targetW / scale;
+          const sh = targetH / scale;
+          const sx = (img.width - sw) / 2;
+          const sy = (img.height - sh) / 2;
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+          resolve(canvas.toDataURL("image/jpeg", 0.9));
+        } catch (e) {
+          resolve(url);
+        }
+      };
+      img.onerror = () => resolve(url);
+      img.src = url;
+    });
   }
 
   const floatingDock = document.getElementById("floatingDock");
@@ -501,7 +793,7 @@
         btn.addEventListener("click", (e) => {
           const shareUrl = `${window.location.origin}${window.location.pathname}?id=${e.currentTarget.getAttribute("data-id")}`;
           if (navigator.share) navigator.share({ title: 'أرشيف الشهيد محمد', url: shareUrl }).catch(() => {});
-          else navigator.clipboard.writeText(shareUrl).then(showToast);
+          else navigator.clipboard.writeText(shareUrl).then(() => showToast("تم نسخ رابط البوست بنجاح!"));
         });
       });
     }
@@ -535,6 +827,151 @@
     } catch (error) {
       container.innerHTML = "<p style='text-align:center; color:var(--mist);'>عذراً، تعذر تحميل أرشيف محمد حالياً.</p>";
     }
+
+    // ==========================================
+    // محرك تصدير الـ PDF (غلاف + 4 بطاقات في كل صفحة مرقمة)
+    // ==========================================
+    const exportPdfBtn = document.getElementById("export-pdf-btn");
+    const pdfBtnLabel = document.getElementById("pdf-btn-label");
+    const pdfStage = document.getElementById("pdf-render-stage");
+
+    exportPdfBtn.addEventListener("click", async () => {
+      if (!galleryData || galleryData.length === 0) {
+        showToast("لا توجد صور جاهزة للتصدير حالياً");
+        return;
+      }
+
+      const originalLabel = pdfBtnLabel.textContent;
+      exportPdfBtn.disabled = true;
+      pdfBtnLabel.textContent = "جاري تحضير ملف الـ PDF...";
+
+      try {
+        await Promise.all([
+          loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
+          loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js")
+        ]);
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+
+        const perPage = 4; // 4 بطاقات في كل صفحة
+        const cardsPagesCount = Math.ceil(galleryData.length / perPage);
+        const totalPages = cardsPagesCount + 1; // +1 لصفحة الغلاف
+
+        // 1. تجهيز صفحة الغلاف (الصفحة 1)
+        pdfBtnLabel.textContent = `تجهيز الغلاف (1 / ${totalPages})...`;
+        const coverPhotoUrl = "../assets/img/mohammed/IMG_7032_Original.jpeg";
+        const croppedCoverImg = await cropImageToDataUrl(coverPhotoUrl, 480, 540);
+        const qrImg = await cropImageToDataUrl("https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://archive.abdallahalaydi.com/mohammed/", 180, 180);
+        const timeSpanText = document.getElementById("time-span")?.textContent || "-";
+
+        pdfStage.innerHTML = `
+          <div class="pdf-page-header">
+            <span>أرشيف عائلة عبد الله العايدي</span>
+            <span>وثيقة أرشيفية مصوّرة</span>
+          </div>
+          <div class="pdf-cover-box">
+            <img class="pdf-cover-img" src="${croppedCoverImg}" alt="الشهيد محمد">
+            <h1 class="pdf-cover-title">أرشيف الشهيد محمد العايدي</h1>
+            <p class="pdf-cover-sub">سجل رقمي يوثق صور وذكريات الشهيد محمد عبر السنين، محفوظة ومرتبة زمنياً.</p>
+            <div class="pdf-cover-pills">
+              <div class="pdf-cover-pill">
+                <span>تاريخ الارتقاء</span>
+                <strong>26 أغسطس 2025</strong>
+              </div>
+              <div class="pdf-cover-pill">
+                <span>إجمالي الصور الموثقة</span>
+                <strong>${galleryData.length} صورة (${timeSpanText})</strong>
+              </div>
+            </div>
+            <div class="pdf-cover-qr">
+              <img src="${qrImg}" alt="QR">
+              <span>امسح الرمز لتصفح الأرشيف الرقمي المباشر</span>
+            </div>
+          </div>
+          <div class="pdf-page-footer">
+            <span>صفحة 1 من ${totalPages}</span>
+            <span dir="ltr">archive.abdallahalaydi.com/mohammed</span>
+          </div>
+        `;
+
+        let canvas = await html2canvas(pdfStage, { scale: 2, useCORS: true, backgroundColor: "#FAF6F0" });
+        pdf.addImage(canvas.toDataURL("image/jpeg", 0.88), "JPEG", 0, 0, 210, 297);
+
+        // 2. تجهيز صفحات البطاقات (4 بطاقات في كل صفحة)
+        for (let p = 0; p < cardsPagesCount; p++) {
+          const pageNumber = p + 2;
+          pdfBtnLabel.textContent = `جاري التجهيز (${pageNumber} / ${totalPages})...`;
+
+          const pageItems = galleryData.slice(p * perPage, (p + 1) * perPage);
+
+          // قص صور الـ 4 بطاقات مسبقاً لضمان الجودة التامة
+          const processedCards = await Promise.all(pageItems.map(async (item) => {
+            const croppedImg = await cropImageToDataUrl(item.image, 600, 600);
+            const info = item._dateInfo;
+            const badgeText = info ? info.badgeText : item.year;
+            const elapsedText = calculateElapsedText(info);
+            return {
+              croppedImg,
+              badgeText,
+              elapsedText,
+              title: item.title || "",
+              desc: item.desc || ""
+            };
+          }));
+
+          const cardsHtml = processedCards.map(c => `
+            <div class="pdf-card">
+              <div class="pdf-card-frame">
+                <span class="pdf-year-badge">${c.badgeText}</span>
+                <img src="${c.croppedImg}" alt="">
+              </div>
+              <div class="pdf-card-info">
+                <div class="pdf-card-title">${c.title}</div>
+                ${c.elapsedText ? `<div class="pdf-card-elapsed">${c.elapsedText}</div>` : ""}
+                <div class="pdf-card-desc">${c.desc}</div>
+              </div>
+            </div>
+          `).join("");
+
+          pdfStage.innerHTML = `
+            <div class="pdf-page-header">
+              <span>أرشيف الشهيد محمد العايدي</span>
+              <span>سجل الصور والذكريات</span>
+            </div>
+            <div class="pdf-cards-grid">
+              ${cardsHtml}
+            </div>
+            <div class="pdf-page-footer">
+              <span>صفحة ${pageNumber} من ${totalPages}</span>
+              <span dir="ltr">archive.abdallahalaydi.com/mohammed</span>
+            </div>
+          `;
+
+          canvas = await html2canvas(pdfStage, { scale: 2, useCORS: true, backgroundColor: "#FAF6F0" });
+          pdf.addPage();
+          pdf.addImage(canvas.toDataURL("image/jpeg", 0.85), "JPEG", 0, 0, 210, 297);
+        }
+
+        pdfStage.innerHTML = "";
+        pdfBtnLabel.textContent = "جاري التنزيل...";
+        pdf.save("أرشيف-الشهيد-محمد-العايدي.pdf");
+
+        pdfBtnLabel.textContent = "✓ تم تنزيل الـ PDF";
+        setTimeout(() => {
+          pdfBtnLabel.textContent = originalLabel;
+          exportPdfBtn.disabled = false;
+        }, 2500);
+
+      } catch (err) {
+        console.error("PDF Export Error:", err);
+        pdfBtnLabel.textContent = "تعذر التصدير، حاول مجدداً";
+        setTimeout(() => {
+          pdfBtnLabel.textContent = originalLabel;
+          exportPdfBtn.disabled = false;
+        }, 2500);
+      }
+    });
   });
 
   // تفعيل تطبيق الويب (PWA) للعمل بدون إنترنت
