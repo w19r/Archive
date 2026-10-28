@@ -73,7 +73,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
   <!-- ==========================================
-       6. نظام الإشعارات (OneSignal) - النسخة المضمونة
+       6. نظام الإشعارات (OneSignal) - النسخة المضمونة 100%
        ========================================== -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
@@ -83,10 +83,11 @@
         await OneSignal.init({
           appId: "8a8880b0-521b-42da-8b7f-6cc930a151ea",
           serviceWorkerPath: "sw.js",
+          serviceWorkerParam: { scope: "/" }, // تأكيد النطاق لحل مشاكل الأندرويد والآيفون
           notifyButton: { enable: false } 
         });
 
-        // علاج الأجهزة العالقة: إذا كان الجهاز سامحاً للإشعارات مسبقاً، اجبر السيرفر على تسجيله الآن
+        // إجبار الأجهزة الموافقة مسبقاً على التسجيل
         if ('Notification' in window && Notification.permission === 'granted') {
           await OneSignal.User.PushSubscription.optIn();
         }
@@ -95,7 +96,7 @@
         const isAlreadySubscribed = OneSignal.User.PushSubscription.optedIn || nativePerm === 'granted';
         const isDismissed = localStorage.getItem('hideArchiveNotifyPill') === 'true';
 
-        // إظهار الشريط البيضاوي فقط لمن لم يوافق أو يرفض بعد
+        // إظهار الشريط البيضاوي لمن لم يتخذ قراراً بعد
         if (!isAlreadySubscribed && nativePerm !== 'denied' && !isDismissed) {
           setTimeout(() => {
             const pill = document.getElementById('notify-pill-banner');
@@ -107,7 +108,6 @@
       }
     });
   </script>
-
 
 <style>
   @font-face {
@@ -152,7 +152,7 @@
   }
   body.splash-active { overflow: hidden; }
 
-  /* ---------- Splash Screen (للـ App فقط) ---------- */
+  /* ---------- Splash Screen ---------- */
   #splash-screen {
     display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     width: 100%; height: 100%; background-color: var(--bg);
@@ -184,7 +184,7 @@
   #update-banner button { background-color: #FFFFFF; color: var(--ink); border: none; border-radius: 20px; padding: 6px 18px; font-family: 'Thamania Sans', sans-serif; font-size: 0.85rem; cursor: pointer; font-weight: 700; transition: transform 0.2s ease; }
   #update-banner button:hover { transform: scale(1.05); }
 
-  /* ---------- 2. الزر البيضاوي العريض لتفعيل الإشعارات (Notification Pill) ---------- */
+  /* ---------- 2. الزر البيضاوي العريض للإشعارات (Notification Pill) ---------- */
   #notify-pill-banner {
     position: fixed; bottom: -120px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px);
     max-width: 520px; background-color: var(--ink); color: #FFFFFF; border: 1px solid rgba(169, 130, 95, 0.45);
@@ -459,38 +459,33 @@
     }
   });
 
-  // 2. التحكم بالزر البيضاوي للإشعارات (معالج ومجهز لأجهزة آبل)  // 2. التحكم بالزر البيضاوي للإشعارات (الإصدار المصحح للربط بالسيرفر)
+  // 2. التحكم بالزر البيضاوي للإشعارات (حل جذري ومباشر ليتوافق مع أجهزة آبل)
   const notifyPill = document.getElementById("notify-pill-banner");
   const acceptNotifyBtn = document.getElementById("accept-notify-btn");
   const rejectNotifyBtn = document.getElementById("reject-notify-btn");
 
-  acceptNotifyBtn.addEventListener("click", function() {
+  acceptNotifyBtn.addEventListener("click", async function() {
     // إخفاء الشريط فوراً
     notifyPill.classList.remove("show");
     localStorage.setItem('hideArchiveNotifyPill', 'true');
     
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    window.OneSignalDeferred.push(async function(OneSignal) {
-      try {
-        // 1. طلب الإذن الرسمي عبر محرك OneSignal
-        await OneSignal.Notifications.requestPermission();
+    try {
+      // طلب الإذن *مباشرة* من المتصفح (بدون أي تأخير) لضمان استجابة أجهزة آبل (User Gesture Strict Rule)
+      if ('Notification' in window) {
+        const permission = await window.Notification.requestPermission();
         
-        // 2. التأكد من أن المستخدم ضغط (السماح) فعلياً في المتصفح
-        if (OneSignal.Notifications.permission === true || Notification.permission === 'granted') {
-          // 3. إرسال أمر التسجيل الفوري لسيرفرات OneSignal
-          await OneSignal.User.PushSubscription.optIn();
+        if (permission === 'granted') {
+          // بعد الموافقة الناجحة، نخبر OneSignal بتسجيل الجهاز فوراً بالسيرفر
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          window.OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.User.PushSubscription.optIn();
+          });
         }
-      } catch (err) {
-        console.warn("Permission error:", err);
       }
-    });
+    } catch (err) {
+      console.warn("Permission error:", err);
+    }
   });
-
-  rejectNotifyBtn.addEventListener("click", function() {
-    notifyPill.classList.remove("show");
-    localStorage.setItem('hideArchiveNotifyPill', 'true');
-  });
-
 
   rejectNotifyBtn.addEventListener("click", function() {
     notifyPill.classList.remove("show");
