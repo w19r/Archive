@@ -237,6 +237,48 @@
     }
   }
 
+  /* ---------- Update Banner (الشريط العلوي للتحديث) ---------- */
+  #update-banner {
+    position: fixed;
+    top: -80px; /* مخفي في البداية */
+    left: 0;
+    width: 100%;
+    background-color: var(--sand-deep);
+    color: #FFFFFF;
+    text-align: center;
+    padding: 12px 20px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 100000;
+    transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #update-banner.show {
+    top: 0; /* ينزلق للأسفل ليظهر */
+  }
+
+  #update-banner button {
+    background-color: #FFFFFF;
+    color: var(--ink);
+    border: none;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 700;
+    transition: transform 0.2s ease;
+  }
+
+  #update-banner button:hover {
+    transform: scale(1.05);
+  }
+
   /* -------------------------------------- */
 
   a{
@@ -733,6 +775,14 @@
 </script>
 
 <!-- ==========================================
+     شريط التحديث العلوي الذكي (PWA Update Banner)
+     ========================================== -->
+<div id="update-banner">
+  <span>يتوفر تحديث جديد للأرشيف!</span>
+  <button id="refresh-app-btn">تحديث الآن</button>
+</div>
+
+<!-- ==========================================
      واجهة التحميل الافتتاحية (Splash Screen)
      ========================================== -->
 <div id="splash-screen">
@@ -1050,10 +1100,48 @@
     }, 5000);
   });
 </script>
+
 <script>
+  // ==========================================
+  // نظام التحديث الذكي (PWA Update Manager)
+  // ==========================================
+  let newWorker;
+  const updateBanner = document.getElementById('update-banner');
+  const refreshBtn = document.getElementById('refresh-app-btn');
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(err => console.error(err));
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        
+        // عند اكتشاف ملف sw.js جديد (تحديث جديد للموقع)
+        reg.addEventListener('updatefound', () => {
+          newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            // إذا اكتمل تنزيل التحديث وهو الآن بانتظار التفعيل
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // إظهار الشريط العلوي للمستخدم
+              updateBanner.classList.add('show');
+            }
+          });
+        });
+
+      }).catch(err => console.error('خطأ في تسجيل Service Worker:', err));
+    });
+
+    // عندما يضغط المستخدم على زر "تحديث الآن" في الشريط العلوي
+    refreshBtn.addEventListener('click', () => {
+      if (newWorker) {
+        // إرسال رسالة للمحرك ليقوم بتخطي الانتظار وتطبيق التحديث فوراً
+        newWorker.postMessage({ action: 'skipWaiting' });
+      }
+    });
+
+    // بمجرد أن يتحكم المحرك الجديد في الصفحة، نقوم بعمل Reload تلقائي ليظهر التحديث
+    let refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
     });
   }
 </script>
