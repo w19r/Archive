@@ -1157,7 +1157,7 @@
 
 <script>
   // ==========================================
-  // نظام التحديث الذكي (PWA Update Manager - مُحدث)
+  // نظام التحديث الذكي (PWA Update Manager - الحل الجذري)
   // ==========================================
   let newWorker;
   const updateBanner = document.getElementById('update-banner');
@@ -1181,17 +1181,18 @@
 
     // عندما يضغط المستخدم على زر "تحديث الآن"
     refreshBtn.addEventListener('click', () => {
-      // إخفاء الشريط فوراً ببصريات سلسة
+      // إخفاء الشريط فوراً من الشاشة وبشكل جذري
       updateBanner.classList.remove('show');
+      updateBanner.style.display = 'none';
       
       if (newWorker) {
         newWorker.postMessage({ action: 'skipWaiting' });
       }
       
-      // إجبار المتصفح على إعادة التحميل فوراً لضمان اختفاء الشريط وتطبيق التحديث
+      // إجبار المتصفح على إعادة التحميل الحقيقي (تجاوز الكاش)
       setTimeout(() => {
-        window.location.reload();
-      }, 300);
+        window.location.reload(true);
+      }, 200);
     });
 
     let refreshing;
@@ -1202,6 +1203,7 @@
     });
   }
 </script>
+
 
 
 </body>
