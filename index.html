@@ -1,48 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- ==========================================
-       نظام الإشعارات (OneSignal)
-       ========================================== -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "8a8880b0-521b-42da-8b7f-6cc930a151ea",
-        serviceWorkerPath: "sw.js", // توجيه OneSignal لاستخدام ملفنا
-        notifyButton: {
-          enable: true,
-          size: 'medium',
-          position: 'bottom-left',
-          colors: {
-            'circle.background': '#8A6741',
-            'circle.foreground': 'white',
-          }
-        },
-        promptOptions: {
-          slidedown: {
-            prompts: [
-              {
-                type: "push",
-                autoPrompt: true,
-                text: {
-                  actionMessage: "هل تود تلقي إشعارات عند إضافة صور جديدة لأرشيف العائلة؟",
-                  acceptButton: "نعم، أوافق",
-                  cancelButton: "لاحقاً"
-                },
-                delay: {
-                  pageViews: 1,
-                  timeDelay: 3
-                }
-              }
-            ]
-          }
-        }
-      });
-    });
-  </script>
-
   <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -123,6 +81,40 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
+  <!-- ==========================================
+       6. نظام الإشعارات (OneSignal) المخصص
+       ========================================== -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "8a8880b0-521b-42da-8b7f-6cc930a151ea",
+        serviceWorkerPath: "sw.js", 
+        notifyButton: { enable: false } // تم إيقاف الجرس الافتراضي لنستخدم شريطنا المخصص
+      });
+
+      // إظهار شريط الإشعارات المخصص بشكل دائم حتى يتم اتخاذ قرار
+      if (OneSignal.Notifications.permission === "default" && !localStorage.getItem('hideNotifyBanner')) {
+        setTimeout(() => {
+          document.getElementById('notification-banner').classList.add('show');
+        }, 3000); // يظهر بعد 3 ثواني من فتح الموقع
+      }
+
+      // عند ضغط "نعم، أوافق"
+      document.getElementById('accept-notify-btn').addEventListener('click', () => {
+        document.getElementById('notification-banner').classList.remove('show');
+        OneSignal.Notifications.requestPermission();
+      });
+
+      // عند ضغط "لاحقاً"
+      document.getElementById('reject-notify-btn').addEventListener('click', () => {
+        document.getElementById('notification-banner').classList.remove('show');
+        localStorage.setItem('hideNotifyBanner', 'true'); // حفظ الرفض لعدم الإزعاج مجدداً
+      });
+    });
+  </script>
+
 <style>
 
   @font-face {
@@ -198,7 +190,7 @@
   /* ---------- Splash Screen (للـ App فقط) ---------- */
 
   #splash-screen {
-    display: none; /* مخفية تماماً في المتصفح العادي */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -214,7 +206,6 @@
     transition: opacity 0.6s ease, visibility 0.6s ease;
   }
 
-  /* تظهر فقط عندما يُفتح الموقع كتطبيق من الشاشة الرئيسية */
   body.is-app #splash-screen {
     display: flex;
   }
@@ -271,40 +262,37 @@
   }
 
   @keyframes splashPulse {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.04);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
   }
 
-  /* ---------- Update Banner (الشريط العلوي للتحديث) ---------- */
-  #update-banner {
+  /* ---------- Top Banners (شريط التحديث + شريط الإشعارات) ---------- */
+  .top-banner {
     position: fixed;
-    top: -80px; /* مخفي في البداية */
+    top: -120px; /* مخفي في البداية */
     left: 0;
     width: 100%;
     background-color: var(--sand-deep);
     color: #FFFFFF;
     text-align: center;
-    padding: 12px 20px;
+    padding: 14px 20px;
     font-family: 'Thamania Sans', sans-serif;
     font-size: 0.95rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     z-index: 100000;
-    transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+    flex-wrap: wrap; /* للتجاوب مع الشاشات الصغيرة */
   }
 
-  #update-banner.show {
-    top: 0; /* ينزلق للأسفل ليظهر */
+  .top-banner.show {
+    top: 0;
   }
 
-  #update-banner button {
+  .top-banner button {
     background-color: #FFFFFF;
     color: var(--ink);
     border: none;
@@ -314,11 +302,22 @@
     font-size: 0.85rem;
     cursor: pointer;
     font-weight: 700;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease;
   }
 
-  #update-banner button:hover {
+  .top-banner button:hover {
     transform: scale(1.05);
+  }
+
+  .top-banner .btn-reject {
+    background-color: transparent;
+    color: #FFFFFF;
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+
+  .top-banner .btn-reject:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-color: #FFFFFF;
   }
 
   /* -------------------------------------- */
@@ -791,7 +790,6 @@
   footer > span{
     color:var(--mist);
     font-size:0.85rem;
-    direction:ltr;
     display:inline-block;
   }
 
@@ -810,20 +808,29 @@
 
 <body>
 <script>
-  // تفعيل شاشة البداية فقط إذا تم فتح الموقع كتطبيق، **وبشرط ألا تكون قد ظهرت مسبقاً في هذه الجلسة**
+  // تفعيل شاشة البداية فقط إذا تم فتح الموقع كتطبيق
   if ((window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) && !sessionStorage.getItem('splashShown')) {
     document.body.classList.add('is-app', 'splash-active');
   }
 </script>
 
-
-
 <!-- ==========================================
      شريط التحديث العلوي الذكي (PWA Update Banner)
      ========================================== -->
-<div id="update-banner">
+<div id="update-banner" class="top-banner" style="z-index: 100001;">
   <span>يتوفر تحديث جديد للأرشيف!</span>
   <button id="refresh-app-btn">تحديث الآن</button>
+</div>
+
+<!-- ==========================================
+     شريط الإشعارات العلوي المخصص
+     ========================================== -->
+<div id="notification-banner" class="top-banner" style="z-index: 100000;">
+  <span>هل تود تلقي إشعارات عند إضافة صور جديدة للأرشيف؟</span>
+  <div style="display: flex; gap: 8px;">
+    <button id="accept-notify-btn">نعم، أوافق</button>
+    <button id="reject-notify-btn" class="btn-reject">لاحقاً</button>
+  </div>
 </div>
 
 <!-- ==========================================
@@ -1067,7 +1074,7 @@
     </div>
   </div>
 
-  <span>2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.©</span>
+  <span style="direction: ltr; display: inline-block;">© 2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.</span>
 </footer>
 
 <script>
@@ -1083,7 +1090,6 @@
         sessionStorage.setItem('splashShown', 'true');
       }, 1200);
     }
-
   });
 
   // فتح وإغلاق قسم (حول مشروع الأرشيف • تثبيت التطبيق)
@@ -1151,9 +1157,10 @@
 
 <script>
   // ==========================================
-  // نظام التحديث الذكي (PWA Update Manager)
+  // نظام التحديث الذكي (PWA Update Manager) - تم إصلاح مشكلة التعليق
   // ==========================================
   let newWorker;
+  let isUserTriggeredUpdate = false; // القفل الذي يمنع التحديث العشوائي
   const updateBanner = document.getElementById('update-banner');
   const refreshBtn = document.getElementById('refresh-app-btn');
 
@@ -1161,13 +1168,10 @@
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').then(reg => {
         
-        // عند اكتشاف ملف sw.js جديد (تحديث جديد للموقع)
         reg.addEventListener('updatefound', () => {
           newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
-            // إذا اكتمل تنزيل التحديث وهو الآن بانتظار التفعيل
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // إظهار الشريط العلوي للمستخدم
               updateBanner.classList.add('show');
             }
           });
@@ -1176,18 +1180,18 @@
       }).catch(err => console.error('خطأ في تسجيل Service Worker:', err));
     });
 
-    // عندما يضغط المستخدم على زر "تحديث الآن" في الشريط العلوي
+    // عندما يضغط المستخدم بنفسه على زر "تحديث الآن"
     refreshBtn.addEventListener('click', () => {
       if (newWorker) {
-        // إرسال رسالة للمحرك ليقوم بتخطي الانتظار وتطبيق التحديث فوراً
+        isUserTriggeredUpdate = true; // نفتح القفل هنا فقط
         newWorker.postMessage({ action: 'skipWaiting' });
       }
     });
 
-    // بمجرد أن يتحكم المحرك الجديد في الصفحة، نقوم بعمل Reload تلقائي ليظهر التحديث
+    // عملية الـ Reload لن تتم إلا إذا كان المستخدم هو من ضغط الزر
     let refreshing;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing) return;
+      if (refreshing || !isUserTriggeredUpdate) return;
       refreshing = true;
       window.location.reload();
     });
