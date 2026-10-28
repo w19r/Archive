@@ -73,7 +73,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
   <!-- ==========================================
-       6. نظام الإشعارات (OneSignal) - النسخة المصححة
+       6. نظام الإشعارات (OneSignal) - مربوط ببرمجية الجرس الرسمي
        ========================================== -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
@@ -84,23 +84,25 @@
           appId: "8a8880b0-521b-42da-8b7f-6cc930a151ea",
           serviceWorkerPath: "sw.js",
           serviceWorkerParam: { scope: "/" },
-          notifyButton: { enable: false } 
+          notifyButton: { enable: false }
         });
 
-        // تم إضافة التأمين هنا لتجنب أي خطأ في هواتف أبل
-        if ('Notification' in window && Notification.permission === 'granted') {
+        // 1. إذا كان الجهاز قد ضغط "سماح" سابقاً في المتصفح ولكنه لم يتسجل في السيرفر، نسجله فوراً
+        if ('Notification' in window && Notification.permission === 'granted' && !OneSignal.User.PushSubscription.optedIn) {
           await OneSignal.User.PushSubscription.optIn();
         }
 
-        const nativePerm = ('Notification' in window) ? Notification.permission : 'default';
-        const isDismissed = localStorage.getItem('hideArchiveNotifyPill') === 'true';
+        // 2. فحص هل الجهاز مسجل فعلياً في سيرفرات OneSignal أم لا
+        const isRegisteredOnServer = Boolean(OneSignal.User.PushSubscription.optedIn && OneSignal.User.PushSubscription.token);
+        const isDismissed = localStorage.getItem('hideArchivePill_v2') === 'true';
+        const isDenied = ('Notification' in window && Notification.permission === 'denied');
 
-        // إظهار الشريط البيضاوي فقط لمن لم يتخذ قراراً بعد
-        if (nativePerm === 'default' && !isDismissed) {
+        // إظهار الزر البيضاوي لكل جهاز غير مسجل فعلياً في لوحة تحكم OneSignal
+        if (!isRegisteredOnServer && !isDenied && !isDismissed) {
           setTimeout(() => {
             const pill = document.getElementById('notify-pill-banner');
             if (pill) pill.classList.add('show');
-          }, 2000);
+          }, 1500);
         }
       } catch (e) {
         console.warn("OneSignal Init Note:", e);
@@ -149,17 +151,32 @@
     font-family:'Thamania Text', serif; font-weight:400; line-height:1.8;
     -webkit-font-smoothing:antialiased;
   }
-  body.splash-active { overflow: hidden; }
 
-  /* ---------- Splash Screen ---------- */
+  /* ---------- Splash Screen (محمية ضد التعليق والشاشة البيضاء) ---------- */
   #splash-screen {
     display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     width: 100%; height: 100%; background-color: var(--bg);
     flex-direction: column; justify-content: center; align-items: center;
-    z-index: 99999; transition: opacity 0.6s ease, visibility 0.6s ease;
+    z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s ease;
   }
-  body.is-app #splash-screen { display: flex; }
-  #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+  body.is-app #splash-screen {
+    display: flex;
+    /* صمام أمان بـ CSS: يخفي شاشة البداية تلقائياً بعد 1.8 ثانية حتى لو تأخر الإنترنت */
+    animation: forceHideSplash 0.5s ease 1.8s forwards;
+  }
+  #splash-screen.fade-out {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  @keyframes forceHideSplash {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
   .splash-center { display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .splash-logo {
     width: 105px; height: 105px; border-radius: 24px; object-fit: contain;
@@ -288,17 +305,8 @@
 <body>
 <script>
   if ((window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) && !sessionStorage.getItem('splashShown')) {
-    document.body.classList.add('is-app', 'splash-active');
-    
-    // مؤقت إنقاذ إجباري: يخفي الشاشة البيضاء بعد ثانيتين ونصف مهما حدث! (يمنع تعليق الموقع)
-    setTimeout(function() {
-      const splash = document.getElementById("splash-screen");
-      if (splash && !splash.classList.contains("fade-out")) {
-        splash.classList.add("fade-out");
-        document.body.classList.remove("splash-active");
-        sessionStorage.setItem('splashShown', 'true');
-      }
-    }, 2500);
+    document.body.classList.add('is-app');
+    sessionStorage.setItem('splashShown', 'true');
   }
 </script>
 
@@ -316,9 +324,9 @@
         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
       </svg>
     </div>
-    <span class="notify-pill-text">تلقي الإشعارات عند إضافة صور جديدة للأرشيف</span>
+    <span class="notify-pill-text" id="notify-pill-text">تلقي الإشعارات عند إضافة صور جديدة للأرشيف</span>
   </div>
-  <div class="notify-pill-actions">
+  <div class="notify-pill-actions" id="notify-pill-actions">
     <button type="button" id="accept-notify-btn" class="btn-pill-accept">موافق</button>
     <button type="button" id="reject-notify-btn" class="btn-pill-later">لاحقاً</button>
   </div>
@@ -423,7 +431,7 @@
           </div>
           <div class="about-block">
             <h3>المساهمة واقتراح التعديلات</h3>
-            <p>يمكنك دائماً اقتراح تعديلات لتحسين الموقع أو إرسال صور وذكريات إضافية للشهداء المعروضين عبر <a href="#contribute-section" class="inline-link" id="goToFormLink">نموذج المساهمة أعلاه</a>.</p>
+            <p>يمكنك دائماً اقتراح تعديلات لتحسين الموقع أو إرسال صور وذكريات إضافية للشهداء المعروضين (<strong>الشهيد محمد</strong> و<strong>الشهيد عبد المجيد</strong>) عبر <a href="#contribute-section" class="inline-link" id="goToFormLink">نموذج المساهمة أعلاه</a>.</p>
           </div>
           <div class="about-block">
             <h3>طريقة تثبيت الأرشيف كتطبيق على الواجهة الرئيسية</h3>
@@ -434,16 +442,16 @@
                 <div class="install-os-title"><span>أجهزة الآيفون (iPhone)</span><span class="install-os-tag">متصفح Safari</span></div>
                 <ol class="install-list">
                   <li><span class="step-num">1</span>افتح الموقع باستخدام متصفح <strong>Safari</strong>.</li>
-                  <li><span class="step-num">2</span>اضغط على أيقونة <strong>المشاركة (Share)</strong> في الشريط السفلي.</li>
-                  <li><span class="step-num">3</span>مرر للأسفل واختر <strong>"إضافة إلى الصفحة الرئيسية"</strong> ثم اضغط إضافة.</li>
+                  <li><span class="step-num">2</span>اضغط على أيقونة <strong>المشاركة (Share)</strong> في الشريط السفلي (المربع الذي يخرج منه سهم للأعلى).</li>
+                  <li><span class="step-num">3</span>مرر للأسفل واختر <strong>"إضافة إلى الصفحة الرئيسية" (Add to Home Screen)</strong> ثم اضغط <strong>إضافة (Add)</strong>.</li>
                 </ol>
               </div>
               <div class="install-os-card">
                 <div class="install-os-title"><span>أجهزة الأندرويد (Android)</span><span class="install-os-tag">متصفح Chrome</span></div>
                 <ol class="install-list">
-                  <li><span class="step-num">1</span>افتح الموقع باستخدام متصفح <strong>Chrome</strong>.</li>
-                  <li><span class="step-num">2</span>اضغط على رمز <strong>النقاط الثلاث (⋮)</strong> في أعلى الزاوية.</li>
-                  <li><span class="step-num">3</span>اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"الإضافة إلى الشاشة"</strong>.</li>
+                  <li><span class="step-num">1</span>افتح الموقع باستخدام متصفح <strong>Google Chrome</strong>.</li>
+                  <li><span class="step-num">2</span>اضغط على رمز <strong>النقاط الثلاث (⋮)</strong> في أعلى زاوية المتصفح.</li>
+                  <li><span class="step-num">3</span>اختر <strong>"تثبيت التطبيق" (Install app)</strong> أو <strong>"الإضافة إلى الشاشة الرئيسية" (Add to Home screen)</strong> ثم أكد التثبيت.</li>
                 </ol>
               </div>
             </div>
@@ -456,49 +464,48 @@
 </footer>
 
 <script>
-  // 1. إخفاء شاشة التحميل الافتتاحية
-  window.addEventListener("load", function() {
-    if (document.body.classList.contains("is-app")) {
-      const splash = document.getElementById("splash-screen");
+  // 1. إخفاء شاشة البداية فور جهوزية الصفحة دون انتظار التحميل البطيء
+  document.addEventListener("DOMContentLoaded", function() {
+    const splash = document.getElementById("splash-screen");
+    if (splash) {
       setTimeout(function() {
         splash.classList.add("fade-out");
-        document.body.classList.remove("splash-active");
-        sessionStorage.setItem('splashShown', 'true');
-      }, 1000);
+      }, 1100);
     }
   });
 
-  // 2. التحكم بالزر البيضاوي للإشعارات (مضمون ومتوافق 100% مع أبل وأندرويد)
+  // 2. الزر البيضاوي مربوط بنفس برمجية زر الجرس الرسمي لـ OneSignal
   const notifyPill = document.getElementById("notify-pill-banner");
+  const notifyPillText = document.getElementById("notify-pill-text");
+  const notifyPillActions = document.getElementById("notify-pill-actions");
   const acceptNotifyBtn = document.getElementById("accept-notify-btn");
   const rejectNotifyBtn = document.getElementById("reject-notify-btn");
 
   acceptNotifyBtn.addEventListener("click", async function() {
-    // إخفاء الشريط فوراً
-    notifyPill.classList.remove("show");
-    localStorage.setItem('hideArchiveNotifyPill', 'true');
-    
+    if (notifyPillText) notifyPillText.innerText = "جاري تسجيل الجهاز في الإشعارات...";
+    if (notifyPillActions) notifyPillActions.style.display = "none";
+
     try {
-      if ('Notification' in window) {
-        // نطلب الإذن مباشرة من المتصفح ليتوافق مع صرامة أجهزة أبل
-        const permission = await window.Notification.requestPermission();
-        
-        if (permission === 'granted') {
-          // بمجرد الموافقة، نخبر OneSignal بتسجيل الجهاز فوراً بالسيرفر
-          window.OneSignalDeferred = window.OneSignalDeferred || [];
-          window.OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.User.PushSubscription.optIn();
-          });
-        }
+      if (window.OneSignal) {
+        // استدعاء أوامر OneSignal الرسمية مباشرة (نفس برمجية الجرس القديم تماماً)
+        await window.OneSignal.Notifications.requestPermission();
+        await window.OneSignal.User.PushSubscription.optIn();
       }
+
+      if (notifyPillText) notifyPillText.innerText = "✓ تم تفعيل الإشعارات بنجاح!";
+      localStorage.setItem('hideArchivePill_v2', 'true');
+      setTimeout(() => {
+        notifyPill.classList.remove("show");
+      }, 1500);
     } catch (err) {
-      console.warn("Permission error:", err);
+      console.warn("OneSignal Subscribe Error:", err);
+      notifyPill.classList.remove("show");
     }
   });
 
   rejectNotifyBtn.addEventListener("click", function() {
     notifyPill.classList.remove("show");
-    localStorage.setItem('hideArchiveNotifyPill', 'true');
+    localStorage.setItem('hideArchivePill_v2', 'true');
   });
 
   // 3. فتح وإغلاق قسم (حول مشروع الأرشيف)
@@ -545,7 +552,7 @@
     setTimeout(() => { status.innerHTML = ""; }, 5000);
   });
 
-  // 5. نظام التحديث الذكي (ينظف الكاش بأمان دون التسبب بأي شاشة بيضاء)
+  // 5. نظام التحديث الذكي (بدون أن يلغي تسجيل OneSignal)
   let swRegistration = null;
   let newWorker = null;
   const updateBanner = document.getElementById('update-banner');
@@ -561,22 +568,32 @@
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then(reg => {
-        swRegistration = reg;
-        if (reg.waiting && navigator.serviceWorker.controller) {
-          newWorker = reg.waiting;
-          showUpdateBar();
-        }
-        reg.addEventListener('updatefound', () => {
-          newWorker = reg.installing;
-          if (!newWorker) return;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateBar();
-            }
+      setTimeout(async () => {
+        try {
+          // نستخدم التسجيل الحالي الذي أنشأه OneSignal دون الكتابة فوقه
+          swRegistration = await navigator.serviceWorker.getRegistration();
+          if (!swRegistration) {
+            swRegistration = await navigator.serviceWorker.register('/sw.js');
+          }
+
+          if (swRegistration.waiting && navigator.serviceWorker.controller) {
+            newWorker = swRegistration.waiting;
+            showUpdateBar();
+          }
+
+          swRegistration.addEventListener('updatefound', () => {
+            newWorker = swRegistration.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateBar();
+              }
+            });
           });
-        });
-      }).catch(err => console.error('SW Registration Error:', err));
+        } catch (err) {
+          console.warn('SW check note:', err);
+        }
+      }, 2500);
     });
 
     refreshBtn.addEventListener('click', async () => {
@@ -591,13 +608,13 @@
         }
         if ('caches' in window) {
           const cacheNames = await caches.keys();
-          await Promise.all( cacheNames.filter(name => name.startsWith('alaydi-core')).map(name => caches.delete(name)) );
+          await Promise.all(
+            cacheNames.filter(name => name.startsWith('alaydi-core')).map(name => caches.delete(name))
+          );
         }
-      } catch (e) {
-        console.warn('Cache update note:', e);
-      }
-      
-      setTimeout(() => { window.location.reload(true); }, 500);
+      } catch (e) {}
+
+      setTimeout(() => { window.location.reload(); }, 300);
     });
   }
 </script>
