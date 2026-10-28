@@ -1,7 +1,7 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-// تم رفع الإصدار إلى 1.191 لإجبار المتصفحات على التحديث
-const CACHE_NAME = 'alaydi-core-v1.191';
+
+const CACHE_NAME = 'alaydi-core-v1.196';
 const IMAGES_CACHE = 'alaydi-images-v1';
 
 // الملفات البرمجية والصفحات فقط
