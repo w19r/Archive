@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- ==========================================
+       نظام الإشعارات (OneSignal) - النسخة المستقرة
+       ========================================== -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "8a8880b0-521b-42da-8b7f-6cc930a151ea",
+        serviceWorkerPath: "sw.js",
+        // تفعيل الجرس الافتراضي الصغير من OneSignal (ليكون وسيلة آمنة وثابتة للاشتراك)
+        notifyButton: {
+          enable: true,
+          size: 'medium',
+          position: 'bottom-left', // يظهر في أسفل الشاشة بعيداً عن المحتوى
+          colors: {
+            'circle.background': '#8A6741',
+            'circle.foreground': 'white',
+          }
+        }
+      });
+    });
+  </script>
+
   <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
