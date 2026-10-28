@@ -100,3 +100,10 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// 4. الاستماع لرسالة التحديث الفوري القادمة من زر الشريط العلوي في التطبيق
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
