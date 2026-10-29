@@ -14,6 +14,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
   <link rel="manifest" href="/assets/favicon/site.webmanifest">
+
   <!-- ==========================================
        وسوم المشاركة (Open Graph) - صفحة 404
        ========================================== -->
@@ -57,7 +58,9 @@
 
   :root{
     --bg:#FAF6F0;
+    --card:#FFFFFF;
     --ink:#332C24;
+    --sand:#A9825F;
     --sand-deep:#8A6741;
     --mist:#8C8175;
     --line:#E7DDCE;
@@ -93,7 +96,7 @@
 
   /* ---------- Header ---------- */
   header{
-    padding:64px 0 20px;
+    padding:50px 0 20px;
     text-align:center;
   }
 
@@ -113,51 +116,89 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 20px;
+    padding: 0 20px 40px;
   }
 
   .error-content {
     text-align: center;
-    max-width: 500px;
+    max-width: 520px;
   }
 
-  /* رقم 404 بلون هادئ جداً (لون الضباب) وحجم متوسط */
   .error-code {
     font-family: 'Thamania Sans', sans-serif;
     font-size: 4rem;
     color: var(--mist);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     letter-spacing: 2px;
   }
 
   .error-content h2 {
     font-size: 1.5rem;
     color: var(--ink);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .error-content p {
     color: var(--mist);
-    font-size: 1rem;
-    margin-bottom: 40px;
+    font-size: 0.98rem;
+    margin-bottom: 30px;
   }
 
-  /* زر العودة: شفاف وأنيق (Ghost Button) */
-  .btn-home {
+  /* مجموعة الأزرار */
+  .error-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .btn-main-home {
     display: inline-block;
-    background: transparent;
-    color: var(--sand-deep);
-    border: 1px solid var(--sand-deep);
-    border-radius: 6px;
-    padding: 10px 28px;
-    font-family: 'Thamania Sans', sans-serif;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-  }
-
-  .btn-home:hover {
     background: var(--sand-deep);
     color: #FFFFFF;
+    border: 1px solid var(--sand-deep);
+    border-radius: 8px;
+    padding: 11px 28px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(138, 103, 65, 0.1);
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .btn-main-home:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .martyrs-quick-links {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+
+  .btn-sub-link {
+    flex: 1;
+    background: var(--card);
+    color: var(--sand-deep);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'Thamania Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(138, 103, 65, 0.04);
+  }
+
+  .btn-sub-link:hover {
+    border-color: var(--sand-deep);
+    background: #FDFBF8;
+    transform: translateY(-1px);
   }
 
   /* ---------- Footer ---------- */
@@ -174,6 +215,17 @@
     display:inline-block;
   }
 
+  footer span a {
+    color: var(--sand-deep);
+    font-weight: 700;
+    transition: color 0.2s ease;
+  }
+
+  footer span a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
 </style>
 </head>
 
@@ -187,14 +239,20 @@
     <div class="error-content">
       <div class="error-code">404</div>
       <h2>عذراً، هذا السجل غير موجود</h2>
-      <p>ربما تم نقل الصفحة أو أن الرابط الذي اتبعته غير صحيح.</p>
+      <p>ربما تم نقل الصفحة أو أن الرابط الذي اتبعته غير صحيح. يمكنك التوجه مباشرة إلى الرئيسية أو اختيار أحد أرشيفات الشهداء أدناه:</p>
       
-      <a href="/" class="btn-home">العودة للرئيسية</a>
+      <div class="error-actions">
+        <a href="/" class="btn-main-home">العودة للرئيسية</a>
+        <div class="martyrs-quick-links">
+          <a href="/mohammed" class="btn-sub-link">أرشيف محمد</a>
+          <a href="/abdulmajeed" class="btn-sub-link">أرشيف عبد المجيد</a>
+        </div>
+      </div>
     </div>
   </main>
 
   <footer>
-    <span>2026 ABDALLAH ALAYDI. All Rights Reserved.©</span>
+    <span dir="ltr">© 2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.</span>
   </footer>
 
 </body>
