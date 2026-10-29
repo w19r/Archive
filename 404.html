@@ -3,25 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>الصفحة غير موجودة - أرشيف عائلة عبد الله العايدي</title>
-  <meta name="description" content="عذراً، الصفحة التي تبحث عنها غير موجودة في أرشيف عائلة العايدي.">
-  <meta name="theme-color" content="#FAF6F0">
-
-  <!-- أيقونات الموقع -->
-  <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/favicon/site.webmanifest">
 
   <!-- ==========================================
-       وسوم المشاركة (Open Graph) - صفحة 404
+       1. الإعدادات الأساسية
+       ========================================== -->
+  <title>الصفحة غير موجودة | أرشيف عائلة عبد الله العايدي</title>
+  <meta name="description" content="عذراً، الصفحة المطلوبة غير متوفرة. عُد إلى الصفحة الرئيسية لتصفح أرشيف صور وذكريات شهداء عائلة العايدي.">
+  <meta name="author" content="Abdallah Alaydi">
+  <link rel="canonical" href="https://archive.abdallahalaydi.com/">
+
+  <!-- ==========================================
+       2. الهوية البصرية والمتصفحات (Favicon & Manifest)
+       ========================================== -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="الأرشيف">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#FAF6F0">
+
+  <!-- ==========================================
+       3. المشاركة على وسائل التواصل (Open Graph)
        ========================================== -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://archive.abdallahalaydi.com/404.html">
-  <meta property="og:title" content="الصفحة غير موجودة | أرشيف عائلة عبد الله العايدي">
-  <meta property="og:description" content="عذراً، الصفحة المطلوبة غير متوفرة. عُد إلى الصفحة الرئيسية لتصفح أرشيف وذكريات العائلة.">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:url" content="https://archive.abdallahalaydi.com/">
+  <meta property="og:title" content="أرشيف عائلة عبد الله العايدي">
+  <meta property="og:description" content="عذراً، هذا الرابط غير متوفر. تصفح أرشيف صور وذكريات شهداء عائلة العايدي عبر الصفحة الرئيسية.">
   <meta property="og:image" content="https://archive.abdallahalaydi.com/assets/img/Family-Archive.png">
   <meta property="og:image:secure_url" content="https://archive.abdallahalaydi.com/assets/img/Family-Archive.png">
   <meta property="og:image:type" content="image/png">
@@ -31,11 +42,11 @@
   <meta property="og:site_name" content="أرشيف عائلة العايدي">
 
   <!-- ==========================================
-       وسوم تويتر / X - صفحة 404
+       4. المشاركة على تويتر / X
        ========================================== -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="الصفحة غير موجودة | أرشيف عائلة عبد الله العايدي">
-  <meta name="twitter:description" content="عذراً، الصفحة المطلوبة غير متوفرة. عُد إلى الصفحة الرئيسية لتصفح أرشيف وذكريات العائلة.">
+  <meta name="twitter:title" content="أرشيف عائلة عبد الله العايدي">
+  <meta name="twitter:description" content="عذراً، هذا الرابط غير متوفر. تصفح أرشيف صور وذكريات شهداء عائلة العايدي عبر الصفحة الرئيسية.">
   <meta name="twitter:image" content="https://archive.abdallahalaydi.com/assets/img/Family-Archive.png">
   <meta name="twitter:image:alt" content="أرشيف عائلة عبد الله العايدي">
 
@@ -72,6 +83,8 @@
     padding:0;
   }
 
+  ::selection { background-color: var(--sand); color: #FFFFFF; }
+
   body{
     background:var(--bg);
     color:var(--ink);
@@ -89,116 +102,176 @@
     text-decoration:none;
   }
 
-  h1, h2, h3 {
+  h1, h2, h3, .btn-pill-primary, .btn-pill-secondary, .error-badge {
     font-family:'Thamania Sans', sans-serif;
     font-weight:700;
   }
 
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
   /* ---------- Header ---------- */
   header{
-    padding:50px 0 20px;
+    padding:48px 0 32px;
     text-align:center;
+    border-bottom:1px solid var(--line);
   }
 
   header h1{
-    font-size:clamp(1.5rem, 4vw, 2.2rem);
-    color:var(--ink);
-    transition: color 0.3s ease;
+    font-size:clamp(1.8rem, 4.5vw, 2.5rem);
+    color:var(--sand-deep);
+    margin-bottom:8px;
+    transition: color 0.2s ease;
   }
 
   header h1:hover {
-    color: var(--sand-deep);
+    color: var(--ink);
   }
 
-  /* ---------- 404 Minimal Content ---------- */
+  header p{
+    color:var(--mist);
+    font-size:0.98rem;
+  }
+
+  /* ---------- 404 Main Card ---------- */
   main{
     flex: 1; 
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 20px 40px;
+    padding: 48px 20px;
   }
 
-  .error-content {
+  .error-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 44px 32px;
+    max-width: 540px;
+    width: 100%;
     text-align: center;
-    max-width: 520px;
+    box-shadow: 0 12px 32px rgba(138, 103, 65, 0.07);
+  }
+
+  .error-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    color: var(--sand-deep);
+    border: 1px solid var(--line);
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    margin-bottom: 18px;
   }
 
   .error-code {
     font-family: 'Thamania Sans', sans-serif;
-    font-size: 4rem;
-    color: var(--mist);
-    margin-bottom: 8px;
+    font-size: clamp(3.2rem, 8vw, 4.4rem);
+    color: var(--sand-deep);
+    line-height: 1.1;
+    margin-bottom: 10px;
     letter-spacing: 2px;
   }
 
-  .error-content h2 {
-    font-size: 1.5rem;
+  .error-card h2 {
+    font-size: 1.55rem;
     color: var(--ink);
     margin-bottom: 10px;
   }
 
-  .error-content p {
+  .error-card p {
     color: var(--mist);
-    font-size: 0.98rem;
-    margin-bottom: 30px;
+    font-size: 0.96rem;
+    max-width: 42ch;
+    margin: 0 auto 28px;
+    line-height: 1.75;
   }
 
-  /* مجموعة الأزرار */
+  /* ---------- الأزرار (موحّدة مع تصميم الموقع) ---------- */
   .error-actions {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     align-items: center;
   }
 
-  .btn-main-home {
-    display: inline-block;
+  /* الزر الرئيسي للعودة للرئيسية */
+  .btn-pill-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     background: var(--sand-deep);
     color: #FFFFFF;
     border: 1px solid var(--sand-deep);
-    border-radius: 8px;
+    border-radius: 30px;
     padding: 11px 28px;
-    font-family: 'Thamania Sans', sans-serif;
     font-size: 0.95rem;
-    font-weight: 700;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(138, 103, 65, 0.1);
+    box-shadow: 0 6px 16px rgba(138, 103, 65, 0.16);
     width: 100%;
-    max-width: 280px;
+    max-width: 340px;
   }
 
-  .btn-main-home:hover {
+  .btn-pill-primary:hover {
     background: var(--ink);
     border-color: var(--ink);
+    transform: translateY(-2px);
   }
 
-  .martyrs-quick-links {
-    display: flex;
+  .btn-pill-primary svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    flex-shrink: 0;
+  }
+
+  .divider-label {
+    font-size: 0.82rem;
+    color: var(--mist);
+    margin: 4px 0 2px;
+  }
+
+  /* أزرار التوجيه السريع لأرشيف الشهداء */
+  .martyrs-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     width: 100%;
-    max-width: 280px;
-    justify-content: center;
+    max-width: 340px;
   }
 
-  .btn-sub-link {
-    flex: 1;
-    background: var(--card);
+  .btn-pill-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: var(--bg);
     color: var(--sand-deep);
     border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 9px 12px;
-    font-family: 'Thamania Sans', sans-serif;
+    border-radius: 30px;
+    padding: 9px 14px;
     font-size: 0.85rem;
-    font-weight: 700;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 8px rgba(138, 103, 65, 0.04);
+    transition: all 0.2s ease;
   }
 
-  .btn-sub-link:hover {
+  .btn-pill-secondary:hover {
+    background: var(--sand-deep);
+    color: #FFFFFF;
     border-color: var(--sand-deep);
-    background: #FDFBF8;
     transform: translateY(-1px);
+  }
+
+  .btn-pill-secondary svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    flex-shrink: 0;
   }
 
   /* ---------- Footer ---------- */
@@ -208,51 +281,90 @@
     border-top:1px solid var(--line);
   }
 
-  footer span{
+  footer > span{
     color:var(--mist);
-    font-size:0.82rem;
+    font-size:0.85rem;
     direction:ltr;
     display:inline-block;
   }
 
-  footer span a {
+  footer > span a {
     color: var(--sand-deep);
     font-weight: 700;
     transition: color 0.2s ease;
   }
 
-  footer span a:hover {
+  footer > span a:hover {
     color: var(--ink);
     text-decoration: underline;
   }
 
+  @media (max-width: 480px) {
+    .error-card {
+      padding: 34px 20px;
+    }
+    .martyrs-nav-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 
 <body>
 
   <header>
-    <a href="/"><h1>أرشيف عائلة عبد الله العايدي</h1></a>
+    <div class="wrap">
+      <a href="/"><h1>أرشيف عائلة عبد الله العايدي</h1></a>
+      <p>مساحة لحفظ صور شهداء العائلة وذكرياتها عبر السنين.</p>
+    </div>
   </header>
 
   <main>
-    <div class="error-content">
-      <div class="error-code">404</div>
-      <h2>عذراً، هذا السجل غير موجود</h2>
-      <p>ربما تم نقل الصفحة أو أن الرابط الذي اتبعته غير صحيح. يمكنك التوجه مباشرة إلى الرئيسية أو اختيار أحد أرشيفات الشهداء أدناه:</p>
+    <div class="error-card">
+      <div class="error-badge">
+        <span>خطأ في الرابط • 404</span>
+      </div>
+      <h2>عذراً، هذه الصفحة غير موجودة</h2>
+      <p>ربما تم نقل الصفحة أو أن الرابط الذي اتبعته غير صحيح. يمكنك العودة إلى الأرشيف الرئيسي أو الانتقال مباشرة إلى سجل أحد الشهداء:</p>
       
       <div class="error-actions">
-        <a href="/" class="btn-main-home">العودة للرئيسية</a>
-        <div class="martyrs-quick-links">
-          <a href="/mohammed" class="btn-sub-link">أرشيف محمد</a>
-          <a href="/abdulmajeed" class="btn-sub-link">أرشيف عبد المجيد</a>
+        <!-- الزر الرئيسي -->
+        <a href="/" class="btn-pill-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>العودة للأرشيف الرئيسي</span>
+        </a>
+
+        <span class="divider-label">أو تصفح مباشرة:</span>
+
+        <!-- أزرار الشهداء -->
+        <div class="martyrs-nav-grid">
+          <a href="/mohammed/" class="btn-pill-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <span>أرشيف الشهيد محمد</span>
+          </a>
+
+          <a href="/abdulmajeed/" class="btn-pill-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <span>أرشيف الشهيد عبد المجيد</span>
+          </a>
         </div>
       </div>
     </div>
   </main>
 
   <footer>
-    <span dir="ltr">© 2026 <a href="https://abdallahalaydi.com" target="_blank">ABDALLAH ALAYDI</a>. All Rights Reserved.</span>
+    <span style="direction: ltr; display: inline-block;">© 2026 <a href="https://abdallahalaydi.com" target="_blank" rel="noopener">ABDALLAH ALAYDI</a>. All Rights Reserved.</span>
   </footer>
 
 </body>
