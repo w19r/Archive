@@ -8,12 +8,19 @@
   let currentPhotoId = null;
   let currentTitle = "";
   let authMode = "login"; // "login" | "register"
+  let countsCache = {};
+  let countsLoadedForSlug = null;
+  let countsRequestInFlight = null;
 
   function detectSlug() {
     const p = window.location.pathname.toLowerCase();
     if (p.includes("abdulmajeed")) return "abdulmajeed";
     if (p.includes("mohammed")) return "mohammed";
     return null;
+  }
+
+  function normalizePhotoId(photoId) {
+    return String(photoId || "").replace(/\//g, "_");
   }
 
   function getToken() {
@@ -66,6 +73,65 @@
       hour: "2-digit",
       minute: "2-digit",
     });
+  }
+
+  function setBadgeElement(el, count) {
+    const num = Number(count || 0);
+    if (num > 0) {
+      el.textContent = num;
+      el.classList.add("has-comments");
+    } else {
+      el.textContent = "";
+      el.classList.remove("has-comments");
+    }
+  }
+
+  function updatePhotoBadge(photoId, count) {
+    const safeId = normalizePhotoId(photoId);
+    const num = Number(count || 0);
+    countsCache[safeId] = num;
+    document.querySelectorAll("[data-count-for]").forEach((el) => {
+      if (el.dataset.countFor === safeId) {
+        setBadgeElement(el, num);
+      }
+    });
+  }
+
+  function applyCounts() {
+    document.querySelectorAll("[data-count-for]").forEach((el) => {
+      const id = el.dataset.countFor;
+      setBadgeElement(el, countsCache[id] || 0);
+    });
+  }
+
+  async function refreshCounts(slugOverride, force = false) {
+    const slug = slugOverride || detectSlug();
+    if (!slug) return;
+
+    if (!force && countsLoadedForSlug === slug) {
+      applyCounts();
+      return;
+    }
+
+    if (countsRequestInFlight && !force) {
+      await countsRequestInFlight;
+      applyCounts();
+      return;
+    }
+
+    countsRequestInFlight = (async () => {
+      try {
+        const res = await fetch(`${API}/api/comment-counts/${encodeURIComponent(slug)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        countsCache = data.counts || {};
+        countsLoadedForSlug = slug;
+        applyCounts();
+      } catch {}
+    })();
+
+    await countsRequestInFlight;
+    countsRequestInFlight = null;
   }
 
   // حقن درج التعليقات ونافذة الدخول فقط (بدون زر عائم)
@@ -217,7 +283,7 @@
   async function openDrawer(slug, photoId, photoTitle = "") {
     mountUI();
     currentSlug = slug || detectSlug();
-    currentPhotoId = String(photoId || "").replace(/\//g, "_");
+    currentPhotoId = normalizePhotoId(photoId);
     currentTitle = photoTitle || "صورة من الأرشيف";
 
     document.getElementById("cm-photo-title").textContent = currentTitle;
@@ -247,6 +313,8 @@
   }
 
   function renderComments(comments) {
+    if (currentPhotoId) updatePhotoBadge(currentPhotoId, comments.length);
+
     const list = document.getElementById("cm-list");
     if (!comments.length) {
       list.innerHTML = `<p class="cm-empty">لا توجد تعليقات على هذه الصورة بعد. كن أول من يشارك ذكرى أو دعاء.</p>`;
@@ -286,7 +354,9 @@
             const d = await res.json();
             if (!res.ok) throw new Error(d.detail || "فشل حذف التعليق");
             card.remove();
-            if (!list.children.length) renderComments([]);
+            const remaining = list.querySelectorAll(".cm-item").length;
+            updatePhotoBadge(currentPhotoId, remaining);
+            if (!remaining) renderComments([]);
           } catch (err) {
             alert(err.message || "تعذر حذف التعليق");
           }
@@ -420,10 +490,16 @@
     open: openDrawer,
     openAuth: openAuthModal,
     close: closeDrawer,
+    refreshCounts,
+    applyCounts,
   };
 
   document.addEventListener("DOMContentLoaded", () => {
     mountUI();
-    fetch(`${API}/api/health`).catch(() => {});
+    if (detectSlug()) {
+      refreshCounts();
+    } else {
+      fetch(`${API}/api/health`).catch(() => {});
+    }
   });
 })();
