@@ -1,41 +1,33 @@
-/* زر الحساب العائم */
-.auth-fab {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 9500;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+/* شارة عدد التعليقات على أيقونة البطاقة */
+.comment-btn,
+[data-comment-id] {
+  position: relative;
+  overflow: visible !important;
+}
+
+.cm-count-badge {
+  display: none;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  box-sizing: border-box;
   border-radius: 999px;
-  border: 1px solid rgba(124, 90, 56, 0.25);
-  background: rgba(255, 253, 249, 0.94);
-  backdrop-filter: blur(10px);
-  color: var(--ink, #2d241c);
+  background: var(--sand-deep, #7c5a38);
+  color: #fff;
   font-family: 'Thamania Sans', system-ui, sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(45, 36, 28, 0.12);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(45, 36, 28, 0.22);
+  pointer-events: none;
 }
 
-.auth-fab:hover {
-  transform: translateY(-2px);
-  border-color: var(--sand-deep, #7c5a38);
-  box-shadow: 0 12px 28px rgba(45, 36, 28, 0.18);
-}
-
-.auth-fab-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--mist, #9c8f80);
-}
-
-.auth-fab.is-logged .auth-fab-dot {
-  background: #2f855a;
+.cm-count-badge.has-comments {
+  display: inline-block;
 }
 
 /* زر التعليقات على البطاقة والـ Lightbox */
@@ -424,12 +416,5 @@
 
   .cm-drawer.open {
     transform: translateY(0);
-  }
-
-  .auth-fab {
-    bottom: 14px;
-    left: 14px;
-    padding: 8px 14px;
-    font-size: 0.84rem;
   }
 }
