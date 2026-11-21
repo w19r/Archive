@@ -310,6 +310,7 @@
       const badgeText = item._dateInfo ? item._dateInfo.badgeText : item.year;
       const elapsedText = calculateElapsedText(item._dateInfo);
       const displaySrc = item.thumb || item.image;
+      const safePhotoId = String(item._id || "").replace(/\//g, "_");
 
       const card = document.createElement("article");
       card.className = `photo-card ${item._id === targetId ? "highlighted" : ""}`;
@@ -332,8 +333,9 @@
               ${elapsedText ? `<span class="time-ago-sub">${escapeHtml(elapsedText)}</span>` : ""}
             </div>
             <div class="actions">
-              <button type="button" class="action-btn comment-btn" title="التعليقات والذكريات" aria-label="التعليقات والذكريات">
+              <button type="button" class="action-btn comment-btn" data-comment-id="${escapeHtml(safePhotoId)}" title="التعليقات والذكريات" aria-label="التعليقات والذكريات">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span class="cm-count-badge" data-count-for="${escapeHtml(safePhotoId)}"></span>
               </button>
               <button type="button" class="action-btn share-btn" title="مشاركة الصورة" aria-label="مشاركة الصورة">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
@@ -386,6 +388,8 @@
       }
       container.appendChild(frag);
       renderedCount = end;
+
+      window.ArchiveComments?.applyCounts?.();
 
       if (sentinel) {
         sentinel.innerHTML = renderedCount < galleryData.length
@@ -455,6 +459,7 @@
       }
 
       resetAndRender(true);
+      window.ArchiveComments?.refreshCounts?.(config.slug);
     } catch {
       container.innerHTML = `<p style="text-align:center; color:var(--mist); grid-column:1/-1;">عذراً، تعذر تحميل الأرشيف حالياً.</p>`;
     }
