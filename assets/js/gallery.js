@@ -154,12 +154,19 @@
     const lbDesc = document.getElementById("lightbox-desc");
     const lbCounter = document.getElementById("lightbox-counter");
     const lbDownloadBtn = document.getElementById("lightbox-download-btn");
+    const lbCommentBtn = document.getElementById("lightbox-comment-btn");
     const lbShareBtn = document.getElementById("lightbox-share-btn");
 
     // عناصر نافذة شروط التنزيل
     const downloadModal = document.getElementById("download-modal");
     const modalFileSize = document.getElementById("modal-file-size");
     const confirmDownloadBtn = document.getElementById("confirm-download-btn");
+
+    function openCommentsFor(item) {
+      if (item && window.ArchiveComments) {
+        window.ArchiveComments.open(config.slug, item._id, item.title);
+      }
+    }
 
     async function shareItem(item) {
       const itemId = item._id;
@@ -262,13 +269,18 @@
     lbDownloadBtn?.addEventListener("click", () => {
       if (galleryData[currentLightboxIndex]) openDownloadModal(galleryData[currentLightboxIndex]);
     });
+    lbCommentBtn?.addEventListener("click", () => {
+      if (galleryData[currentLightboxIndex]) openCommentsFor(galleryData[currentLightboxIndex]);
+    });
     lbShareBtn?.addEventListener("click", () => {
       if (galleryData[currentLightboxIndex]) shareItem(galleryData[currentLightboxIndex]);
     });
     lightbox?.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
 
-    // تنقل بالكيبورد وبالسحب على الجوال
+    // تنقل بالكيبورد وبالسحب على الجوال (مع احترام درج التعليقات ونافذة الحساب)
     document.addEventListener("keydown", (e) => {
+      if (document.getElementById("auth-modal")?.classList.contains("open")) return;
+      if (document.getElementById("cm-drawer")?.classList.contains("open")) return;
       if (downloadModal.classList.contains("open") && e.key === "Escape") return closeDownloadModal();
       if (!lightbox.classList.contains("open")) return;
       if (e.key === "Escape") closeLightbox();
@@ -279,6 +291,7 @@
     let touchStartX = 0;
     lightbox?.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
     lightbox?.addEventListener("touchend", (e) => {
+      if (document.getElementById("cm-drawer")?.classList.contains("open")) return;
       const diff = e.changedTouches[0].screenX - touchStartX;
       if (Math.abs(diff) > 50) showLightboxAt(diff > 0 ? currentLightboxIndex - 1 : currentLightboxIndex + 1);
     }, { passive: true });
@@ -319,6 +332,9 @@
               ${elapsedText ? `<span class="time-ago-sub">${escapeHtml(elapsedText)}</span>` : ""}
             </div>
             <div class="actions">
+              <button type="button" class="action-btn comment-btn" title="التعليقات والذكريات" aria-label="التعليقات والذكريات">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              </button>
               <button type="button" class="action-btn share-btn" title="مشاركة الصورة" aria-label="مشاركة الصورة">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
               </button>
@@ -351,6 +367,7 @@
       }
 
       frame.addEventListener("click", () => showLightboxAt(index));
+      card.querySelector(".comment-btn").addEventListener("click", () => openCommentsFor(item));
       card.querySelector(".share-btn").addEventListener("click", () => shareItem(item));
       card.querySelector(".download-trigger-btn").addEventListener("click", () => openDownloadModal(item));
 
@@ -442,7 +459,7 @@
       container.innerHTML = `<p style="text-align:center; color:var(--mist); grid-column:1/-1;">عذراً، تعذر تحميل الأرشيف حالياً.</p>`;
     }
 
-    // تصدير PDF (الآن يستخدم النسخ المضغوطة WebP ليكون سريعاً جداً)
+    // تصدير PDF
     const exportPdfBtn = document.getElementById("export-pdf-btn");
     const pdfBtnLabel = document.getElementById("pdf-btn-label");
     const pdfStage = document.getElementById("pdf-render-stage");

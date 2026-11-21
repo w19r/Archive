@@ -1,0 +1,435 @@
+/* زر الحساب العائم */
+.auth-fab {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 9500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(124, 90, 56, 0.25);
+  background: rgba(255, 253, 249, 0.94);
+  backdrop-filter: blur(10px);
+  color: var(--ink, #2d241c);
+  font-family: 'Thamania Sans', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(45, 36, 28, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.auth-fab:hover {
+  transform: translateY(-2px);
+  border-color: var(--sand-deep, #7c5a38);
+  box-shadow: 0 12px 28px rgba(45, 36, 28, 0.18);
+}
+
+.auth-fab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mist, #9c8f80);
+}
+
+.auth-fab.is-logged .auth-fab-dot {
+  background: #2f855a;
+}
+
+/* زر التعليقات على البطاقة والـ Lightbox */
+.comment-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(124, 90, 56, 0.28);
+  background: rgba(255, 253, 249, 0.92);
+  color: var(--sand-deep, #7c5a38);
+  font-family: 'Thamania Sans', system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.comment-trigger-btn:hover {
+  background: var(--sand-deep, #7c5a38);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* الخلفية المعتمة */
+.cm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(25, 19, 14, 0.52);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 10040;
+}
+
+.cm-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* درج التعليقات */
+.cm-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  width: min(430px, 100vw);
+  background: var(--bg, #faf7f2);
+  color: var(--ink, #2d241c);
+  z-index: 10050;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.22);
+  transform: translateX(-105%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  direction: rtl;
+  font-family: 'Thamania Sans', system-ui, sans-serif;
+}
+
+.cm-drawer.open {
+  transform: translateX(0);
+}
+
+.cm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  background: #fff;
+  border-bottom: 1px solid rgba(124, 90, 56, 0.14);
+}
+
+.cm-header-info h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--sand-deep, #7c5a38);
+}
+
+.cm-header-info p {
+  margin: 3px 0 0;
+  font-size: 0.82rem;
+  color: var(--mist, #7a6f64);
+}
+
+.cm-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(124, 90, 56, 0.2);
+  background: transparent;
+  color: var(--ink, #2d241c);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cm-close:hover {
+  background: rgba(124, 90, 56, 0.1);
+}
+
+/* شريط حالة المستخدم داخل الدرج */
+.cm-user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(124, 90, 56, 0.06);
+  border-bottom: 1px solid rgba(124, 90, 56, 0.1);
+  font-size: 0.85rem;
+}
+
+.cm-link-btn {
+  border: none;
+  background: none;
+  color: var(--sand-deep, #7c5a38);
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.cm-link-btn:hover {
+  text-decoration: underline;
+}
+
+/* قائمة التعليقات */
+.cm-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cm-empty {
+  text-align: center;
+  color: var(--mist, #7a6f64);
+  font-size: 0.9rem;
+  padding: 36px 12px;
+}
+
+.cm-item {
+  background: #fff;
+  border: 1px solid rgba(124, 90, 56, 0.13);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(45, 36, 28, 0.04);
+}
+
+.cm-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cm-author {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--sand-deep, #7c5a38);
+}
+
+.cm-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: var(--mist, #8a7f73);
+}
+
+.cm-del-btn {
+  border: none;
+  background: rgba(185, 28, 28, 0.08);
+  color: #b91c1c;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cm-del-btn:hover {
+  background: #b91c1c;
+  color: #fff;
+}
+
+.cm-body {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--ink, #2d241c);
+}
+
+/* نموذج كتابة التعليق */
+.cm-footer {
+  padding: 14px 20px 18px;
+  background: #fff;
+  border-top: 1px solid rgba(124, 90, 56, 0.14);
+}
+
+.cm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cm-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 74px;
+  max-height: 160px;
+  resize: vertical;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(124, 90, 56, 0.25);
+  background: var(--bg, #faf7f2);
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: var(--ink, #2d241c);
+  outline: none;
+}
+
+.cm-form textarea:focus {
+  border-color: var(--sand-deep, #7c5a38);
+  background: #fff;
+}
+
+.cm-btn {
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--sand-deep, #7c5a38);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.93rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.cm-btn:hover {
+  opacity: 0.92;
+}
+
+.cm-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cm-status {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  min-height: 1.1em;
+  text-align: center;
+}
+
+.cm-status.err { color: #b91c1c; }
+.cm-status.ok { color: #2f855a; }
+
+/* نافذة تسجيل الدخول وإنشاء الحساب */
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(25, 19, 14, 0.58);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+  direction: rtl;
+  font-family: 'Thamania Sans', system-ui, sans-serif;
+}
+
+.auth-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.auth-card {
+  width: min(410px, 100%);
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+  position: relative;
+}
+
+.auth-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.auth-card-head h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--sand-deep, #7c5a38);
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px;
+  background: var(--bg, #f5efe6);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.auth-tab {
+  padding: 9px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--mist, #7a6f64);
+  cursor: pointer;
+}
+
+.auth-tab.active {
+  background: #fff;
+  color: var(--sand-deep, #7c5a38);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.auth-field {
+  margin-bottom: 12px;
+}
+
+.auth-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink, #2d241c);
+}
+
+.auth-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(124, 90, 56, 0.25);
+  background: var(--bg, #faf7f2);
+  font-family: inherit;
+  font-size: 0.92rem;
+  outline: none;
+}
+
+.auth-field input:focus {
+  border-color: var(--sand-deep, #7c5a38);
+  background: #fff;
+}
+
+.auth-hidden {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .cm-drawer {
+    top: auto;
+    bottom: 0;
+    width: 100vw;
+    height: 82dvh;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(105%);
+  }
+
+  .cm-drawer.open {
+    transform: translateY(0);
+  }
+
+  .auth-fab {
+    bottom: 14px;
+    left: 14px;
+    padding: 8px 14px;
+    font-size: 0.84rem;
+  }
+}
