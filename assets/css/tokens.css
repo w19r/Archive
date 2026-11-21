@@ -1,0 +1,60 @@
+@font-face {
+  font-family: 'Thamania Text';
+  src: url('../fonts/thmanyahseriftext-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thamania Sans';
+  src: url('../fonts/thmanyahseriftext-Medium.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #FAF6F0;
+  --card: #FFFFFF;
+  --ink: #332C24;
+  --sand: #A9825F;
+  --sand-deep: #8A6741;
+  --mist: #8C8175;
+  --line: #E7DDCE;
+  --skeleton-base: #EFE8DC;
+  --skeleton-shine: #F7F2EA;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+::selection { background-color: var(--sand); color: #FFFFFF; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--mist); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sand-deep); }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Thamania Text', serif;
+  font-weight: 400;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Thamania Sans', sans-serif;
+  font-weight: 700;
+}
+
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--sand-deep); outline-offset: 3px; border-radius: 2px; }
