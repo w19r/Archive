@@ -1,5 +1,5 @@
 (() => {
-  const API = window.API_BASE || "https://archive-aph.onrender.com";
+  const API = "https://archive-aph.onrender.com";
   const USER_TOKEN_KEY = "archive_user_jwt";
   const USER_DATA_KEY = "archive_user_info";
   const ADMIN_TOKEN_KEY = "archive_admin_jwt";
