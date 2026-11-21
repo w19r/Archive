@@ -68,17 +68,12 @@
     });
   }
 
-  // حقن العناصر في الصفحة مرة واحدة
+  // حقن درج التعليقات ونافذة الدخول فقط (بدون زر عائم)
   function mountUI() {
     if (document.getElementById("cm-drawer")) return;
 
     const wrapper = document.createElement("div");
     wrapper.innerHTML = `
-      <button type="button" id="auth-fab" class="auth-fab" aria-label="حساب المستخدم">
-        <span class="auth-fab-dot"></span>
-        <span id="auth-fab-label">تسجيل الدخول</span>
-      </button>
-
       <div id="cm-backdrop" class="cm-backdrop"></div>
 
       <aside id="cm-drawer" class="cm-drawer" aria-hidden="true">
@@ -111,7 +106,7 @@
       <div id="auth-modal" class="auth-modal" aria-hidden="true">
         <div class="auth-card">
           <div class="auth-card-head">
-            <h3 id="auth-modal-title">تسجيل الدخول</h3>
+            <h3 id="auth-modal-title">تسجيل الدخول للتعليق</h3>
             <button type="button" id="auth-close" class="cm-close" aria-label="إغلاق">×</button>
           </div>
 
@@ -152,13 +147,6 @@
     const token = getToken();
     const loggedIn = Boolean(user && token);
 
-    const fab = document.getElementById("auth-fab");
-    const fabLabel = document.getElementById("auth-fab-label");
-    if (fab && fabLabel) {
-      fab.classList.toggle("is-logged", loggedIn);
-      fabLabel.textContent = loggedIn ? `مرحباً، ${user.name}` : "حساب / دخول";
-    }
-
     const userBar = document.getElementById("cm-user-bar");
     const cmForm = document.getElementById("cm-form");
     const loginPrompt = document.getElementById("cm-login-prompt");
@@ -166,7 +154,7 @@
     if (userBar && cmForm && loginPrompt) {
       if (loggedIn) {
         userBar.innerHTML = `
-          <span>مسجّل باسم: <strong>${escapeHtml(user.name)}</strong></span>
+          <span>تعلّق باسم: <strong>${escapeHtml(user.name)}</strong></span>
           <button type="button" id="cm-logout-btn" class="cm-link-btn">تسجيل خروج</button>
         `;
         document.getElementById("cm-logout-btn").addEventListener("click", () => {
@@ -177,7 +165,7 @@
         loginPrompt.classList.add("auth-hidden");
       } else {
         userBar.innerHTML = `
-          <span>شارك ذكرياتك مع العائلة</span>
+          <span>يلزم تسجيل الدخول لإضافة تعليق</span>
           <button type="button" id="cm-bar-login" class="cm-link-btn">تسجيل دخول</button>
         `;
         document.getElementById("cm-bar-login").addEventListener("click", () => openAuthModal("login"));
@@ -190,7 +178,9 @@
   function setAuthMode(mode) {
     authMode = mode;
     const isReg = mode === "register";
-    document.getElementById("auth-modal-title").textContent = isReg ? "إنشاء حساب جديد" : "تسجيل الدخول";
+    document.getElementById("auth-modal-title").textContent = isReg
+      ? "إنشاء حساب جديد للتعليق"
+      : "تسجيل الدخول للتعليق";
     document.getElementById("auth-submit").textContent = isReg ? "إنشاء الحساب" : "دخول";
     const nameWrap = document.getElementById("auth-name-wrap");
     const nameInput = document.getElementById("auth-name");
@@ -308,18 +298,6 @@
   }
 
   function bindEvents() {
-    document.getElementById("auth-fab").addEventListener("click", () => {
-      const user = getUser();
-      if (user && getToken()) {
-        if (confirm(`مسجّل دخولك باسم "${user.name}". هل تريد تسجيل الخروج؟`)) {
-          clearSession();
-          if (currentPhotoId) loadComments();
-        }
-      } else {
-        openAuthModal("login");
-      }
-    });
-
     document.getElementById("cm-close").addEventListener("click", closeDrawer);
     document.getElementById("cm-backdrop").addEventListener("click", closeDrawer);
     document.getElementById("cm-open-auth-btn").addEventListener("click", () => openAuthModal("login"));
@@ -381,9 +359,14 @@
       }
     });
 
-    // إرسال تعليق جديد
+    // إرسال تعليق جديد (يطلب تسجيل الدخول إذا لم يكن مسجلاً)
     document.getElementById("cm-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!getToken() || !getUser()) {
+        openAuthModal("login");
+        return;
+      }
+
       const input = document.getElementById("cm-input");
       const status = document.getElementById("cm-status");
       const btn = document.getElementById("cm-submit");
@@ -415,7 +398,7 @@
         if (res.status === 401) {
           clearSession();
           openAuthModal("login");
-          throw new Error("انتهت جلستك، يرجى تسجيل الدخول مجدداً");
+          throw new Error("يرجى تسجيل الدخول أولاً لإضافة تعليق");
         }
         if (!res.ok) throw new Error(data.detail || "فشل إرسال التعليق");
 
@@ -441,7 +424,6 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     mountUI();
-    // إيقاظ سيرفر Render بالخلفية بصمت
     fetch(`${API}/api/health`).catch(() => {});
   });
 })();
