@@ -1,12 +1,11 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-const CACHE_NAME = 'alaydi-core-v1.201';
-const IMAGES_CACHE = 'alaydi-images-v1';
+const CACHE_NAME = 'alaydi-core-v2.0';
+const IMAGES_CACHE = 'alaydi-images-v2';
 
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/404.html',
   '/manifest.json',
   '/android-chrome-192x192.png',
   '/android-chrome-512x512.png',
@@ -15,108 +14,140 @@ const CORE_ASSETS = [
   '/favicon-16x16.png',
   '/favicon.ico',
   '/mohammed/',
-  '/mohammed/index.html',
   '/abdulmajeed/',
-  '/abdulmajeed/index.html',
-  '/assets/data/mohammed.json',
-  '/assets/data/abdulmajeed.json',
   '/assets/fonts/thmanyahseriftext-Regular.woff2',
   '/assets/fonts/thmanyahseriftext-Medium.woff2'
 ];
 
-// 1. التثبيت
+// 1. التثبيت الآمن (لا يفشل الـ Service Worker لو تعذر ملف واحد)
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_ASSETS);
-    })
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.allSettled(
+        CORE_ASSETS.map((asset) =>
+          fetch(asset, { cache: 'no-cache' })
+            .then((res) => {
+              if (res && res.ok) return cache.put(asset, res);
+            })
+            .catch(() => {})
+        )
+      )
+    )
   );
 });
 
-// 2. التفعيل ومسح الكاش القديم للأكواد فقط (مع الحفاظ على الصور)
+// 2. التفعيل ومسح كل الكاشات القديمة تلقائياً عند جميع الزوار (مع حماية OneSignal)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
+    caches.keys().then((keys) =>
+      Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_NAME && key !== IMAGES_CACHE && !key.toLowerCase().includes('onesignal')) {
+          if (
+            key !== CACHE_NAME &&
+            key !== IMAGES_CACHE &&
+            !key.toLowerCase().includes('onesignal')
+          ) {
             return caches.delete(key);
           }
         })
-      );
-    }).then(() => self.clients.claim())
+      )
+    ).then(() => self.clients.claim())
   );
 });
 
-// 3. إدارة الطلبات (مع استثناء سيرفرات OneSignal تماماً لكي تتسجل الأجهزة فوراً)
+// 3. إدارة الطلبات
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // مهم جداً: عدم اعتراض طلبات OneSignal أو أي سيرفر خارجي (ما عدا سيرفر الصور)
+  // استثناء OneSignal والسيرفرات الخارجية ولوحة الأدمن تماماً
   if (
     url.hostname.includes('onesignal.com') ||
     url.hostname.includes('formspree.io') ||
     url.hostname.includes('googleapis.com') ||
     url.hostname.includes('gstatic.com') ||
+    url.pathname.startsWith('/admin') ||
     (url.origin !== self.location.origin && !url.hostname.includes('wsrv.nl'))
   ) {
     return;
   }
 
-  // أ) كاش الصور الدائم
-  if (url.pathname.match(/\.(png|jpg|jpeg|webp|gif)$/i) || url.hostname.includes('wsrv.nl')) {
+  // أ) الصور: Cache-First للسرعة، مع فحص السيرفر بدون كاش 404 للصور الجديدة
+  if (url.pathname.match(/\.(png|jpg|jpeg|webp|gif|svg)$/i) || url.hostname.includes('wsrv.nl')) {
     event.respondWith(
-      caches.open(IMAGES_CACHE).then((cache) => {
-        return cache.match(event.request).then((cachedResponse) => {
+      caches.open(IMAGES_CACHE).then((cache) =>
+        cache.match(event.request).then((cachedResponse) => {
           if (cachedResponse) return cachedResponse;
-          return fetch(event.request).then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              cache.put(event.request, networkResponse.clone());
-            }
-            return networkResponse;
-          }).catch(() => new Response('الصورة غير متوفرة بدون إنترنت', { status: 404 }));
+
+          const req = url.origin === self.location.origin
+            ? fetch(url.href, { cache: 'no-cache' })
+            : fetch(event.request);
+
+          return req
+            .then((networkResponse) => {
+              if (networkResponse && networkResponse.ok) {
+                cache.put(event.request, networkResponse.clone());
+              }
+              return networkResponse;
+            })
+            .catch(() => new Response('', { status: 404 }));
+        })
+      )
+    );
+    return;
+  }
+
+  // ب) الخطوط: Cache-First لأنها ثابتة ولا تتغير
+  if (url.pathname.match(/\.(woff2?|ttf|otf)$/i)) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+        return fetch(event.request).then((res) => {
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));
+          }
+          return res;
         });
       })
     );
     return;
   }
 
-  // ب) صفحات الموقع (HTML): جلب الأحدث من الإنترنت أولاً لمنع الشاشة البيضاء، والعودة للكاش عند انقطاع النت
+  // ج) الصفحات (HTML): Network-First دائماً، والعودة للكاش فقط عند انقطاع الإنترنت
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          if (networkResponse && networkResponse.ok) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           }
           return networkResponse;
         })
-        .catch(() => {
-          return caches.match(event.request).then((cached) => cached || caches.match('/index.html'));
-        })
+        .catch(() =>
+          caches.match(event.request, { ignoreSearch: true })
+            .then((cached) => cached || caches.match('/index.html'))
+        )
     );
     return;
   }
 
-  // ج) باقي الملفات (الخطوط والـ JSON)
+  // د) ملفات الكود والبيانات (JSON, JS, CSS): Network-First مع إعادة تحقق فورية من السيرفر
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-          }
-          return networkResponse;
-        })
-        .catch(() => cachedResponse);
-
-      return cachedResponse || fetchPromise;
-    })
+    fetch(url.href, { cache: 'no-cache' })
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.ok) {
+          const copy = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
+        return networkResponse;
+      })
+      .catch(() =>
+        caches.match(event.request).then((cached) => cached || new Response('', { status: 503 }))
+      )
   );
 });
 
