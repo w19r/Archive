@@ -103,6 +103,54 @@
   </div>
 </div>
 
+<!-- نافذة تعديل المنشور -->
+<div class="edit-modal" id="edit-modal" aria-hidden="true">
+  <div class="edit-card">
+    <div class="edit-head">
+      <h3>تعديل بيانات المنشور</h3>
+      <button type="button" class="edit-close" id="edit-close-btn" aria-label="إغلاق">×</button>
+    </div>
+
+    <div class="edit-preview-row">
+      <img id="edit-thumb" class="post-thumb" src="" alt="">
+      <div class="edit-preview-info">
+        <span class="edit-id-pill" id="edit-post-id">ID: —</span>
+        <p class="edit-safe-note">يبقى المعرّف ثابتاً تلقائياً لضمان عدم تأثر التعليقات أو روابط المشاركة.</p>
+      </div>
+    </div>
+
+    <form id="edit-form">
+      <div class="form-group">
+        <label for="edit-year">السنة / التاريخ</label>
+        <input type="text" id="edit-year" placeholder="مثال: 2014-05-10 أو 2014 أو 2012-2014" required>
+        <span class="field-hint">يفضّل صيغة سنة-شهر-يوم (مثل 2011-07-06) ليظهر التاريخ والترتيب بدقة في المعرض.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-title">عنوان المنشور</label>
+        <input type="text" id="edit-title" list="edit-title-presets" placeholder="اكتب العنوان..." required>
+        <datalist id="edit-title-presets">
+          <option value="لحظات عفوية"></option>
+          <option value="مرحلة الشباب"></option>
+          <option value="ذكريات العائلة"></option>
+          <option value="من حفلة عبد المجيد"></option>
+        </datalist>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-desc">الوصف</label>
+        <textarea id="edit-desc" rows="3" placeholder="اكتب الوصف..."></textarea>
+      </div>
+
+      <div class="edit-actions">
+        <button type="submit" class="btn" id="edit-save-btn">حفظ التعديلات</button>
+        <button type="button" class="btn btn-outline" id="edit-cancel-btn">إلغاء</button>
+      </div>
+      <p id="edit-status" class="status-msg"></p>
+    </form>
+  </div>
+</div>
+
 <script src="../assets/js/config.js"></script>
 <script src="../assets/js/admin.js"></script>
 </body>
