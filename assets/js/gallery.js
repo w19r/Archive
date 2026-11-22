@@ -33,9 +33,23 @@
         return { isApprox: false, minYear: y, maxYear: y, sortTime: new Date(y, m, d).getTime(), badgeText: `${d} ${ARABIC_MONTHS[m]} ${y}`, refDate: new Date(y, m, d) };
       }
     }
+    const dmyMatch = str.match(/^(\d{1,2})\s*[-/]\s*(\d{1,2})\s*[-/]\s*(\d{4})$/);
+    if (dmyMatch) {
+      const d = parseInt(dmyMatch[1], 10), m = parseInt(dmyMatch[2], 10) - 1, y = parseInt(dmyMatch[3], 10);
+      if (m >= 0 && m < 12 && d >= 1 && d <= 31) {
+        return { isApprox: false, minYear: y, maxYear: y, sortTime: new Date(y, m, d).getTime(), badgeText: `${d} ${ARABIC_MONTHS[m]} ${y}`, refDate: new Date(y, m, d) };
+      }
+    }
     const monthMatch = str.match(/^(\d{4})\s*[-/]\s*(\d{1,2})$/);
     if (monthMatch) {
       const y = parseInt(monthMatch[1], 10), m = parseInt(monthMatch[2], 10) - 1;
+      if (m >= 0 && m < 12) {
+        return { isApprox: false, minYear: y, maxYear: y, sortTime: new Date(y, m, 15).getTime(), badgeText: `${ARABIC_MONTHS[m]} ${y}`, refDate: new Date(y, m, 15) };
+      }
+    }
+    const myMatch = str.match(/^(\d{1,2})\s*[-/]\s*(\d{4})$/);
+    if (myMatch) {
+      const m = parseInt(myMatch[1], 10) - 1, y = parseInt(myMatch[2], 10);
       if (m >= 0 && m < 12) {
         return { isApprox: false, minYear: y, maxYear: y, sortTime: new Date(y, m, 15).getTime(), badgeText: `${ARABIC_MONTHS[m]} ${y}`, refDate: new Date(y, m, 15) };
       }
