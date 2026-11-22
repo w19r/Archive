@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API = window.API_BASE;
+  const API = window.API_BASE || "https://archive-aph.onrender.com";
   const TOKEN_KEY = "archive_admin_jwt";
 
   const loginSection = document.getElementById("login-section");
@@ -20,6 +20,40 @@ document.addEventListener("DOMContentLoaded", () => {
     input.required = isCustom;
   };
 
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function resolveAssetUrl(path) {
+    if (!path) return "";
+    if (/^(https?:|data:|\/)/i.test(path)) return path;
+    return "/" + String(path).replace(/^(\.\.\/)+/, "");
+  }
+
+  function attachThumbWithFallback(imgEl, item) {
+    const sources = [
+      resolveAssetUrl(item.thumb),
+      resolveAssetUrl(item.view),
+      resolveAssetUrl(item.image),
+      item.blur || "",
+    ].filter(Boolean);
+
+    let idx = 0;
+    imgEl.onerror = () => {
+      idx += 1;
+      if (idx < sources.length) {
+        imgEl.src = sources[idx];
+      } else {
+        imgEl.onerror = null;
+      }
+    };
+    imgEl.src = sources[0] || "";
+  }
+
   function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
   function setLoggedIn(state, branch = "") {
     loginSection.classList.toggle("hidden", state);
@@ -28,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (branch) branchBadge.textContent = `branch: ${branch}`;
   }
 
-  // التحقق من وجود جلسة حالية
   if (getToken()) {
     setLoggedIn(true);
     fetch(`${API}/api/health`).then(r => r.json()).then(d => {
@@ -153,21 +186,127 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 4. عرض وحذف المنشورات
+  // 4. نافذة تعديل المنشور
+  const editModal = document.getElementById("edit-modal");
+  const editForm = document.getElementById("edit-form");
+  const editThumb = document.getElementById("edit-thumb");
+  const editPostIdEl = document.getElementById("edit-post-id");
+  const editYearInput = document.getElementById("edit-year");
+  const editTitleInput = document.getElementById("edit-title");
+  const editDescInput = document.getElementById("edit-desc");
+  const editSaveBtn = document.getElementById("edit-save-btn");
+  const editStatus = document.getElementById("edit-status");
+
+  let editingContext = null;
+
+  function openEditModal(slug, item, cardEl) {
+    editingContext = { slug, item, cardEl };
+    attachThumbWithFallback(editThumb, item);
+    editPostIdEl.textContent = `ID: ${item.id || "-"}`;
+    editYearInput.value = item.year || "";
+    editTitleInput.value = item.title || "";
+    editDescInput.value = item.desc || "";
+    editStatus.textContent = "";
+    editStatus.className = "status-msg";
+    editModal.classList.add("open");
+    editModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeEditModal() {
+    editModal.classList.remove("open");
+    editModal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    editingContext = null;
+  }
+
+  document.getElementById("edit-close-btn").addEventListener("click", closeEditModal);
+  document.getElementById("edit-cancel-btn").addEventListener("click", closeEditModal);
+  editModal.addEventListener("click", (e) => {
+    if (e.target === editModal) closeEditModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && editModal.classList.contains("open")) closeEditModal();
+  });
+
+  editForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!editingContext) return;
+
+    const { slug, item, cardEl } = editingContext;
+    const year = editYearInput.value.trim();
+    const title = editTitleInput.value.trim();
+    const desc = editDescInput.value.trim();
+
+    if (!year || !title) {
+      editStatus.textContent = "يرجى إدخال التاريخ والعنوان";
+      editStatus.className = "status-msg err";
+      return;
+    }
+
+    editSaveBtn.disabled = true;
+    editSaveBtn.textContent = "جاري الحفظ في GitHub...";
+    editStatus.textContent = "يتم تحديث ملف الأرشيف دون المساس بالتعليقات...";
+    editStatus.className = "status-msg";
+
+    try {
+      const res = await fetch(
+        `${API}/api/admin/posts/${encodeURIComponent(slug)}/${encodeURIComponent(item.id)}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify({ year, title, desc }),
+        }
+      );
+      const data = await res.json();
+      if (res.status === 401) {
+        sessionStorage.removeItem(TOKEN_KEY);
+        closeEditModal();
+        setLoggedIn(false);
+        return;
+      }
+      if (!res.ok) throw new Error(data.detail || "فشل حفظ التعديلات");
+
+      // تحديث البيانات في الذاكرة والصفحة مباشرة
+      item.year = data.item?.year ?? year;
+      item.title = data.item?.title ?? title;
+      item.desc = data.item?.desc ?? desc;
+
+      cardEl.querySelector(".post-title").textContent = item.title || "بدون عنوان";
+      cardEl.querySelector(".post-meta").textContent = `${item.year || ""} • ID: ${item.id || "-"}`;
+      cardEl.querySelector(".post-desc-preview").textContent = item.desc || "";
+
+      delStatus.textContent = `✓ تم تحديث "${item.title}" على GitHub بنجاح`;
+      delStatus.className = "status-msg ok";
+      closeEditModal();
+    } catch (err) {
+      editStatus.textContent = err.message || "تعذر حفظ التعديلات";
+      editStatus.className = "status-msg err";
+    } finally {
+      editSaveBtn.disabled = false;
+      editSaveBtn.textContent = "حفظ التعديلات";
+    }
+  });
+
+  // 5. عرض وتعديل وحذف المنشورات
   const loadBtn = document.getElementById("load-posts-btn");
   const postsList = document.getElementById("posts-list");
   const delStatus = document.getElementById("delete-status");
 
   loadBtn.addEventListener("click", async () => {
-    const slug = document.getElementById("target-archive").value;
+    const loadedSlug = document.getElementById("target-archive").value;
     postsList.innerHTML = `<p class="sub">جاري جلب المنشورات...</p>`;
     delStatus.textContent = "";
 
     try {
-      const res = await fetch(`${API}/api/admin/posts/${slug}`, {
+      const res = await fetch(`${API}/api/admin/posts/${loadedSlug}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
+      if (res.status === 401) { sessionStorage.removeItem(TOKEN_KEY); setLoggedIn(false); return; }
       if (!res.ok) throw new Error(data.detail || "فشل جلب المنشورات");
 
       if (!data.posts.length) {
@@ -179,26 +318,39 @@ document.addEventListener("DOMContentLoaded", () => {
       data.posts.forEach((item) => {
         const div = document.createElement("div");
         div.className = "post-item";
-        const thumbSrc = item.thumb || item.image || "";
         div.innerHTML = `
           <div class="post-left">
-            <img class="post-thumb" src="${thumbSrc}" alt="">
-            <div>
-              <div class="post-title">${item.title || "بدون عنوان"}</div>
-              <div class="post-meta">${item.year || ""} • ID: ${item.id || "-"}</div>
+            <img class="post-thumb" alt="" loading="lazy">
+            <div class="post-info-col">
+              <div class="post-title">${escapeHtml(item.title || "بدون عنوان")}</div>
+              <div class="post-meta">${escapeHtml(item.year || "")} • ID: ${escapeHtml(item.id || "-")}</div>
+              <div class="post-desc-preview">${escapeHtml(item.desc || "")}</div>
             </div>
           </div>
-          <button type="button" class="btn-delete">حذف</button>
+          <div class="post-actions">
+            <button type="button" class="btn-edit">تعديل</button>
+            <button type="button" class="btn-delete">حذف</button>
+          </div>
         `;
+
+        attachThumbWithFallback(div.querySelector(".post-thumb"), item);
+
+        div.querySelector(".btn-edit").addEventListener("click", () => {
+          openEditModal(loadedSlug, item, div);
+        });
+
         div.querySelector(".btn-delete").addEventListener("click", async () => {
           if (!confirm(`حذف "${item.title}"؟`)) return;
           delStatus.textContent = "جاري الحذف من GitHub...";
           delStatus.className = "status-msg";
           try {
-            const dRes = await fetch(`${API}/api/admin/posts/${slug}/${item.id}`, {
-              method: "DELETE",
-              headers: { Authorization: `Bearer ${getToken()}` },
-            });
+            const dRes = await fetch(
+              `${API}/api/admin/posts/${encodeURIComponent(loadedSlug)}/${encodeURIComponent(item.id)}`,
+              {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${getToken()}` },
+              }
+            );
             if (!dRes.ok) throw new Error("فشل الحذف");
             delStatus.textContent = "✓ تم الحذف بنجاح";
             delStatus.className = "status-msg ok";
@@ -208,6 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
             delStatus.className = "status-msg err";
           }
         });
+
         postsList.appendChild(div);
       });
     } catch (err) {
