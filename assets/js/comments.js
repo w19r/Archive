@@ -70,11 +70,20 @@
       .replace(/'/g, "&#39;");
   }
 
-  function formatDate(raw) {
-    if (!raw) return "";
-    const normalized = String(raw).includes("T") ? raw : String(raw).replace(" ", "T") + "Z";
+  function parseCommentDate(raw) {
+    if (!raw) return null;
+    const str = String(raw).trim();
+    const hasZone = /([zZ]|[+-]\d{2}:?\d{2})$/.test(str);
+    const normalized = str.includes("T")
+      ? (hasZone ? str : `${str}Z`)
+      : `${str.replace(" ", "T")}Z`;
     const d = new Date(normalized);
-    if (Number.isNaN(d.getTime())) return String(raw);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  function formatFullDate(raw) {
+    const d = parseCommentDate(raw);
+    if (!d) return String(raw || "");
     return d.toLocaleDateString("ar-EG", {
       year: "numeric",
       month: "short",
@@ -82,6 +91,52 @@
       hour: "2-digit",
       minute: "2-digit",
     });
+  }
+
+  function formatDate(raw) {
+    const d = parseCommentDate(raw);
+    if (!d) return String(raw || "");
+
+    const diffSec = Math.floor((Date.now() - d.getTime()) / 1000);
+    if (diffSec < 60) return "الآن";
+
+    const mins = Math.floor(diffSec / 60);
+    if (mins < 60) {
+      if (mins === 1) return "منذ دقيقة";
+      if (mins === 2) return "منذ دقيقتين";
+      if (mins <= 10) return `منذ ${mins} دقائق`;
+      return `منذ ${mins} دقيقة`;
+    }
+
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) {
+      if (hours === 1) return "منذ ساعة";
+      if (hours === 2) return "منذ ساعتين";
+      if (hours <= 10) return `منذ ${hours} ساعات`;
+      return `منذ ${hours} ساعة`;
+    }
+
+    const days = Math.floor(hours / 24);
+    if (days < 7) {
+      if (days === 1) return "منذ يوم";
+      if (days === 2) return "منذ يومين";
+      return `منذ ${days} أيام`;
+    }
+
+    if (days < 30) {
+      const weeks = Math.floor(days / 7);
+      if (weeks === 1) return "منذ أسبوع";
+      if (weeks === 2) return "منذ أسبوعين";
+      return `منذ ${weeks} أسابيع`;
+    }
+
+    const sameYear = d.getFullYear() === new Date().getFullYear();
+    return d.toLocaleDateString(
+      "ar-EG",
+      sameYear
+        ? { day: "numeric", month: "short" }
+        : { day: "numeric", month: "short", year: "numeric" }
+    );
   }
 
   function setBadgeElement(el, count) {
@@ -431,7 +486,7 @@
         <div class="cm-item-top">
           <span class="cm-author">${escapeHtml(c.user_name)}</span>
           <div class="cm-meta">
-            <span>${escapeHtml(formatDate(c.created_at))}</span>
+            <span title="${escapeHtml(formatFullDate(c.created_at))}">${escapeHtml(formatDate(c.created_at))}</span>
             ${canDelete ? `<button type="button" class="cm-del-btn">حذف</button>` : ""}
           </div>
         </div>
