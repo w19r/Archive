@@ -132,10 +132,8 @@
     const container = document.getElementById("gallery-container");
     if (!config || !container) return;
 
-    // عرض Skeleton فوراً
     renderSkeletons(container, 6);
 
-    // شريط التقدم والشريط العائم
     const floatingDock = document.getElementById("floatingDock");
     window.addEventListener("scroll", () => {
       const scrollTop = window.scrollY;
@@ -149,7 +147,6 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    // حساب المدة منذ الارتقاء
     const martyrdomElapsed = calculateElapsedText(analyzeDateInput(config.martyrdomDate));
     const elapsedEl = document.getElementById("martyrdom-elapsed");
     if (martyrdomElapsed && elapsedEl) elapsedEl.textContent = `• (${martyrdomElapsed})`;
@@ -171,10 +168,73 @@
     const lbCommentBtn = document.getElementById("lightbox-comment-btn");
     const lbShareBtn = document.getElementById("lightbox-share-btn");
 
+    if (lbImg) lbImg.draggable = false;
+
     // عناصر نافذة شروط التنزيل
     const downloadModal = document.getElementById("download-modal");
     const modalFileSize = document.getElementById("modal-file-size");
     const confirmDownloadBtn = document.getElementById("confirm-download-btn");
+
+    // ---------- نظام التكبير والتحريك والتقليب السلس داخل الـ Lightbox ----------
+    const MIN_SCALE = 1;
+    const MAX_SCALE = 4;
+    let lbScale = 1;
+    let lbX = 0;
+    let lbY = 0;
+    let suppressBackdropClose = false;
+
+    function clampPosition(x, y, scale) {
+      if (!lbImg || scale <= 1) return { x: 0, y: 0 };
+      const maxX = (lbImg.offsetWidth * (scale - 1)) / 2;
+      const maxY = (lbImg.offsetHeight * (scale - 1)) / 2;
+      return {
+        x: Math.max(-maxX, Math.min(maxX, x)),
+        y: Math.max(-maxY, Math.min(maxY, y)),
+      };
+    }
+
+    function applyTransform(instant = false) {
+      if (!lbImg) return;
+      if (instant) lbImg.classList.add("is-dragging");
+      else lbImg.classList.remove("is-dragging");
+
+      lbImg.classList.toggle("is-zoomed", lbScale > 1.02);
+      lbImg.style.transform = `translate3d(${lbX}px, ${lbY}px, 0) scale(${lbScale})`;
+    }
+
+    function resetZoom(instant = false) {
+      lbScale = 1;
+      lbX = 0;
+      lbY = 0;
+      applyTransform(instant);
+    }
+
+    function setZoom(nextScale, instant = false) {
+      lbScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
+      if (lbScale <= 1.02) {
+        lbScale = 1;
+        lbX = 0;
+        lbY = 0;
+      } else {
+        const clamped = clampPosition(lbX, lbY, lbScale);
+        lbX = clamped.x;
+        lbY = clamped.y;
+      }
+      applyTransform(instant);
+    }
+
+    function preloadAdjacent(index) {
+      if (galleryData.length < 2) return;
+      const prev = galleryData[(index - 1 + galleryData.length) % galleryData.length];
+      const next = galleryData[(index + 1) % galleryData.length];
+      [prev, next].forEach((item) => {
+        const src = item?.view || item?.image;
+        if (src) {
+          const img = new Image();
+          img.src = src;
+        }
+      });
+    }
 
     function openCommentsFor(item) {
       if (item && window.ArchiveComments) {
@@ -235,17 +295,26 @@
 
     function showLightboxAt(index) {
       if (!galleryData.length) return;
+      const isAlreadyOpen = lightbox.classList.contains("open");
       currentLightboxIndex = (index + galleryData.length) % galleryData.length;
       const item = galleryData[currentLightboxIndex];
       const badgeText = item._dateInfo ? item._dateInfo.badgeText : item.year;
       const elapsed = calculateElapsedText(item._dateInfo);
+
+      resetZoom(true);
+
+      if (isAlreadyOpen && lbImg) {
+        lbImg.classList.add("is-switching");
+        requestAnimationFrame(() => {
+          setTimeout(() => lbImg.classList.remove("is-switching"), 90);
+        });
+      }
 
       lbTitle.textContent = item.title || "";
       lbDate.textContent = elapsed ? `${badgeText} (${elapsed})` : badgeText;
       lbDesc.textContent = item.desc || "";
       lbCounter.textContent = `${currentLightboxIndex + 1} / ${galleryData.length}`;
 
-      // عرض النسخة السريعة أولاً ثم الترقية بسلاسة إلى view عالية الدقة
       const fastSrc = item.thumb || item.image;
       const hqSrc = item.view || item.image;
       lbImg.alt = item.title || "";
@@ -269,9 +338,13 @@
       lightbox.classList.add("open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
+
+      preloadAdjacent(currentLightboxIndex);
+      window.ArchiveComments?.prefetch?.(config.slug, item._id);
     }
 
     function closeLightbox() {
+      resetZoom(true);
       lightbox.classList.remove("open");
       lightbox.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
@@ -289,9 +362,188 @@
     lbShareBtn?.addEventListener("click", () => {
       if (galleryData[currentLightboxIndex]) shareItem(galleryData[currentLightboxIndex]);
     });
-    lightbox?.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+    lightbox?.addEventListener("click", (e) => {
+      if (suppressBackdropClose) {
+        suppressBackdropClose = false;
+        return;
+      }
+      if (e.target === lightbox) closeLightbox();
+    });
 
-    // تنقل بالكيبورد وبالسحب على الجوال (مع احترام درج التعليقات ونافذة الحساب)
+    // تحكم الكمبيوتر: النقر المزدوج، عجلة الماوس للتكبير، والسحب للتحريك
+    lbImg?.addEventListener("dblclick", (e) => {
+      e.preventDefault();
+      if (lbScale > 1.05) resetZoom(false);
+      else setZoom(2.4, false);
+    });
+
+    lbImg?.addEventListener("wheel", (e) => {
+      if (!lightbox.classList.contains("open")) return;
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.25 : -0.25;
+      setZoom(lbScale + delta, true);
+    }, { passive: false });
+
+    let mouseDragging = false;
+    let mouseStartX = 0;
+    let mouseStartY = 0;
+    let mouseOriginX = 0;
+    let mouseOriginY = 0;
+
+    lbImg?.addEventListener("mousedown", (e) => {
+      if (lbScale <= 1.02 || e.button !== 0) return;
+      e.preventDefault();
+      mouseDragging = true;
+      mouseStartX = e.clientX;
+      mouseStartY = e.clientY;
+      mouseOriginX = lbX;
+      mouseOriginY = lbY;
+      lbImg.classList.add("is-dragging");
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!mouseDragging) return;
+      const clamped = clampPosition(
+        mouseOriginX + (e.clientX - mouseStartX),
+        mouseOriginY + (e.clientY - mouseStartY),
+        lbScale
+      );
+      lbX = clamped.x;
+      lbY = clamped.y;
+      applyTransform(true);
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (!mouseDragging) return;
+      mouseDragging = false;
+      suppressBackdropClose = true;
+      setTimeout(() => { suppressBackdropClose = false; }, 120);
+      applyTransform(false);
+    });
+
+    // تحكم الجوال (اللمس): تكبير بأصبعين + نقر مزدوج + تحريك عند التكبير + تقليب سلس عند 1x فقط
+    let gestureMode = "none"; // "none" | "swipe" | "pan" | "pinch"
+    let hadMultiTouch = false;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let panOriginX = 0;
+    let panOriginY = 0;
+    let pinchStartDist = 0;
+    let pinchStartScale = 1;
+    let lastTapTime = 0;
+
+    function getTouchDist(t1, t2) {
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    }
+
+    lightbox?.addEventListener("touchstart", (e) => {
+      if (!lightbox.classList.contains("open")) return;
+      if (document.getElementById("cm-drawer")?.classList.contains("open")) return;
+      if (e.target.closest("button, a")) return;
+
+      if (e.touches.length === 2) {
+        hadMultiTouch = true;
+        gestureMode = "pinch";
+        pinchStartDist = getTouchDist(e.touches[0], e.touches[1]);
+        pinchStartScale = lbScale;
+        return;
+      }
+
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+        panOriginX = lbX;
+        panOriginY = lbY;
+
+        // كشف النقرة المزدوجة على الصورة للتكبير/التصغير
+        if (e.target === lbImg) {
+          const now = Date.now();
+          if (now - lastTapTime < 280) {
+            lastTapTime = 0;
+            gestureMode = "none";
+            if (lbScale > 1.05) resetZoom(false);
+            else setZoom(2.4, false);
+            return;
+          }
+          lastTapTime = now;
+        }
+
+        if (lbScale > 1.05) {
+          gestureMode = "pan";
+        } else if (!hadMultiTouch) {
+          gestureMode = "swipe";
+        }
+      }
+    }, { passive: true });
+
+    lightbox?.addEventListener("touchmove", (e) => {
+      if (!lightbox.classList.contains("open")) return;
+      if (document.getElementById("cm-drawer")?.classList.contains("open")) return;
+
+      if (gestureMode === "pinch" && e.touches.length === 2) {
+        e.preventDefault();
+        const dist = getTouchDist(e.touches[0], e.touches[1]);
+        if (pinchStartDist > 0) {
+          setZoom(pinchStartScale * (dist / pinchStartDist), true);
+        }
+        return;
+      }
+
+      if (gestureMode === "pan" && e.touches.length === 1) {
+        e.preventDefault();
+        const t = e.touches[0];
+        const clamped = clampPosition(
+          panOriginX + (t.clientX - touchStartX),
+          panOriginY + (t.clientY - touchStartY),
+          lbScale
+        );
+        lbX = clamped.x;
+        lbY = clamped.y;
+        applyTransform(true);
+        return;
+      }
+
+      if (gestureMode === "swipe" && e.touches.length === 1 && lbScale <= 1.02) {
+        if (window.visualViewport && window.visualViewport.scale > 1.05) return;
+        const t = e.touches[0];
+        const dx = t.clientX - touchStartX;
+        const dy = t.clientY - touchStartY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+          e.preventDefault();
+          lbX = dx * 0.45;
+          lbY = 0;
+          applyTransform(true);
+        }
+      }
+    }, { passive: false });
+
+    lightbox?.addEventListener("touchend", (e) => {
+      if (!lightbox.classList.contains("open")) return;
+      if (document.getElementById("cm-drawer")?.classList.contains("open")) return;
+
+      if (gestureMode === "swipe" && !hadMultiTouch && lbScale <= 1.02) {
+        const nativeZoomed = window.visualViewport && window.visualViewport.scale > 1.05;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStartX;
+        const dy = t.clientY - touchStartY;
+
+        if (!nativeZoomed && Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+          showLightboxAt(dx > 0 ? currentLightboxIndex - 1 : currentLightboxIndex + 1);
+        } else {
+          resetZoom(false);
+        }
+      } else if (gestureMode === "pan" || gestureMode === "pinch") {
+        setZoom(lbScale, false);
+      }
+
+      if (e.touches.length === 0) {
+        gestureMode = "none";
+        hadMultiTouch = false;
+      }
+    }, { passive: true });
+
+    // تنقل بالكيبورد (مع احترام درج التعليقات ونافذة الحساب)
     document.addEventListener("keydown", (e) => {
       if (document.getElementById("auth-modal")?.classList.contains("open")) return;
       if (document.getElementById("cm-drawer")?.classList.contains("open")) return;
@@ -301,14 +553,6 @@
       else if (e.key === "ArrowRight") showLightboxAt(currentLightboxIndex - 1);
       else if (e.key === "ArrowLeft") showLightboxAt(currentLightboxIndex + 1);
     });
-
-    let touchStartX = 0;
-    lightbox?.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-    lightbox?.addEventListener("touchend", (e) => {
-      if (document.getElementById("cm-drawer")?.classList.contains("open")) return;
-      const diff = e.changedTouches[0].screenX - touchStartX;
-      if (Math.abs(diff) > 50) showLightboxAt(diff > 0 ? currentLightboxIndex - 1 : currentLightboxIndex + 1);
-    }, { passive: true });
 
     // مراقب ظهور البطاقات
     const cardObserver = new IntersectionObserver((entries) => {
@@ -390,7 +634,6 @@
       return card;
     }
 
-    // التحميل على دفعات
     const sentinel = document.getElementById("gallery-sentinel");
     function renderNextBatch(count = BATCH_SIZE) {
       const end = Math.min(renderedCount + count, galleryData.length);
@@ -450,9 +693,9 @@
       resetAndRender(false);
     });
 
-    // جلب ملف الـ JSON
+    // جلب ملف الـ JSON مع no-cache لضمان ظهور الصور الجديدة فوراً
     try {
-      const response = await fetch(config.dataUrl);
+      const response = await fetch(config.dataUrl, { cache: "no-cache" });
       if (!response.ok) throw new Error("fetch_failed");
       const result = await response.json();
       galleryData = (result.record?.gallery || []).map((item, idx) => ({
