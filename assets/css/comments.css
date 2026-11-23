@@ -418,3 +418,35 @@
     transform: translateY(0);
   }
 }
+/* هيكل تحميل ناعم (Skeleton) بدل نص جاري التحميل */
+.cm-skeleton {
+  background: #fff;
+  border: 1px solid rgba(124, 90, 56, 0.1);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cm-sk-line {
+  height: 11px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(124, 90, 56, 0.08) 25%,
+    rgba(124, 90, 56, 0.16) 50%,
+    rgba(124, 90, 56, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: cmShimmer 1.2s infinite linear;
+}
+
+.cm-sk-line.short { width: 38%; height: 12px; }
+.cm-sk-line.long { width: 92%; }
+.cm-sk-line.mid { width: 68%; }
+
+@keyframes cmShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
