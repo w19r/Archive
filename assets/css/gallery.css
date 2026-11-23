@@ -144,3 +144,25 @@ footer span a:hover { color: var(--ink); text-decoration: underline; }
   .wrap { padding: 0 20px; }
   .gallery { gap: 22px; }
 }
+/* سلاسة التكبير والتحريك والتقليب في الـ Lightbox */
+#lightbox-img {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform, opacity;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
+  cursor: zoom-in;
+}
+
+#lightbox-img.is-dragging {
+  transition: none !important;
+  cursor: grabbing !important;
+}
+
+#lightbox-img.is-zoomed {
+  cursor: grab;
+}
+
+#lightbox-img.is-switching {
+  opacity: 0.25;
+}
