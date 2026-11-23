@@ -8,9 +8,14 @@
   let currentPhotoId = null;
   let currentTitle = "";
   let authMode = "login"; // "login" | "register"
+
   let countsCache = {};
   let countsLoadedForSlug = null;
   let countsRequestInFlight = null;
+
+  // كاش التعليقات في ذاكرة الصفحة + منع تكرار نفس الطلب
+  const commentsCache = {};
+  const commentsInFlight = {};
 
   function detectSlug() {
     const p = window.location.pathname.toLowerCase();
@@ -21,6 +26,10 @@
 
   function normalizePhotoId(photoId) {
     return String(photoId || "").replace(/\//g, "_");
+  }
+
+  function cacheKey(slug, photoId) {
+    return `${slug}:${normalizePhotoId(photoId)}`;
   }
 
   function getToken() {
@@ -134,6 +143,60 @@
     countsRequestInFlight = null;
   }
 
+  // جلب التعليقات مع تخزينها في الكاش ومنع تكرار الطلبات المتزامنة
+  function fetchCommentsData(slug, photoId) {
+    const safeId = normalizePhotoId(photoId);
+    const key = cacheKey(slug, safeId);
+
+    if (commentsInFlight[key]) return commentsInFlight[key];
+
+    const promise = fetch(
+      `${API}/api/comments/${encodeURIComponent(slug)}/${encodeURIComponent(safeId)}`
+    )
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "تعذر تحميل التعليقات");
+        const list = data.comments || [];
+        commentsCache[key] = list;
+        updatePhotoBadge(safeId, list.length);
+        return list;
+      })
+      .finally(() => {
+        delete commentsInFlight[key];
+      });
+
+    commentsInFlight[key] = promise;
+    return promise;
+  }
+
+  // تحميل مسبق صامت عند التمرير أو اللمس
+  function prefetch(slugOverride, photoId) {
+    const slug = slugOverride || detectSlug();
+    if (!slug || !photoId) return;
+    const safeId = normalizePhotoId(photoId);
+    const key = cacheKey(slug, safeId);
+
+    if (commentsCache[key] || commentsInFlight[key]) return;
+    if (countsLoadedForSlug === slug && Number(countsCache[safeId] || 0) === 0) return;
+
+    fetchCommentsData(slug, safeId).catch(() => {});
+  }
+
+  function renderSkeleton(count = 2) {
+    const list = document.getElementById("cm-list");
+    const n = Math.min(Math.max(Number(count) || 2, 1), 3);
+    list.innerHTML = Array.from({ length: n })
+      .map(
+        () => `
+        <div class="cm-skeleton" aria-hidden="true">
+          <div class="cm-sk-line short"></div>
+          <div class="cm-sk-line long"></div>
+          <div class="cm-sk-line mid"></div>
+        </div>`
+      )
+      .join("");
+  }
+
   // حقن درج التعليقات ونافذة الدخول فقط (بدون زر عائم)
   function mountUI() {
     if (document.getElementById("cm-drawer")) return;
@@ -153,9 +216,7 @@
 
         <div id="cm-user-bar" class="cm-user-bar"></div>
 
-        <div id="cm-list" class="cm-list">
-          <p class="cm-empty">جاري تحميل التعليقات...</p>
-        </div>
+        <div id="cm-list" class="cm-list"></div>
 
         <div id="cm-footer" class="cm-footer">
           <form id="cm-form" class="cm-form auth-hidden">
@@ -225,7 +286,10 @@
         `;
         document.getElementById("cm-logout-btn").addEventListener("click", () => {
           clearSession();
-          if (currentPhotoId) loadComments();
+          if (currentPhotoId) {
+            const key = cacheKey(currentSlug, currentPhotoId);
+            if (commentsCache[key]) renderComments(commentsCache[key]);
+          }
         });
         cmForm.classList.remove("auth-hidden");
         loginPrompt.classList.add("auth-hidden");
@@ -296,19 +360,51 @@
   }
 
   async function loadComments() {
-    const list = document.getElementById("cm-list");
-    list.innerHTML = `<p class="cm-empty">جاري تحميل التعليقات...</p>`;
+    const slug = currentSlug;
+    const photoId = currentPhotoId;
+    const key = cacheKey(slug, photoId);
+    const cached = commentsCache[key];
+    const knownCount = countsLoadedForSlug === slug ? Number(countsCache[photoId] || 0) : null;
+
+    // 1. إذا كانت محمّلة مسبقاً في الكاش: اعرضها فوراً وحدّث بصمت بالخلفية
+    if (cached) {
+      renderComments(cached);
+      fetchCommentsData(slug, photoId)
+        .then((fresh) => {
+          if (currentSlug === slug && currentPhotoId === photoId) {
+            renderComments(fresh);
+          }
+        })
+        .catch(() => {});
+      return;
+    }
+
+    // 2. إذا كان العدّاد يخبرنا أن عدد التعليقات 0: اعرض الحالة الفارغة فوراً بدون انتظار
+    if (knownCount === 0) {
+      renderComments([]);
+      fetchCommentsData(slug, photoId)
+        .then((fresh) => {
+          if (currentSlug === slug && currentPhotoId === photoId && fresh.length > 0) {
+            renderComments(fresh);
+          }
+        })
+        .catch(() => {});
+      return;
+    }
+
+    // 3. غير ذلك: اعرض Skeleton ناعم بدل نص التحميل
+    renderSkeleton(knownCount || 2);
 
     try {
-      const res = await fetch(
-        `${API}/api/comments/${encodeURIComponent(currentSlug)}/${encodeURIComponent(currentPhotoId)}`
-      );
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "تعذر تحميل التعليقات");
-
-      renderComments(data.comments || []);
+      const fresh = await fetchCommentsData(slug, photoId);
+      if (currentSlug === slug && currentPhotoId === photoId) {
+        renderComments(fresh);
+      }
     } catch (err) {
-      list.innerHTML = `<p class="cm-empty" style="color:#b91c1c;">${escapeHtml(err.message || "تعذر الاتصال بالسيرفر")}</p>`;
+      if (currentSlug === slug && currentPhotoId === photoId) {
+        const list = document.getElementById("cm-list");
+        list.innerHTML = `<p class="cm-empty" style="color:#b91c1c;">${escapeHtml(err.message || "تعذر الاتصال بالسيرفر")}</p>`;
+      }
     }
   }
 
@@ -353,10 +449,17 @@
             });
             const d = await res.json();
             if (!res.ok) throw new Error(d.detail || "فشل حذف التعليق");
-            card.remove();
-            const remaining = list.querySelectorAll(".cm-item").length;
-            updatePhotoBadge(currentPhotoId, remaining);
-            if (!remaining) renderComments([]);
+
+            const key = cacheKey(currentSlug, currentPhotoId);
+            if (commentsCache[key]) {
+              commentsCache[key] = commentsCache[key].filter((item) => item.id !== c.id);
+              renderComments(commentsCache[key]);
+            } else {
+              card.remove();
+              const remaining = list.querySelectorAll(".cm-item").length;
+              updatePhotoBadge(currentPhotoId, remaining);
+              if (!remaining) renderComments([]);
+            }
           } catch (err) {
             alert(err.message || "تعذر حذف التعليق");
           }
@@ -392,6 +495,16 @@
       }
     });
 
+    // تحميل مسبق تلقائي عند تمرير الماوس أو لمس زر التعليقات على أي بطاقة
+    const triggerPrefetch = (e) => {
+      const btn = e.target.closest("[data-comment-id]");
+      if (btn && btn.dataset.commentId) {
+        prefetch(btn.dataset.commentSlug || detectSlug(), btn.dataset.commentId);
+      }
+    };
+    document.addEventListener("mouseover", triggerPrefetch, { passive: true });
+    document.addEventListener("touchstart", triggerPrefetch, { passive: true });
+
     // إرسال نموذج تسجيل الدخول أو الحساب الجديد
     document.getElementById("auth-form").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -402,7 +515,7 @@
       const name = document.getElementById("auth-name").value.trim();
 
       btn.disabled = true;
-      status.textContent = "جاري الاتصال بالسيرفر...";
+      status.textContent = "جاري الدخول...";
       status.className = "cm-status";
 
       const endpoint = authMode === "register" ? "/api/auth/register" : "/api/auth/login";
@@ -420,7 +533,11 @@
         saveSession(data.token, data.user);
         e.target.reset();
         closeAuthModal();
-        if (currentPhotoId) loadComments();
+        if (currentPhotoId) {
+          const key = cacheKey(currentSlug, currentPhotoId);
+          if (commentsCache[key]) renderComments(commentsCache[key]);
+          else loadComments();
+        }
       } catch (err) {
         status.textContent = err.message || "حدث خطأ غير متوقع";
         status.className = "cm-status err";
@@ -429,7 +546,7 @@
       }
     });
 
-    // إرسال تعليق جديد (يطلب تسجيل الدخول إذا لم يكن مسجلاً)
+    // إرسال تعليق جديد وعرضه فوراً بدون طلب إضافي
     document.getElementById("cm-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!getToken() || !getUser()) {
@@ -475,7 +592,11 @@
         input.value = "";
         status.textContent = "✓ تم نشر تعليقك";
         status.className = "cm-status ok";
-        await loadComments();
+
+        const key = cacheKey(currentSlug, currentPhotoId);
+        const existing = commentsCache[key] || [];
+        commentsCache[key] = [data.comment, ...existing];
+        renderComments(commentsCache[key]);
       } catch (err) {
         status.textContent = err.message || "تعذر نشر التعليق";
         status.className = "cm-status err";
@@ -492,6 +613,7 @@
     close: closeDrawer,
     refreshCounts,
     applyCounts,
+    prefetch,
   };
 
   document.addEventListener("DOMContentLoaded", () => {
