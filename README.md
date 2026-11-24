@@ -1,44 +1,40 @@
-<div dir="rtl" align="center">
+<div align="center">
 
-# 🕊️ أرشيف عائلة العايدي الرقمي | Alaydi Family Digital Archive
+# 🕊️ Alaydi Family Digital Archive
 
-**منصة رقمية تفاعلية لتوثيق سيرة وصور شهداء عائلة العايدي وحفظ ذكرياتهم عبر السنين.**
+**An interactive digital memorial platform preserving the biographies, rare photographs, and memories of the Alaydi family martyrs across generations.**
 
-[![الموقع المباشر](https://img.shields.io/badge/Live_Website-archive.abdallahalaydi.com-8A6741?style=for-the-badge&logo=google-chrome&logoColor=white)](https://archive.abdallahalaydi.com/)
-[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](#)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](#)
-[![JavaScript](https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](#)
-[![PWA Ready](https://img.shields.io/badge/PWA-Supported-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](#)
+[![Live Site](https://img.shields.io/badge/Live-archive.abdallahalaydi.com-8A6741?style=flat-square)](https://archive.abdallahalaydi.com/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](#)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)](#)
+[![Cloudflare](https://img.shields.io/badge/Edge-Cloudflare-F38020?style=flat-square&logo=cloudflare&logoColor=white)](#)
+[![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?style=flat-square)](#)
 
-<br>
-
-[زيارة الأرشيف الرئيسي](https://archive.abdallahalaydi.com/) • [أرشيف الشهيد محمد](https://archive.abdallahalaydi.com/mohammed/) • [أرشيف الشهيد عبد المجيد](https://archive.abdallahalaydi.com/abdulmajeed/)
+[Main Archive](https://archive.abdallahalaydi.com/) · [Mohammed Alaydi](https://archive.abdallahalaydi.com/mohammed/) · [Abdulmajeed Alaydi](https://archive.abdallahalaydi.com/abdulmajeed/)
 
 </div>
 
 ---
 
-<div dir="rtl">
+## Overview
 
-## 📖 نبذة عن المشروع
+Created as a personal engineering initiative to preserve the life stories and archival photographs of **Mohammed Alaydi** (1980 – 2025) and **Abdulmajeed Alaydi** (1978 – 2014). The system combines edge-cached static delivery with a hardened full-stack backend for real-time community interaction and automated mobile publishing.
 
-أُنشئ **أرشيف عائلة العايدي** بمبادرة فردية لترسيخ تاريخ العائلة وتوثيق السيرة العطرة والصور النادرة لشهدائنا؛ **الشهيد محمد العايدي** (1980 – 2025) و**الشهيد عبد المجيد العايدي** (1978 – 2014)، لتبقى ذكراهم حية ومحفورة في الذاكرة الرقمية عبر الأجيال.
+## System Architecture & Engineering Highlights
 
-إلى جانب قيمته الإنسانية والتوثيقية، صُمم هذا المشروع ليكون تطبيقاً هندسياً متكاملاً يعتمد على معمارية المواقع الثابتة المدعومة بالواجهات البرمجية السحابية (Serverless Static Architecture) مع التركيز العالي على الأداء، تجربة المستخدم (UX)، وأرشفة محركات البحث والذكاء الاصطناعي.
+- **Git-Backed CMS via Telegram Webhook:** A private Telegram bot receives photos and captions, automatically processes three image variants (thumbnail, display, and blur-up placeholder), commits assets via the GitHub REST API, and updates the JSON index with zero manual deployment.
+- **Hardened Backend API (FastAPI & PostgreSQL):** Production REST service deployed on Render handling user accounts and live comments, secured with `PBKDF2-HMAC-SHA256` password hashing, `JWT` authentication, disabled production docs, and in-memory sliding-window rate limiting.
+- **Zero-Latency UX & Offline PWA:** Client-side `Stale-While-Revalidate` caching for instant comment drawers, a custom chronological parser supporting approximate (`~YYYY`) and range dates, a gesture-enabled pinch-to-zoom lightbox, and automated printable PDF generation.
+- **Dynamic Edge Previews & SEO:** Per-memory Open Graph social cards generated dynamically via `Cloudflare Workers`, paired with `Schema.org` (`JSON-LD`) structured data and automated sitemaps.
+
+## Tech Stack
+
+- **Frontend:** Vanilla JavaScript (ES6+), Modular CSS, Service Workers (PWA)
+- **Backend & Database:** Python, FastAPI, PostgreSQL
+- **Infrastructure & Automation:** Cloudflare (DNS & Workers), GitHub Pages, GitHub REST API, Telegram Bot API
 
 ---
 
-## ⚙️ المميزات الهندسية والتقنية (Key Features)
-
-* **محرك تحليل وترتيب زمني ذكي (Smart Chronological Parser):** خوارزمية مخصصة بـ JavaScript قادرة على قراءة وتحليل صيغ تواريخ متعددة ومعقدة (تاريخ كامل `YYYY-MM-DD`، شهر وسنة `YYYY-MM`، سنة منفردة، تواريخ تقريبية `~YYYY`، أو نطاق زمني بين سنتين `YYYY-YYYY`) وحساب نقطة المنتصف الزمنية لترتيب الذكريات بدقة من الأحدث للأقدم والعكس، مع حساب المدة المنقضية تلقائياً.
-* **إدارة محتوى ديناميكية (Cloud JSON API):** فصل كامل بين الكود البرمجي والبيانات عبر جلب الذكريات والصور ديناميكياً باستخدام واجهة `JSONBin.io` مع وجود لوحة إدارة مخصصة (`admin/`) لتحديث الأرشيف دون الحاجة لتعديل الكود المصدري.
-* **تطبيق ويب تقدمي (Progressive Web App - PWA):** دعم كامل للتثبيت كتطبيق مستقل على أجهزة iOS وAndroid، مع شاشة ترحيب افتتاحية (Splash Screen) تعمل تلقائياً في وضع `standalone`.
-* **تهيئة متقدمة لمحركات البحث والذكاء الاصطناعي (Technical SEO & AI Schema):**
-  * تضمين البيانات المهيكلة (`JSON-LD` وفق معيار `Schema.org`) لتغذية محركات البحث ونماذج الذكاء الاصطناعي بالسيرة الكاملة والدقيقة للشهداء.
-  * دعم كامل لوسوم المشاركة الاجتماعية (Open Graph & Twitter Cards).
-  * خريطة موقع (`sitemap.xml`) وملف توجيه العناكب (`robots.txt`).
-* **تجربة مستخدم تفاعلية وبصرية هادئة:**
-  * تصميم متجاوب (Responsive Design) بألوان دافئة وخطوط عربية مخصصة (`Thamania Sans` و `Thamania Text`).
-  * عارض صور مكبر (Lightbox) مع إغلاق سلس، وشريط تقدم قراءة علوي (Reading Progress Bar).
-  * تحميل كسول للصور (Lazy Loading) ومؤثرات ظهور انسيابية باستخدام `IntersectionObserver API`.
-  * دعم الروابط المباشرة للذكريات (`Deep Linking` عبر `?id=`) مع التمرير التلقائي وتم
+<div align="center">
+  Built with care and remembrance by <a href="https://abdallahalaydi.com">Abdallah Alaydi</a>
+</div>
